@@ -1,3 +1,4 @@
+# Local environment files must never be tracked.
 .env
 .venv/
 __pycache__/
