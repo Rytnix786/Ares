@@ -25,6 +25,6 @@ jobs:
           context: .
           file: docker/Dockerfile.eval
           push: true
-          tags: ghcr.io/${{ github.repository }}/ares-eval:latest
+          tags: ghcr.io/rytnix786/ares/ares-eval:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
