@@ -1,8 +1,27 @@
-# Ares — Model Regression Detection System
+# Ares — Model Promotion Gate for ML Teams
 
 ![Python](https://img.shields.io/badge/python-3.11%2B-blue) ![License](https://img.shields.io/badge/license-MIT-green) ![Coverage](https://img.shields.io/badge/coverage-90%25%2B-brightgreen)
 
-Ares is a production-grade model regression gate for ML teams. It compares candidate models against active champions, enforces configurable regression rules, tracks evaluation history in PostgreSQL, and exposes API, dashboard, CI, DVC, and drift-monitoring workflows.
+Ares is an open-source regression gate that decides whether a candidate model is safe to promote. It combines reproducible golden datasets, configurable regression rules, champion tracking, drift reporting, CI-friendly evaluation outputs, and an operator dashboard into one decision system.
+
+## Why Ares exists
+
+Most teams can train a candidate model. Far fewer teams can answer the harder question: **should this model actually replace the current champion?**
+
+Ares exists to make that decision:
+- **reproducible** with versioned golden datasets and checksums,
+- **governed** with explicit regression thresholds and critical-slice rules,
+- **observable** through an API, dashboard, artifacts, and persisted history,
+- **operational** through Docker, GitHub Actions, and drift-monitoring workflows.
+
+## What Ares gives you
+
+- Candidate-vs-champion evaluation with promotion-safe pass/fail logic
+- Golden dataset validation with split-aware checks (`train`, `val`, `test`)
+- Persisted evaluation history and champion export / recovery flows
+- FastAPI endpoints for health, runs, champions, gate config, and drift reports
+- Streamlit dashboard for leaderboard, drill-down analysis, and drift monitoring
+- Optional MLflow logging, DVC-backed data workflow, and CI evaluation artifacts
 
 ```mermaid
 flowchart LR
@@ -15,15 +34,44 @@ flowchart LR
   Drift[Drift Check] --> API
 ```
 
-## 5-command quick start
+## Quick start
+
+### Full local stack
 
 ```bash
 python -m venv .venv
 . .venv/Scripts/activate
-pip install -e ".[dev,eval]"
-docker compose up -d postgres redis
-set DATABASE_URL=postgresql+asyncpg://ares:ares@localhost:55432/ares && alembic upgrade head && uvicorn ares.api.main:app --reload
+pip install -e ".[dev,eval,dashboard]"
+docker compose up -d
+python -m alembic upgrade head
+python scripts/seed_champion.py
+make verify
 ```
+
+Notes:
+- `docker compose up -d` brings up `db`, `redis`, `minio`, `mlflow`, `api`, `worker`, and `dashboard`.
+- On Windows, this repository ships a `make.cmd` wrapper so `make verify` works even if GNU Make is not installed.
+- Copy `.env.example` to `.env` only if you want to override local defaults.
+
+### Key local surfaces
+
+- API: `http://localhost:8000`
+- OpenAPI docs: `http://localhost:8000/docs`
+- Dashboard: `http://localhost:8501`
+- MLflow: `http://localhost:5000`
+- MinIO console: `http://localhost:9001`
+
+## Verification
+
+`make verify` is the main quality gate. It runs:
+- Ruff
+- Mypy
+- Pytest with coverage and JUnit artifacts
+- `docker compose config -q`
+- `dvc repro --dry`
+- Python bytecode checks for the dashboard entry points
+
+Generated artifacts are written to `reports/` and are treated as local verification outputs, not source-controlled project files.
 
 ## Evaluator guide
 
@@ -47,13 +95,17 @@ The bundled golden set is deterministic and split into `train.csv`, `val.csv`, a
 
 Stable endpoints are under `/api/v1`. Breaking API changes require `/api/v2`. Production code must never call `Base.metadata.create_all()`; use Alembic migrations only.
 
+## Promotion flow
+
+1. Seed or register a baseline champion.
+2. Run `scripts/run_evaluation.py` against a candidate model.
+3. Review the gate result (`passed`, `failure_reason`, `metric_table`, slice regressions, validation summary).
+4. Inspect the dashboard drill-down view if deeper analysis is needed.
+5. Use the `test` split for promotion-grade decisions.
+
 ## CI/CD secrets
 
-Configure `ARES_DB_URL`, `ARES_API_KEYS`, cloud storage credentials for DVC, and package permissions for GHCR.
-
-## Dashboard screenshot
-
-_Add screenshot after first local run._
+Configure `DATABASE_URL`, `ARES_API_KEYS`, cloud storage credentials for DVC, and package permissions for GHCR.
 
 ## Rollback and drift runbooks
 
@@ -84,6 +136,14 @@ If the `test` split evaluation fails, the model must not be promoted.
 ## Boundaries
 
 Ares DB owns champion state and gate decisions. MLflow owns artifacts/metrics. DVC owns golden data reproducibility. Deepchecks/Evidently are optional validation/drift integrations.
+
+## Repository map
+
+- `ares/` — core package: config, evaluators, rules engine, API, DB, drift, telemetry
+- `dashboard/` — Streamlit UI for operators and reviewers
+- `scripts/` — evaluation, seeding, rollback, and support utilities
+- `data/` — bundled golden-set sample data and schema contract
+- `.github/workflows/` — evaluation image build, regression gate, drift monitor, and quality automation
 
 ## Key rotation
 

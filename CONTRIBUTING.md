@@ -4,8 +4,10 @@
 
 1. `python -m venv .venv`
 2. `. .venv/Scripts/activate`
-3. `pip install -e ".[dev,eval]"`
+3. `pip install -e ".[dev,eval,dashboard]"`
 4. `pre-commit install`
+
+For local overrides, copy `.env.example` to `.env`. The tracked compose file can also boot from `.env.example` defaults when `.env` is absent.
 
 Quarterly, run `pre-commit autoupdate` and review pinned hook revisions before committing the updated config.
 
@@ -16,6 +18,10 @@ Quarterly, run `pre-commit autoupdate` and review pinned hook revisions before c
 - `make migrate`
 - `make eval`
 - `make verify`
+
+On Windows, this repository includes a `make.cmd` wrapper so the same `make <target>` commands work without a separate GNU Make installation.
+
+`make verify` is the canonical local quality gate and matches the `Ares Quality Gate` GitHub Actions workflow.
 
 ## Evaluator extension workflow
 

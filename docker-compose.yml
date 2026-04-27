@@ -85,7 +85,11 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
-    env_file: .env
+    env_file:
+      - path: .env.example
+        required: true
+      - path: .env
+        required: false
     environment:
       DATABASE_URL: postgresql+asyncpg://ares:ares@db:5432/ares
       REDIS_URL: redis://redis:6379/0
@@ -111,7 +115,11 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.worker
-    env_file: .env
+    env_file:
+      - path: .env.example
+        required: true
+      - path: .env
+        required: false
     environment:
       DATABASE_URL: postgresql+asyncpg://ares:ares@db:5432/ares
       REDIS_URL: redis://redis:6379/0
@@ -131,7 +139,11 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.dashboard
-    env_file: .env
+    env_file:
+      - path: .env.example
+        required: true
+      - path: .env
+        required: false
     environment:
       ARES_API_URL: http://api:8000/api/v1
       ARES_DASHBOARD_URL: http://dashboard:8501
