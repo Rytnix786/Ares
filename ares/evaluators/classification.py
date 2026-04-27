@@ -5,14 +5,41 @@ import json
 from pathlib import Path
 from typing import Any
 
+import joblib
+import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 from ares.evaluators.base import BaseEvaluator
 
 
+def _extract_text(payload: Any) -> str:
+    if isinstance(payload, str):
+        raw = payload
+        try:
+            payload = ast.literal_eval(payload)
+        except Exception:
+            return raw.lower()
+    if isinstance(payload, dict):
+        return str(payload.get("text", "")).lower()
+    return str(payload).lower()
+
+
+def _keyword_features(text: str) -> list[float]:
+    positive_keywords = ["positive", "great", "resolved", "stable", "clearly"]
+    negative_keywords = ["negative", "failed", "broken", "escalation", "ambiguous"]
+    return [
+        float(len(text)),
+        float(sum(keyword in text for keyword in positive_keywords)),
+        float(sum(keyword in text for keyword in negative_keywords)),
+    ]
+
+
 class ClassificationEvaluator(BaseEvaluator):
     def load_model(self) -> None:
         path = Path(self.model_path)
+        if path.suffix == ".joblib" and path.is_file():
+            self._model = joblib.load(path)
+            return
         self._model = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {
             "default_label": self.config.get("default_label", "positive"),
             "positive_keywords": ["positive", "great", "resolved", "stable", "clearly"],
@@ -20,6 +47,10 @@ class ClassificationEvaluator(BaseEvaluator):
         }
 
     def predict(self, inputs: list[Any]) -> list[Any]:
+        if isinstance(self._model, dict) and {"model", "scaler"}.issubset(self._model):
+            features = np.asarray([_keyword_features(_extract_text(item)) for item in inputs], dtype=float)
+            scaled = self._model["scaler"].transform(features)
+            return [str(value) for value in self._model["model"].predict(scaled)]
         label = self._model.get("default_label", "positive") if isinstance(self._model, dict) else "positive"
         positive_keywords = [str(item).lower() for item in self._model.get("positive_keywords", ["positive"])] if isinstance(self._model, dict) else ["positive"]
         negative_keywords = [str(item).lower() for item in self._model.get("negative_keywords", ["negative"])] if isinstance(self._model, dict) else ["negative"]

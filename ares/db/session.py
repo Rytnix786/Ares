@@ -8,23 +8,17 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.pool import NullPool
 
 from ares.config import settings
 
 engine: AsyncEngine | None = None
 AsyncSessionLocal: async_sessionmaker[AsyncSession] | None = None
 
-
 def get_engine() -> AsyncEngine:
     global engine
     if engine is None:
         if settings.is_sqlite:
-            engine = create_async_engine(
-                settings.async_database_url,
-                poolclass=NullPool,
-                connect_args={"timeout": settings.DB_COMMAND_TIMEOUT},
-            )
+            engine = create_async_engine(settings.async_database_url, connect_args={"check_same_thread": False})
         else:
             engine = create_async_engine(
                 settings.async_database_url,
@@ -47,3 +41,11 @@ def get_sessionmaker() -> async_sessionmaker[AsyncSession]:
 async def get_db() -> AsyncIterator[AsyncSession]:
     async with get_sessionmaker()() as session:
         yield session
+
+
+async def dispose_engine() -> None:
+    global engine, AsyncSessionLocal
+    if engine is not None:
+        await engine.dispose()
+    engine = None
+    AsyncSessionLocal = None

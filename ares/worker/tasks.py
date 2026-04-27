@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from celery import Celery
 
-celery_app = Celery("ares", broker="redis://localhost:6379/0", backend="redis://localhost:6379/0")
+from ares.config import settings
+
+celery_app = Celery("ares", broker=settings.REDIS_URL, backend=settings.REDIS_URL)
 celery_app.conf.task_always_eager = False
 
 

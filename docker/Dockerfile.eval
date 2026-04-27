@@ -2,9 +2,9 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y --no-install-recommends git curl awscli && rm -rf /var/lib/apt/lists/* \
     && useradd --create-home --shell /bin/sh ares
 WORKDIR /app
-COPY pyproject.toml README.md ./
-RUN pip install --no-cache-dir -e ".[dev,eval]"
 COPY . .
+RUN mkdir -p /home/ares/mlflow && chown -R ares:ares /home/ares/mlflow
+RUN pip install --no-cache-dir -e ".[eval]"
 RUN chown -R ares:ares /app
 USER ares
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1

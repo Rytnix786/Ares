@@ -1,4 +1,3 @@
-import asyncio
 import json
 import os
 import subprocess
@@ -7,7 +6,7 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy import create_engine
 
 from ares.models import Base
 
@@ -15,14 +14,11 @@ from ares.models import Base
 def prepare_sqlite_db(tmp_path: Path) -> str:
     db_path = tmp_path / "ares_cli.db"
     database_url = f"sqlite+aiosqlite:///{db_path.as_posix()}"
-
-    async def _create() -> None:
-        engine = create_async_engine(database_url)
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-        await engine.dispose()
-
-    asyncio.run(_create())
+    # Use a synchronous engine just to initialize schema quickly.
+    # The CLI uses the async driver (aiosqlite) against the same file.
+    sync_engine = create_engine(f"sqlite:///{db_path.as_posix()}")
+    Base.metadata.create_all(sync_engine)
+    sync_engine.dispose()
     return database_url
 
 
@@ -31,7 +27,23 @@ def test_cli_failure_json(tmp_path: Path):
     out = tmp_path / "result.json"
     env = os.environ.copy()
     env["DATABASE_URL"] = prepare_sqlite_db(tmp_path)
-    proc = subprocess.run([sys.executable, "scripts/run_evaluation.py", "--model-path", "missing", "--commit-sha", "abc", "--dataset-path", str(tmp_path / "missing.csv"), "--output-json", str(out)], text=True, env=env)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_evaluation.py",
+            "--model-path",
+            "missing",
+            "--commit-sha",
+            "abc",
+            "--dataset-path",
+            str(tmp_path / "missing.csv"),
+            "--output-json",
+            str(out),
+        ],
+        text=True,
+        env=env,
+        timeout=30,
+    )
     assert proc.returncode == 1
     payload = json.loads(out.read_text())
     assert payload["passed"] is False
@@ -93,6 +105,22 @@ def test_cli_success(tmp_path: Path):
     env = os.environ.copy()
     env["DATABASE_URL"] = prepare_sqlite_db(tmp_path)
     env["GOLDEN_SET_SKIP_CHECKSUM"] = "true"
-    proc = subprocess.run([sys.executable, "scripts/run_evaluation.py", "--model-path", "models/candidate.json", "--commit-sha", "abc", "--dataset-path", str(data), "--output-json", str(out)], text=True, env=env)
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_evaluation.py",
+            "--model-path",
+            "models/candidate.json",
+            "--commit-sha",
+            "abc",
+            "--dataset-path",
+            str(data),
+            "--output-json",
+            str(out),
+        ],
+        text=True,
+        env=env,
+        timeout=30,
+    )
     assert proc.returncode == 0
     assert json.loads(out.read_text())["run_id"]

@@ -24,6 +24,12 @@ class AresSettings(BaseSettings):
     ARES_API_URL: str = "http://localhost:8000/api/v1"
     ARES_DASHBOARD_URL: str = "http://localhost:8501"
     CELERY_ENABLED: bool = False
+    REDIS_URL: str = "redis://localhost:6379/0"
+    MLFLOW_TRACKING_URI: str = "http://localhost:5000"
+    AWS_ACCESS_KEY_ID: str = ""
+    AWS_SECRET_ACCESS_KEY: str = ""
+    AWS_ENDPOINT_URL: str = ""
+    DVC_REMOTE_URL: str = "s3://ares-data"
 
     RATE_LIMIT_EVALUATE: str = "10/minute"
     RATE_LIMIT_CHAMPION_MUTATION: str = "20/minute"

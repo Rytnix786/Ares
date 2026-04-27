@@ -1,11 +1,10 @@
 services:
-  postgres:
+  db:
     image: postgres:16
     environment:
       POSTGRES_USER: ares
       POSTGRES_PASSWORD: ares
       POSTGRES_DB: ares_test
-    ports: ["5432:5432"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ares"]
       interval: 5s
@@ -13,9 +12,30 @@ services:
       retries: 3
   redis:
     image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
   api:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
-    env_file: .env.example
+    environment:
+      ENVIRONMENT: test
+      DATABASE_URL: postgresql+asyncpg://ares:ares@db:5432/ares_test
+      REDIS_URL: redis://redis:6379/0
+      ARES_API_KEYS: ci-key
+      MLFLOW_TRACKING_URI: ""
+      AWS_ENDPOINT_URL: ""
     mem_limit: 512m
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 3

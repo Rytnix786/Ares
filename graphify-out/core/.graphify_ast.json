@@ -1,0 +1,3997 @@
+{
+  "nodes": [
+    {
+      "id": "ares_config_py",
+      "label": "config.py",
+      "file_type": "code",
+      "source_file": "ares\\config.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "config_aressettings",
+      "label": "AresSettings",
+      "file_type": "code",
+      "source_file": "ares\\config.py",
+      "source_location": "L12"
+    },
+    {
+      "id": "basesettings",
+      "label": "BaseSettings",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "config_parse_keys",
+      "label": "parse_keys()",
+      "file_type": "code",
+      "source_file": "ares\\config.py",
+      "source_location": "L47"
+    },
+    {
+      "id": "config_merge_legacy_api_key",
+      "label": "merge_legacy_api_key()",
+      "file_type": "code",
+      "source_file": "ares\\config.py",
+      "source_location": "L55"
+    },
+    {
+      "id": "config_async_database_url",
+      "label": "async_database_url()",
+      "file_type": "code",
+      "source_file": "ares\\config.py",
+      "source_location": "L65"
+    },
+    {
+      "id": "config_is_sqlite",
+      "label": "is_sqlite()",
+      "file_type": "code",
+      "source_file": "ares\\config.py",
+      "source_location": "L71"
+    },
+    {
+      "id": "config_load_ares_config",
+      "label": "load_ares_config()",
+      "file_type": "code",
+      "source_file": "ares\\config.py",
+      "source_location": "L75"
+    },
+    {
+      "id": "config_get_settings",
+      "label": "get_settings()",
+      "file_type": "code",
+      "source_file": "ares\\config.py",
+      "source_location": "L83"
+    },
+    {
+      "id": "ares_drift_sources_py",
+      "label": "drift_sources.py",
+      "file_type": "code",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "drift_sources_productiondatasource",
+      "label": "ProductionDataSource",
+      "file_type": "code",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L11"
+    },
+    {
+      "id": "abc",
+      "label": "ABC",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "drift_sources_fetch_recent_predictions",
+      "label": "fetch_recent_predictions()",
+      "file_type": "code",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L13"
+    },
+    {
+      "id": "drift_sources_localfiledatasource",
+      "label": "LocalFileDataSource",
+      "file_type": "code",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L16"
+    },
+    {
+      "id": "drift_sources_localfiledatasource_init",
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L17"
+    },
+    {
+      "id": "drift_sources_localfiledatasource_fetch_recent_predictions",
+      "label": ".fetch_recent_predictions()",
+      "file_type": "code",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L20"
+    },
+    {
+      "id": "ares_golden_set_py",
+      "label": "golden_set.py",
+      "file_type": "code",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "golden_set_sha256_file",
+      "label": "sha256_file()",
+      "file_type": "code",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L17"
+    },
+    {
+      "id": "golden_set_validate_golden_set",
+      "label": "validate_golden_set()",
+      "file_type": "code",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L25"
+    },
+    {
+      "id": "ares_logging_py",
+      "label": "logging.py",
+      "file_type": "code",
+      "source_file": "ares\\logging.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "logging_configure_logging",
+      "label": "configure_logging()",
+      "file_type": "code",
+      "source_file": "ares\\logging.py",
+      "source_location": "L12"
+    },
+    {
+      "id": "ares_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_api_auth_py",
+      "label": "auth.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\auth.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "auth_rate_limit_key",
+      "label": "rate_limit_key()",
+      "file_type": "code",
+      "source_file": "ares\\api\\auth.py",
+      "source_location": "L10"
+    },
+    {
+      "id": "auth_require_api_key",
+      "label": "require_api_key()",
+      "file_type": "code",
+      "source_file": "ares\\api\\auth.py",
+      "source_location": "L14"
+    },
+    {
+      "id": "ares_api_limiting_py",
+      "label": "limiting.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\limiting.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "limiting_nooplimiter",
+      "label": "_NoOpLimiter",
+      "file_type": "code",
+      "source_file": "ares\\api\\limiting.py",
+      "source_location": "L14"
+    },
+    {
+      "id": "limiting_nooplimiter_limit",
+      "label": ".limit()",
+      "file_type": "code",
+      "source_file": "ares\\api\\limiting.py",
+      "source_location": "L15"
+    },
+    {
+      "id": "ares_api_main_py",
+      "label": "main.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "main_rate_limit_handler",
+      "label": "rate_limit_handler()",
+      "file_type": "code",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L33"
+    },
+    {
+      "id": "ares_api_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_api_routers_champions_py",
+      "label": "champions.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "champions_export",
+      "label": "export()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L24"
+    },
+    {
+      "id": "champions_get_champion",
+      "label": "get_champion()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L43"
+    },
+    {
+      "id": "champions_promote",
+      "label": "promote()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L60"
+    },
+    {
+      "id": "champions_previous",
+      "label": "previous()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L75"
+    },
+    {
+      "id": "ares_api_routers_drift_py",
+      "label": "drift.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "drift_create_report",
+      "label": "create_report()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L18"
+    },
+    {
+      "id": "drift_list_reports",
+      "label": "list_reports()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L36"
+    },
+    {
+      "id": "ares_api_routers_evaluations_py",
+      "label": "evaluations.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "evaluations_compare_with_champion",
+      "label": "compare_with_champion()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L19"
+    },
+    {
+      "id": "evaluations_list_runs",
+      "label": "list_runs()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L31"
+    },
+    {
+      "id": "evaluations_get_run",
+      "label": "get_run()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L59"
+    },
+    {
+      "id": "ares_api_routers_gate_py",
+      "label": "gate.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\gate.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "gate_get_gate_config",
+      "label": "get_gate_config()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\gate.py",
+      "source_location": "L15"
+    },
+    {
+      "id": "ares_api_routers_health_py",
+      "label": "health.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "health_live",
+      "label": "live()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L13"
+    },
+    {
+      "id": "health_ready",
+      "label": "ready()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L18"
+    },
+    {
+      "id": "health_health",
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L24"
+    },
+    {
+      "id": "ares_api_routers_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\routers\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_api_schemas_champion_py",
+      "label": "champion.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "champion_promotechampionrequest",
+      "label": "PromoteChampionRequest",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L6"
+    },
+    {
+      "id": "basemodel",
+      "label": "BaseModel",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "champion_championresponse",
+      "label": "ChampionResponse",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L12"
+    },
+    {
+      "id": "champion_championevaluationsnapshot",
+      "label": "ChampionEvaluationSnapshot",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L24"
+    },
+    {
+      "id": "champion_championexportentry",
+      "label": "ChampionExportEntry",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L31"
+    },
+    {
+      "id": "champion_championexportresponse",
+      "label": "ChampionExportResponse",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L39"
+    },
+    {
+      "id": "ares_api_schemas_drift_py",
+      "label": "drift.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\drift.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "drift_driftreportin",
+      "label": "DriftReportIn",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\drift.py",
+      "source_location": "L8"
+    },
+    {
+      "id": "basemodel",
+      "label": "BaseModel",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "drift_driftreportresponse",
+      "label": "DriftReportResponse",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\drift.py",
+      "source_location": "L18"
+    },
+    {
+      "id": "ares_api_schemas_evaluation_py",
+      "label": "evaluation.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "evaluation_comparerequest",
+      "label": "CompareRequest",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L8"
+    },
+    {
+      "id": "basemodel",
+      "label": "BaseModel",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "evaluation_comparisonresponse",
+      "label": "ComparisonResponse",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L16"
+    },
+    {
+      "id": "evaluation_evaluationrunresponse",
+      "label": "EvaluationRunResponse",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L27"
+    },
+    {
+      "id": "ares_api_schemas_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\api\\schemas\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_db_crud_py",
+      "label": "crud.py",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "crud_get_evaluation_run",
+      "label": "get_evaluation_run()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L11"
+    },
+    {
+      "id": "crud_get_cached_evaluation",
+      "label": "get_cached_evaluation()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L15"
+    },
+    {
+      "id": "crud_list_evaluation_runs",
+      "label": "list_evaluation_runs()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L20"
+    },
+    {
+      "id": "crud_create_evaluation_run",
+      "label": "create_evaluation_run()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L25"
+    },
+    {
+      "id": "crud_get_active_champion",
+      "label": "get_active_champion()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L33"
+    },
+    {
+      "id": "crud_get_previous_champion",
+      "label": "get_previous_champion()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L38"
+    },
+    {
+      "id": "crud_promote_champion",
+      "label": "promote_champion()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L43"
+    },
+    {
+      "id": "crud_export_champions",
+      "label": "export_champions()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L55"
+    },
+    {
+      "id": "crud_create_drift_report",
+      "label": "create_drift_report()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L64"
+    },
+    {
+      "id": "crud_list_drift_reports",
+      "label": "list_drift_reports()",
+      "file_type": "code",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L72"
+    },
+    {
+      "id": "ares_db_session_py",
+      "label": "session.py",
+      "file_type": "code",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "session_get_engine",
+      "label": "get_engine()",
+      "file_type": "code",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L17"
+    },
+    {
+      "id": "session_get_sessionmaker",
+      "label": "get_sessionmaker()",
+      "file_type": "code",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L34"
+    },
+    {
+      "id": "session_get_db",
+      "label": "get_db()",
+      "file_type": "code",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L41"
+    },
+    {
+      "id": "ares_db_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\db\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_evaluators_base_py",
+      "label": "base.py",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "base_evaluationresult",
+      "label": "EvaluationResult",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L16"
+    },
+    {
+      "id": "base_baseevaluator",
+      "label": "BaseEvaluator",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L28"
+    },
+    {
+      "id": "abc",
+      "label": "ABC",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "base_baseevaluator_init",
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L31"
+    },
+    {
+      "id": "base_load_model",
+      "label": "load_model()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L37"
+    },
+    {
+      "id": "base_predict",
+      "label": "predict()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L40"
+    },
+    {
+      "id": "base_compute_metrics",
+      "label": "compute_metrics()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L43"
+    },
+    {
+      "id": "base_baseevaluator_evaluate",
+      "label": ".evaluate()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L45"
+    },
+    {
+      "id": "ares_evaluators_classification_py",
+      "label": "classification.py",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "classification_extract_text",
+      "label": "_extract_text()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L15"
+    },
+    {
+      "id": "classification_keyword_features",
+      "label": "_keyword_features()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L26"
+    },
+    {
+      "id": "classification_classificationevaluator",
+      "label": "ClassificationEvaluator",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L36"
+    },
+    {
+      "id": "baseevaluator",
+      "label": "BaseEvaluator",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "classification_classificationevaluator_load_model",
+      "label": ".load_model()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L37"
+    },
+    {
+      "id": "classification_classificationevaluator_predict",
+      "label": ".predict()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L48"
+    },
+    {
+      "id": "classification_classificationevaluator_compute_metrics",
+      "label": ".compute_metrics()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L77"
+    },
+    {
+      "id": "ares_evaluators_detection_py",
+      "label": "detection.py",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\detection.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "detection_detectionevaluator",
+      "label": "DetectionEvaluator",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\detection.py",
+      "source_location": "L6"
+    },
+    {
+      "id": "classificationevaluator",
+      "label": "ClassificationEvaluator",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "detection_rationale_7",
+      "label": "Scaffold detection evaluator; defaults to classification-style label metrics.",
+      "file_type": "rationale",
+      "source_file": "ares\\evaluators\\detection.py",
+      "source_location": "L7"
+    },
+    {
+      "id": "ares_evaluators_regression_py",
+      "label": "regression.py",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "regression_regressionevaluator",
+      "label": "RegressionEvaluator",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L11"
+    },
+    {
+      "id": "baseevaluator",
+      "label": "BaseEvaluator",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "regression_regressionevaluator_load_model",
+      "label": ".load_model()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L12"
+    },
+    {
+      "id": "regression_regressionevaluator_predict",
+      "label": ".predict()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L15"
+    },
+    {
+      "id": "regression_regressionevaluator_compute_metrics",
+      "label": ".compute_metrics()",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L20"
+    },
+    {
+      "id": "ares_evaluators_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\evaluators\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_gate_decision_py",
+      "label": "decision.py",
+      "file_type": "code",
+      "source_file": "ares\\gate\\decision.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "decision_gatedecision",
+      "label": "GateDecision",
+      "file_type": "code",
+      "source_file": "ares\\gate\\decision.py",
+      "source_location": "L7"
+    },
+    {
+      "id": "ares_gate_rules_engine_py",
+      "label": "rules_engine.py",
+      "file_type": "code",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "rules_engine_snapshot_gate_config",
+      "label": "snapshot_gate_config()",
+      "file_type": "code",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L11"
+    },
+    {
+      "id": "rules_engine_evaluate",
+      "label": "evaluate()",
+      "file_type": "code",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L16"
+    },
+    {
+      "id": "ares_gate_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\gate\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_metrics_drift_py",
+      "label": "drift.py",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "drift_driftreport",
+      "label": "DriftReport",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L10"
+    },
+    {
+      "id": "drift_kl_divergence",
+      "label": "kl_divergence()",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L18"
+    },
+    {
+      "id": "drift_population_stability_index",
+      "label": "population_stability_index()",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L26"
+    },
+    {
+      "id": "drift_compute_drift_report",
+      "label": "compute_drift_report()",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L41"
+    },
+    {
+      "id": "ares_metrics_significance_py",
+      "label": "significance.py",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "significance_standard_error",
+      "label": "standard_error()",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L7"
+    },
+    {
+      "id": "significance_is_improvement_significant",
+      "label": "is_improvement_significant()",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L13"
+    },
+    {
+      "id": "significance_wilson_confidence_interval",
+      "label": "wilson_confidence_interval()",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L22"
+    },
+    {
+      "id": "significance_cohens_h",
+      "label": "cohens_h()",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L33"
+    },
+    {
+      "id": "ares_metrics_slice_analysis_py",
+      "label": "slice_analysis.py",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "slice_analysis_sliceresult",
+      "label": "SliceResult",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L11"
+    },
+    {
+      "id": "slice_analysis_evaluate_slices",
+      "label": "evaluate_slices()",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L19"
+    },
+    {
+      "id": "ares_metrics_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\metrics\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_models_base_py",
+      "label": "base.py",
+      "file_type": "code",
+      "source_file": "ares\\models\\base.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "base_base",
+      "label": "Base",
+      "file_type": "code",
+      "source_file": "ares\\models\\base.py",
+      "source_location": "L6"
+    },
+    {
+      "id": "declarativebase",
+      "label": "DeclarativeBase",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "ares_models_drift_report_py",
+      "label": "drift_report.py",
+      "file_type": "code",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "drift_report_driftreportrecord",
+      "label": "DriftReportRecord",
+      "file_type": "code",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L13"
+    },
+    {
+      "id": "base",
+      "label": "Base",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "ares_models_evaluation_run_py",
+      "label": "evaluation_run.py",
+      "file_type": "code",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "evaluation_run_evaluationrun",
+      "label": "EvaluationRun",
+      "file_type": "code",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L13"
+    },
+    {
+      "id": "base",
+      "label": "Base",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "ares_models_model_champion_py",
+      "label": "model_champion.py",
+      "file_type": "code",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "model_champion_modelchampion",
+      "label": "ModelChampion",
+      "file_type": "code",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L12"
+    },
+    {
+      "id": "base",
+      "label": "Base",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "ares_models_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\models\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_notifier_github_pr_py",
+      "label": "github_pr.py",
+      "file_type": "code",
+      "source_file": "ares\\notifier\\github_pr.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "github_pr_build_pr_comment",
+      "label": "build_pr_comment()",
+      "file_type": "code",
+      "source_file": "ares\\notifier\\github_pr.py",
+      "source_location": "L4"
+    },
+    {
+      "id": "ares_notifier_slack_py",
+      "label": "slack.py",
+      "file_type": "code",
+      "source_file": "ares\\notifier\\slack.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "slack_send_slack_message",
+      "label": "send_slack_message()",
+      "file_type": "code",
+      "source_file": "ares\\notifier\\slack.py",
+      "source_location": "L6"
+    },
+    {
+      "id": "ares_notifier_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\notifier\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_observability_telemetry_py",
+      "label": "telemetry.py",
+      "file_type": "code",
+      "source_file": "ares\\observability\\telemetry.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "telemetry_setup_telemetry",
+      "label": "setup_telemetry()",
+      "file_type": "code",
+      "source_file": "ares\\observability\\telemetry.py",
+      "source_location": "L8"
+    },
+    {
+      "id": "ares_observability_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\observability\\__init__.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "ares_worker_tasks_py",
+      "label": "tasks.py",
+      "file_type": "code",
+      "source_file": "ares\\worker\\tasks.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "tasks_evaluate_task",
+      "label": "evaluate_task()",
+      "file_type": "code",
+      "source_file": "ares\\worker\\tasks.py",
+      "source_location": "L12"
+    },
+    {
+      "id": "ares_worker_init_py",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "ares\\worker\\__init__.py",
+      "source_location": "L1"
+    }
+  ],
+  "edges": [
+    {
+      "source": "ares_config_py",
+      "target": "functools",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "pathlib",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "yaml",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "pydantic",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "pydantic_settings",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "config_aressettings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "config_aressettings",
+      "target": "basesettings",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "config_parse_keys",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "config_merge_legacy_api_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "config_async_database_url",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "config_is_sqlite",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L71",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "config_load_ares_config",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_config_py",
+      "target": "config_get_settings",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
+      "source": "config_get_settings",
+      "target": "config_aressettings",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\config.py",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_drift_sources_py",
+      "target": "abc",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_drift_sources_py",
+      "target": "pathlib",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_drift_sources_py",
+      "target": "pandas",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_drift_sources_py",
+      "target": "drift_sources_productiondatasource",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_sources_productiondatasource",
+      "target": "abc",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_drift_sources_py",
+      "target": "drift_sources_fetch_recent_predictions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_drift_sources_py",
+      "target": "drift_sources_localfiledatasource",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_sources_localfiledatasource",
+      "target": "drift_sources_productiondatasource",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_sources_localfiledatasource",
+      "target": "drift_sources_localfiledatasource_init",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_sources_localfiledatasource",
+      "target": "drift_sources_localfiledatasource_fetch_recent_predictions",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\drift_sources.py",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_golden_set_py",
+      "target": "hashlib",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_golden_set_py",
+      "target": "logging",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_golden_set_py",
+      "target": "pathlib",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_golden_set_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_golden_set_py",
+      "target": "pandas",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_golden_set_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_golden_set_py",
+      "target": "golden_set_sha256_file",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_golden_set_py",
+      "target": "golden_set_validate_golden_set",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "golden_set_validate_golden_set",
+      "target": "golden_set_sha256_file",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\golden_set.py",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_logging_py",
+      "target": "logging",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\logging.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_logging_py",
+      "target": "sys",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\logging.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_logging_py",
+      "target": "structlog",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\logging.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_logging_py",
+      "target": "logging_configure_logging",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\logging.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_auth_py",
+      "target": "hmac",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\auth.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_auth_py",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\auth.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_auth_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\auth.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_auth_py",
+      "target": "auth_rate_limit_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\auth.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_auth_py",
+      "target": "auth_require_api_key",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\auth.py",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_limiting_py",
+      "target": "collections_abc",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\limiting.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_limiting_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\limiting.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_limiting_py",
+      "target": "slowapi",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\limiting.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_limiting_py",
+      "target": "ares_api_auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\limiting.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_limiting_py",
+      "target": "limiting_nooplimiter",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\limiting.py",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "limiting_nooplimiter",
+      "target": "limiting_nooplimiter_limit",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\limiting.py",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "starlette_requests",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "starlette_responses",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "prometheus_fastapi_instrumentator",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "slowapi_errors",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "slowapi_middleware",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "ares_api_limiting",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "ares_api_routers",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "ares_logging",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "ares_observability_telemetry",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_main_py",
+      "target": "main_rate_limit_handler",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\main.py",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "sqlalchemy_ext_asyncio",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "ares_api_auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "ares_api_limiting",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "ares_api_schemas_champion",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "ares_db",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "ares_db_session",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "champions_export",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "champions_get_champion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "champions_promote",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_champions_py",
+      "target": "champions_previous",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "sqlalchemy_ext_asyncio",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "ares_api_auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "ares_api_limiting",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "ares_api_schemas_drift",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "ares_db",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "ares_db_session",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "drift_create_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_drift_py",
+      "target": "drift_list_reports",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "sqlalchemy_ext_asyncio",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "ares_api_auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "ares_api_limiting",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "ares_api_schemas_evaluation",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "ares_db",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "ares_db_session",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "ares_gate",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "evaluations_compare_with_champion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "evaluations_list_runs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_evaluations_py",
+      "target": "evaluations_get_run",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_gate_py",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\gate.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_gate_py",
+      "target": "ares_api_auth",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\gate.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_gate_py",
+      "target": "ares_api_limiting",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\gate.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_gate_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\gate.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_gate_py",
+      "target": "ares_gate_rules_engine",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\gate.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_gate_py",
+      "target": "gate_get_gate_config",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\gate.py",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_health_py",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_health_py",
+      "target": "sqlalchemy",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_health_py",
+      "target": "sqlalchemy_ext_asyncio",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_health_py",
+      "target": "ares_db_session",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_health_py",
+      "target": "health_live",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_health_py",
+      "target": "health_ready",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_routers_health_py",
+      "target": "health_health",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\routers\\health.py",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_champion_py",
+      "target": "pydantic",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_champion_py",
+      "target": "champion_promotechampionrequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "champion_promotechampionrequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_champion_py",
+      "target": "champion_championresponse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "champion_championresponse",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_champion_py",
+      "target": "champion_championevaluationsnapshot",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "champion_championevaluationsnapshot",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_champion_py",
+      "target": "champion_championexportentry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "champion_championexportentry",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_champion_py",
+      "target": "champion_championexportresponse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "champion_championexportresponse",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\champion.py",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_drift_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\drift.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_drift_py",
+      "target": "pydantic",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\drift.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_drift_py",
+      "target": "drift_driftreportin",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\drift.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_driftreportin",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\drift.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_drift_py",
+      "target": "drift_driftreportresponse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\drift.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_driftreportresponse",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\drift.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_evaluation_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_evaluation_py",
+      "target": "pydantic",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_evaluation_py",
+      "target": "evaluation_comparerequest",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluation_comparerequest",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_evaluation_py",
+      "target": "evaluation_comparisonresponse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluation_comparisonresponse",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_api_schemas_evaluation_py",
+      "target": "evaluation_evaluationrunresponse",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluation_evaluationrunresponse",
+      "target": "basemodel",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\api\\schemas\\evaluation.py",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "sqlalchemy",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "sqlalchemy_ext_asyncio",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "ares_models",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_get_evaluation_run",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_get_cached_evaluation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_list_evaluation_runs",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_create_evaluation_run",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_get_active_champion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_get_previous_champion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_promote_champion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_export_champions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_create_drift_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L64",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_crud_py",
+      "target": "crud_list_drift_reports",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L72",
+      "weight": 1.0
+    },
+    {
+      "source": "crud_export_champions",
+      "target": "crud_get_evaluation_run",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_session_py",
+      "target": "collections_abc",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_session_py",
+      "target": "sqlalchemy_ext_asyncio",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_session_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_session_py",
+      "target": "session_get_engine",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_session_py",
+      "target": "session_get_sessionmaker",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_db_session_py",
+      "target": "session_get_db",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "session_get_sessionmaker",
+      "target": "session_get_engine",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "session_get_db",
+      "target": "session_get_sessionmaker",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\db\\session.py",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "time",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "abc",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "dataclasses",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "statistics",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "numpy",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "pandas",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "ares_metrics_slice_analysis",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "base_evaluationresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "base_baseevaluator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "base_baseevaluator",
+      "target": "abc",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "base_baseevaluator",
+      "target": "base_baseevaluator_init",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "base_load_model",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "base_predict",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L40",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_base_py",
+      "target": "base_compute_metrics",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "base_baseevaluator",
+      "target": "base_baseevaluator_evaluate",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "base_baseevaluator_evaluate",
+      "target": "base_load_model",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "base_baseevaluator_evaluate",
+      "target": "base_predict",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "base_baseevaluator_evaluate",
+      "target": "base_compute_metrics",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "base_baseevaluator_evaluate",
+      "target": "base_evaluationresult",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "ast",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "json",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "pathlib",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "joblib",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "numpy",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "sklearn_metrics",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "ares_evaluators_base",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "classification_extract_text",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "classification_keyword_features",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_classification_py",
+      "target": "classification_classificationevaluator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "classification_classificationevaluator",
+      "target": "baseevaluator",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "classification_classificationevaluator",
+      "target": "classification_classificationevaluator_load_model",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "classification_classificationevaluator",
+      "target": "classification_classificationevaluator_predict",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "classification_classificationevaluator",
+      "target": "classification_classificationevaluator_compute_metrics",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "classification_classificationevaluator_predict",
+      "target": "classification_keyword_features",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "classification_classificationevaluator_predict",
+      "target": "classification_extract_text",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_detection_py",
+      "target": "ares_evaluators_classification",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\detection.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_detection_py",
+      "target": "detection_detectionevaluator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\detection.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "detection_detectionevaluator",
+      "target": "classificationevaluator",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\detection.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "detection_rationale_7",
+      "target": "detection_detectionevaluator",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\detection.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_regression_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_regression_py",
+      "target": "numpy",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_regression_py",
+      "target": "sklearn_metrics",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_regression_py",
+      "target": "ares_evaluators_base",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_evaluators_regression_py",
+      "target": "regression_regressionevaluator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "regression_regressionevaluator",
+      "target": "baseevaluator",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "regression_regressionevaluator",
+      "target": "regression_regressionevaluator_load_model",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "regression_regressionevaluator",
+      "target": "regression_regressionevaluator_predict",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "regression_regressionevaluator",
+      "target": "regression_regressionevaluator_compute_metrics",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "regression_regressionevaluator_predict",
+      "target": "regression_regressionevaluator_load_model",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_gate_decision_py",
+      "target": "dataclasses",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\decision.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_gate_decision_py",
+      "target": "decision_gatedecision",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\decision.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_gate_rules_engine_py",
+      "target": "collections_abc",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_gate_rules_engine_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_gate_rules_engine_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_gate_rules_engine_py",
+      "target": "ares_gate_decision",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_gate_rules_engine_py",
+      "target": "ares_metrics_significance",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_gate_rules_engine_py",
+      "target": "rules_engine_snapshot_gate_config",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_gate_rules_engine_py",
+      "target": "rules_engine_evaluate",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "rules_engine_evaluate",
+      "target": "rules_engine_snapshot_gate_config",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_drift_py",
+      "target": "dataclasses",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_drift_py",
+      "target": "numpy",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_drift_py",
+      "target": "scipy_stats",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_drift_py",
+      "target": "drift_driftreport",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_drift_py",
+      "target": "drift_kl_divergence",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_drift_py",
+      "target": "drift_population_stability_index",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_drift_py",
+      "target": "drift_compute_drift_report",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_compute_drift_report",
+      "target": "drift_kl_divergence",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L42",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_compute_drift_report",
+      "target": "drift_population_stability_index",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_compute_drift_report",
+      "target": "drift_driftreport",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\drift.py",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_significance_py",
+      "target": "numpy",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_significance_py",
+      "target": "scipy",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_significance_py",
+      "target": "significance_standard_error",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_significance_py",
+      "target": "significance_is_improvement_significant",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_significance_py",
+      "target": "significance_wilson_confidence_interval",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_significance_py",
+      "target": "significance_cohens_h",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "significance_is_improvement_significant",
+      "target": "significance_standard_error",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\significance.py",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_slice_analysis_py",
+      "target": "collections_abc",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_slice_analysis_py",
+      "target": "dataclasses",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_slice_analysis_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_slice_analysis_py",
+      "target": "pandas",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_slice_analysis_py",
+      "target": "slice_analysis_sliceresult",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_metrics_slice_analysis_py",
+      "target": "slice_analysis_evaluate_slices",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "slice_analysis_evaluate_slices",
+      "target": "slice_analysis_sliceresult",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\metrics\\slice_analysis.py",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_base_py",
+      "target": "sqlalchemy_orm",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\base.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_base_py",
+      "target": "base_base",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\base.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "base_base",
+      "target": "declarativebase",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\base.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_drift_report_py",
+      "target": "uuid",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_drift_report_py",
+      "target": "datetime",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_drift_report_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_drift_report_py",
+      "target": "sqlalchemy",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_drift_report_py",
+      "target": "sqlalchemy_orm",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_drift_report_py",
+      "target": "ares_models_base",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_drift_report_py",
+      "target": "drift_report_driftreportrecord",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_report_driftreportrecord",
+      "target": "base",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_evaluation_run_py",
+      "target": "uuid",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_evaluation_run_py",
+      "target": "datetime",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_evaluation_run_py",
+      "target": "typing",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_evaluation_run_py",
+      "target": "sqlalchemy",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_evaluation_run_py",
+      "target": "sqlalchemy_orm",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_evaluation_run_py",
+      "target": "ares_models_base",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_evaluation_run_py",
+      "target": "evaluation_run_evaluationrun",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluation_run_evaluationrun",
+      "target": "base",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_model_champion_py",
+      "target": "uuid",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_model_champion_py",
+      "target": "datetime",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_model_champion_py",
+      "target": "sqlalchemy",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_model_champion_py",
+      "target": "sqlalchemy_orm",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_model_champion_py",
+      "target": "ares_models_base",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_model_champion_py",
+      "target": "model_champion_modelchampion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "model_champion_modelchampion",
+      "target": "base",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_init_py",
+      "target": "ares_models_base",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\__init__.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_init_py",
+      "target": "ares_models_drift_report",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\__init__.py",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_init_py",
+      "target": "ares_models_evaluation_run",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\__init__.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_models_init_py",
+      "target": "ares_models_model_champion",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\models\\__init__.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_notifier_github_pr_py",
+      "target": "github_pr_build_pr_comment",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\notifier\\github_pr.py",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_notifier_slack_py",
+      "target": "httpx",
+      "relation": "imports",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\notifier\\slack.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_notifier_slack_py",
+      "target": "slack_send_slack_message",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\notifier\\slack.py",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_observability_telemetry_py",
+      "target": "fastapi",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\observability\\telemetry.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_observability_telemetry_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\observability\\telemetry.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_observability_telemetry_py",
+      "target": "telemetry_setup_telemetry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\observability\\telemetry.py",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_worker_tasks_py",
+      "target": "celery",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\worker\\tasks.py",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_worker_tasks_py",
+      "target": "ares_config",
+      "relation": "imports_from",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\worker\\tasks.py",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "ares_worker_tasks_py",
+      "target": "tasks_evaluate_task",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "ares\\worker\\tasks.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "classification_classificationevaluator",
+      "target": "base_baseevaluator",
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "ares\\evaluators\\classification.py",
+      "source_location": "L12",
+      "weight": 0.8
+    },
+    {
+      "source": "detection_detectionevaluator",
+      "target": "classification_classificationevaluator",
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "ares\\evaluators\\detection.py",
+      "source_location": "L3",
+      "weight": 0.8
+    },
+    {
+      "source": "detection_rationale_7",
+      "target": "classification_classificationevaluator",
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "ares\\evaluators\\detection.py",
+      "source_location": "L3",
+      "weight": 0.8
+    },
+    {
+      "source": "regression_regressionevaluator",
+      "target": "base_baseevaluator",
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "ares\\evaluators\\regression.py",
+      "source_location": "L8",
+      "weight": 0.8
+    },
+    {
+      "source": "drift_report_driftreportrecord",
+      "target": "base_base",
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "ares\\models\\drift_report.py",
+      "source_location": "L10",
+      "weight": 0.8
+    },
+    {
+      "source": "evaluation_run_evaluationrun",
+      "target": "base_base",
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "ares\\models\\evaluation_run.py",
+      "source_location": "L10",
+      "weight": 0.8
+    },
+    {
+      "source": "model_champion_modelchampion",
+      "target": "base_base",
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "ares\\models\\model_champion.py",
+      "source_location": "L9",
+      "weight": 0.8
+    },
+    {
+      "source": "champions_export",
+      "target": "crud_export_champions",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "champions_export",
+      "target": "champion_championexportentry",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "champions_export",
+      "target": "champion_championevaluationsnapshot",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "champions_export",
+      "target": "champion_championexportresponse",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "champions_get_champion",
+      "target": "crud_get_active_champion",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "champions_get_champion",
+      "target": "champion_championresponse",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "champions_promote",
+      "target": "crud_promote_champion",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L61",
+      "weight": 1.0
+    },
+    {
+      "source": "champions_promote",
+      "target": "champion_championresponse",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "champions_previous",
+      "target": "crud_get_previous_champion",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "champions_previous",
+      "target": "champion_championresponse",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\champions.py",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_create_report",
+      "target": "crud_create_drift_report",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_create_report",
+      "target": "drift_driftreportresponse",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_list_reports",
+      "target": "crud_list_drift_reports",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "drift_list_reports",
+      "target": "drift_driftreportresponse",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\drift.py",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluations_compare_with_champion",
+      "target": "crud_get_active_champion",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluations_compare_with_champion",
+      "target": "evaluation_comparisonresponse",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluations_compare_with_champion",
+      "target": "crud_get_evaluation_run",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluations_compare_with_champion",
+      "target": "rules_engine_evaluate",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluations_list_runs",
+      "target": "crud_list_evaluation_runs",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluations_list_runs",
+      "target": "evaluation_evaluationrunresponse",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluations_get_run",
+      "target": "crud_get_evaluation_run",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "evaluations_get_run",
+      "target": "evaluation_evaluationrunresponse",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\evaluations.py",
+      "source_location": "L63",
+      "weight": 1.0
+    },
+    {
+      "source": "gate_get_gate_config",
+      "target": "rules_engine_snapshot_gate_config",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\api\\routers\\gate.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "crud_list_evaluation_runs",
+      "target": "limiting_nooplimiter_limit",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "crud_create_evaluation_run",
+      "target": "evaluation_run_evaluationrun",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "crud_get_previous_champion",
+      "target": "limiting_nooplimiter_limit",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "crud_promote_champion",
+      "target": "model_champion_modelchampion",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "crud_create_drift_report",
+      "target": "drift_report_driftreportrecord",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "crud_list_drift_reports",
+      "target": "limiting_nooplimiter_limit",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\db\\crud.py",
+      "source_location": "L73",
+      "weight": 1.0
+    },
+    {
+      "source": "base_baseevaluator_evaluate",
+      "target": "slice_analysis_evaluate_slices",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\evaluators\\base.py",
+      "source_location": "L60",
+      "weight": 1.0
+    },
+    {
+      "source": "rules_engine_snapshot_gate_config",
+      "target": "config_load_ares_config",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "rules_engine_evaluate",
+      "target": "decision_gatedecision",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "rules_engine_evaluate",
+      "target": "significance_is_improvement_significant",
+      "relation": "calls",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "ares\\gate\\rules_engine.py",
+      "source_location": "L48",
+      "weight": 1.0
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}
