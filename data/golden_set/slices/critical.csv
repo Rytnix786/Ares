@@ -1,0 +1,11 @@
+id,input,expected_label,slice,difficulty
+sample-66,"{""text"": ""Example 66: a high-risk positive escalation where the critical slice must remain stable."", ""label"": ""positive"", ""slice_hint"": ""critical""}",positive,critical,5
+sample-67,"{""text"": ""Example 67: a high-risk negative escalation where the critical slice must remain stable."", ""label"": ""negative"", ""slice_hint"": ""critical""}",negative,critical,5
+sample-68,"{""text"": ""Example 68: a high-risk negative escalation where the critical slice must remain stable."", ""label"": ""negative"", ""slice_hint"": ""critical""}",negative,critical,5
+sample-69,"{""text"": ""Example 69: a high-risk negative escalation where the critical slice must remain stable."", ""label"": ""negative"", ""slice_hint"": ""critical""}",negative,critical,5
+sample-70,"{""text"": ""Example 70: a high-risk positive escalation where the critical slice must remain stable."", ""label"": ""positive"", ""slice_hint"": ""critical""}",positive,critical,5
+sample-71,"{""text"": ""Example 71: a high-risk negative escalation where the critical slice must remain stable."", ""label"": ""negative"", ""slice_hint"": ""critical""}",negative,critical,5
+sample-72,"{""text"": ""Example 72: a high-risk positive escalation where the critical slice must remain stable."", ""label"": ""positive"", ""slice_hint"": ""critical""}",positive,critical,5
+sample-73,"{""text"": ""Example 73: a high-risk positive escalation where the critical slice must remain stable."", ""label"": ""positive"", ""slice_hint"": ""critical""}",positive,critical,5
+sample-74,"{""text"": ""Example 74: a high-risk negative escalation where the critical slice must remain stable."", ""label"": ""negative"", ""slice_hint"": ""critical""}",negative,critical,5
+sample-75,"{""text"": ""Example 75: a high-risk positive escalation where the critical slice must remain stable."", ""label"": ""positive"", ""slice_hint"": ""critical""}",positive,critical,5

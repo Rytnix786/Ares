@@ -1,0 +1,6 @@
+id,model_name,prediction,confidence,timestamp
+pred-1,default-model,positive,0.91,2026-04-26T01:00:00Z
+pred-2,default-model,negative,0.18,2026-04-26T01:15:00Z
+pred-3,default-model,positive,0.84,2026-04-26T01:30:00Z
+pred-4,default-model,negative,0.22,2026-04-26T01:45:00Z
+pred-5,default-model,positive,0.79,2026-04-26T02:00:00Z

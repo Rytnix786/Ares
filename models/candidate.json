@@ -1,0 +1,5 @@
+{
+  "default_label": "positive",
+  "positive_keywords": ["positive", "great", "resolved", "stable", "clearly"],
+  "negative_keywords": ["negative", "failed", "broken", "escalation", "ambiguous"]
+}

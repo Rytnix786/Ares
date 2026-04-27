@@ -1,0 +1,37 @@
+name: Ares Regression Gate
+"on":
+  pull_request:
+    branches: [main]
+    paths: ["models/**", "ares/**", "data/**/*.dvc"]
+  workflow_dispatch:
+    inputs:
+      split:
+        description: Golden dataset split to evaluate
+        required: false
+        default: val
+        type: choice
+        options: [val, test]
+concurrency:
+  group: ares-gate-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  regression-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GOLDEN_SET_REQUIRE_CHECKSUM: "true"
+      ARES_SPLIT: ${{ github.event.inputs.split || 'val' }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -e ".[dev,eval]"
+      - run: python scripts/seed_golden_set.py
+      - run: python scripts/pin_golden_checksums.py
+      - run: python scripts/run_evaluation.py --model-path models/candidate.json --commit-sha ${{ github.sha }} --model-name default-model --split $ARES_SPLIT --output-json reports/ares_result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ares-result
+          path: reports/ares_result.json

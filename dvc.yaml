@@ -1,0 +1,26 @@
+vars:
+  - MODEL_PATH: models/candidate.json
+  - COMMIT_SHA: local
+  - MODEL_NAME: default-model
+
+stages:
+  evaluate:
+    cmd: >
+      python scripts/run_evaluation.py
+      --model-path ${MODEL_PATH}
+      --commit-sha ${COMMIT_SHA}
+      --model-name ${MODEL_NAME}
+      --split val
+      --output-json reports/ares_result.json
+    deps:
+      - scripts/run_evaluation.py
+      - data/golden_set/train.csv
+      - data/golden_set/val.csv
+      - data/golden_set/test.csv
+      - ares/evaluators
+      - ares/metrics
+      - ares/gate
+      - models/candidate.json
+    outs:
+      - reports/ares_result.json:
+          cache: false

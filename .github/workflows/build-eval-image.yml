@@ -1,0 +1,27 @@
+name: Build Ares Eval Image
+"on":
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/Dockerfile.eval
+          push: true
+          tags: ghcr.io/${{ github.repository }}/ares-eval:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

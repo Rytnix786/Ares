@@ -1,0 +1,27 @@
+id,input,expected_label,slice,difficulty
+sample-102,"{""text"": ""Example 102: a clearly positive support conversation in an easy slice."", ""label"": ""positive"", ""slice_hint"": ""easy""}",positive,easy,1
+sample-103,"{""text"": ""Example 103: a clearly negative support conversation in an easy slice."", ""label"": ""negative"", ""slice_hint"": ""easy""}",negative,easy,1
+sample-104,"{""text"": ""Example 104: a clearly positive support conversation in an easy slice."", ""label"": ""positive"", ""slice_hint"": ""easy""}",positive,easy,1
+sample-105,"{""text"": ""Example 105: a clearly negative support conversation in an easy slice."", ""label"": ""negative"", ""slice_hint"": ""easy""}",negative,easy,1
+sample-106,"{""text"": ""Example 106: a mostly positive customer message representing typical production traffic."", ""label"": ""positive"", ""slice_hint"": ""typical""}",positive,typical,2
+sample-107,"{""text"": ""Example 107: a mostly negative customer message representing typical production traffic."", ""label"": ""negative"", ""slice_hint"": ""typical""}",negative,typical,2
+sample-108,"{""text"": ""Example 108: a mostly negative customer message representing typical production traffic."", ""label"": ""negative"", ""slice_hint"": ""typical""}",negative,typical,2
+sample-109,"{""text"": ""Example 109: a mostly positive customer message representing typical production traffic."", ""label"": ""positive"", ""slice_hint"": ""typical""}",positive,typical,2
+sample-110,"{""text"": ""Example 110: a mostly negative customer message representing typical production traffic."", ""label"": ""negative"", ""slice_hint"": ""typical""}",negative,typical,2
+sample-111,"{""text"": ""Example 111: a mostly positive customer message representing typical production traffic."", ""label"": ""positive"", ""slice_hint"": ""typical""}",positive,typical,2
+sample-112,"{""text"": ""Example 112: a mostly positive customer message representing typical production traffic."", ""label"": ""positive"", ""slice_hint"": ""typical""}",positive,typical,2
+sample-113,"{""text"": ""Example 113: a mostly negative customer message representing typical production traffic."", ""label"": ""negative"", ""slice_hint"": ""typical""}",negative,typical,2
+sample-114,"{""text"": ""Example 114: a mostly positive customer message representing typical production traffic."", ""label"": ""positive"", ""slice_hint"": ""typical""}",positive,typical,2
+sample-115,"{""text"": ""Example 115: a mostly negative customer message representing typical production traffic."", ""label"": ""negative"", ""slice_hint"": ""typical""}",negative,typical,2
+sample-116,"{""text"": ""Example 116: a mostly positive customer message representing typical production traffic."", ""label"": ""positive"", ""slice_hint"": ""typical""}",positive,typical,2
+sample-117,"{""text"": ""Example 117: a mostly positive customer message representing typical production traffic."", ""label"": ""positive"", ""slice_hint"": ""typical""}",positive,typical,2
+sample-118,"{""text"": ""Example 118: a mostly negative customer message representing typical production traffic."", ""label"": ""negative"", ""slice_hint"": ""typical""}",negative,typical,2
+sample-119,"{""text"": ""Example 119: a mostly negative customer message representing typical production traffic."", ""label"": ""negative"", ""slice_hint"": ""typical""}",negative,typical,2
+sample-120,"{""text"": ""Example 120: an ambiguous but still positive message for the edge_case slice."", ""label"": ""positive"", ""slice_hint"": ""edge_case""}",positive,edge_case,4
+sample-121,"{""text"": ""Example 121: an ambiguous but still positive message for the edge_case slice."", ""label"": ""positive"", ""slice_hint"": ""edge_case""}",positive,edge_case,4
+sample-122,"{""text"": ""Example 122: an ambiguous but still negative message for the edge_case slice."", ""label"": ""negative"", ""slice_hint"": ""edge_case""}",negative,edge_case,4
+sample-123,"{""text"": ""Example 123: an ambiguous but still negative message for the edge_case slice."", ""label"": ""negative"", ""slice_hint"": ""edge_case""}",negative,edge_case,4
+sample-124,"{""text"": ""Example 124: a high-risk positive escalation where the critical slice must remain stable."", ""label"": ""positive"", ""slice_hint"": ""critical""}",positive,critical,5
+sample-125,"{""text"": ""Example 125: a high-risk negative escalation where the critical slice must remain stable."", ""label"": ""negative"", ""slice_hint"": ""critical""}",negative,critical,5
+sample-126,"{""text"": ""Example 126: a high-risk positive escalation where the critical slice must remain stable."", ""label"": ""positive"", ""slice_hint"": ""critical""}",positive,critical,5
+sample-127,"{""text"": ""Example 127: a high-risk negative escalation where the critical slice must remain stable."", ""label"": ""negative"", ""slice_hint"": ""critical""}",negative,critical,5

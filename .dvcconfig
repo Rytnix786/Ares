@@ -1,0 +1,2 @@
+[remote "ares-remote"]
+    url = s3://your-bucket/ares-data

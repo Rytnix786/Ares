@@ -1,0 +1,4 @@
+* @maintainers
+ares/api/auth.py @maintainers
+docker/ @maintainers
+.github/workflows/ @maintainers

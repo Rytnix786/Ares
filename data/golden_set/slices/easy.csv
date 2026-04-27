@@ -1,0 +1,13 @@
+id,input,expected_label,slice,difficulty
+sample-0,"{""text"": ""Example 0: a clearly negative support conversation in an easy slice."", ""label"": ""negative"", ""slice_hint"": ""easy""}",negative,easy,1
+sample-1,"{""text"": ""Example 1: a clearly positive support conversation in an easy slice."", ""label"": ""positive"", ""slice_hint"": ""easy""}",positive,easy,1
+sample-2,"{""text"": ""Example 2: a clearly positive support conversation in an easy slice."", ""label"": ""positive"", ""slice_hint"": ""easy""}",positive,easy,1
+sample-3,"{""text"": ""Example 3: a clearly negative support conversation in an easy slice."", ""label"": ""negative"", ""slice_hint"": ""easy""}",negative,easy,1
+sample-4,"{""text"": ""Example 4: a clearly negative support conversation in an easy slice."", ""label"": ""negative"", ""slice_hint"": ""easy""}",negative,easy,1
+sample-5,"{""text"": ""Example 5: a clearly negative support conversation in an easy slice."", ""label"": ""negative"", ""slice_hint"": ""easy""}",negative,easy,1
+sample-6,"{""text"": ""Example 6: a clearly negative support conversation in an easy slice."", ""label"": ""negative"", ""slice_hint"": ""easy""}",negative,easy,1
+sample-7,"{""text"": ""Example 7: a clearly positive support conversation in an easy slice."", ""label"": ""positive"", ""slice_hint"": ""easy""}",positive,easy,1
+sample-8,"{""text"": ""Example 8: a clearly positive support conversation in an easy slice."", ""label"": ""positive"", ""slice_hint"": ""easy""}",positive,easy,1
+sample-9,"{""text"": ""Example 9: a clearly positive support conversation in an easy slice."", ""label"": ""positive"", ""slice_hint"": ""easy""}",positive,easy,1
+sample-10,"{""text"": ""Example 10: a clearly positive support conversation in an easy slice."", ""label"": ""positive"", ""slice_hint"": ""easy""}",positive,easy,1
+sample-11,"{""text"": ""Example 11: a clearly negative support conversation in an easy slice."", ""label"": ""negative"", ""slice_hint"": ""easy""}",negative,easy,1

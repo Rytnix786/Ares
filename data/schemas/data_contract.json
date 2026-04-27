@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AresDataContract",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "input", "expected_label", "slice"],
+    "properties": {
+      "id": { "type": "string" },
+      "input": {
+        "type": ["object", "string"],
+        "description": "Model-consumable payload. For the bundled classifier, an object containing label-bearing text metadata is expected."
+      },
+      "expected_label": { "type": "string", "enum": ["positive", "negative"] },
+      "slice": { "type": "string", "enum": ["easy", "typical", "edge_case", "critical"] },
+      "difficulty": { "type": "integer", "minimum": 1, "maximum": 5 }
+    },
+    "additionalProperties": true
+  }
+}

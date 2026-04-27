@@ -1,0 +1,11 @@
+FROM python:3.11-slim
+RUN apt-get update && apt-get install -y --no-install-recommends git curl && rm -rf /var/lib/apt/lists/* \
+    && useradd --create-home --shell /bin/sh ares
+WORKDIR /app
+COPY pyproject.toml README.md ./
+RUN pip install --no-cache-dir -e ".[dev,eval]"
+COPY . .
+RUN chown -R ares:ares /app && chmod +x /app/docker/entrypoint.api.sh
+USER ares
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+CMD ["./docker/entrypoint.api.sh"]

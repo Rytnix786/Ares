@@ -1,0 +1,37 @@
+name: Ares Drift Monitor
+"on":
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      ARES_API_URL: ${{ secrets.ARES_API_URL }}
+      ARES_API_KEY: ${{ secrets.ARES_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -e ".[dev,eval]"
+      - run: python scripts/seed_golden_set.py
+      - run: python scripts/run_drift_check.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: drift-report
+          path: reports/drift_report.json
+      - name: Post drift report to API
+        if: ${{ env.ARES_API_URL != '' && env.ARES_API_KEY != '' }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          import httpx
+
+          payload = json.loads(Path("reports/drift_report.json").read_text())
+          headers = {"X-API-Key": os.environ["ARES_API_KEY"]}
+          response = httpx.post(f"{os.environ['ARES_API_URL']}/drift/reports", json=payload, headers=headers, timeout=10.0)
+          response.raise_for_status()
+          PY
