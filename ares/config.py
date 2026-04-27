@@ -13,7 +13,7 @@ class AresSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     ENVIRONMENT: str = "development"
-    DATABASE_URL: str = "postgresql+asyncpg://ares:ares@localhost:5432/ares"
+    DATABASE_URL: str = "postgresql+asyncpg://ares:ares@localhost:55432/ares"
     DB_POOL_SIZE: int = 10
     DB_MAX_OVERFLOW: int = 20
     DB_POOL_TIMEOUT: int = 30
@@ -28,6 +28,7 @@ class AresSettings(BaseSettings):
     MLFLOW_TRACKING_URI: str = "http://localhost:5000"
     AWS_ACCESS_KEY_ID: str = ""
     AWS_SECRET_ACCESS_KEY: str = ""
+    AWS_REGION: str = "us-east-1"
     AWS_ENDPOINT_URL: str = ""
     DVC_REMOTE_URL: str = "s3://ares-data"
 

@@ -10,6 +10,7 @@ __pycache__/
 skills/
 .dvc/tmp/
 ares.egg-info/
+graphify-out/
 mlflow.db
 .coverage
 htmlcov/
@@ -17,8 +18,11 @@ htmlcov/
 mlruns/
 reports/*.json
 reports/*.html
+reports/*.md
+reports/*.txt
 reports/test-results.xml
 reports/coverage.xml
+reports/*.db
 !.gitkeep
 docker-compose.override.yml
 .DS_Store

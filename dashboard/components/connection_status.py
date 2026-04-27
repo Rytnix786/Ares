@@ -3,8 +3,7 @@ from __future__ import annotations
 import streamlit as st
 import streamlit.components.v1 as components
 
-from dashboard.api_client import get_api_base_url, get_api_key
-from dashboard.api_client import safe_api_call
+from dashboard.api_client import get_api_base_url, get_api_key, safe_api_call
 
 
 def ensure_api_connection() -> bool:

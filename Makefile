@@ -3,28 +3,28 @@ PYTHON ?= python
 .PHONY: dev lint test-unit test-integration test-e2e test test-all migrate migrate-down eval dashboard verify clean
 
 reports:
-	mkdir -p reports
+	$(PYTHON) -c "from pathlib import Path; Path('reports').mkdir(exist_ok=True)"
 
 dev:
 	docker compose up -d
 
 lint:
-	ruff check . && mypy ares
+	$(PYTHON) -m ruff check . && $(PYTHON) -m mypy ares
 
 test-unit:
-	pytest -n auto -m "not integration and not e2e"
+	$(PYTHON) -m pytest -n auto -m "not integration and not e2e"
 
 test-integration:
-	pytest -m integration
+	$(PYTHON) -m pytest -m integration
 
 test-e2e:
-	pytest -m e2e
+	$(PYTHON) -m pytest -m e2e
 
 test:
-	pytest --cov=ares --cov-fail-under=90 --cov-report=term-missing
+	$(PYTHON) -m pytest --cov=ares --cov-fail-under=90 --cov-report=term-missing
 
 test-all: reports
-	pytest --tb=short --cov=ares --cov-report=term-missing --cov-report=xml:reports/coverage.xml --junitxml=reports/test-results.xml
+	$(PYTHON) -m pytest --tb=short --cov=ares --cov-report=term-missing --cov-report=xml:reports/coverage.xml --junitxml=reports/test-results.xml
 
 migrate:
 	alembic upgrade head
@@ -39,7 +39,7 @@ dashboard:
 	streamlit run dashboard/app.py
 
 verify: reports
-	ruff check . && mypy ares && pytest --cov=ares --cov-fail-under=90 --cov-report=term-missing --cov-report=xml:reports/coverage.xml --junitxml=reports/test-results.xml && docker compose config && dvc repro --dry && $(PYTHON) -m py_compile dashboard/app.py dashboard/pages/01_leaderboard.py dashboard/pages/02_drill_down.py dashboard/pages/03_drift_monitor.py
+	$(PYTHON) scripts/verify_repo.py
 
 clean:
-	$(PYTHON) -c "from pathlib import Path; [p.unlink() for pattern in ('reports/*.json','reports/*.html','reports/test-results.xml') for p in Path('.').glob(pattern) if p.exists()]"
+	$(PYTHON) -c "from pathlib import Path; [p.unlink() for pattern in ('reports/*.json','reports/*.html','reports/*.md','reports/*.txt','reports/*.db','reports/test-results.xml','reports/coverage.xml') for p in Path('.').glob(pattern) if p.exists()]"

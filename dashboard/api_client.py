@@ -8,6 +8,12 @@ import httpx
 import streamlit as st
 
 
+def _first_configured_api_key(value: str | None) -> str | None:
+    if not value:
+        return None
+    return next((item.strip() for item in value.split(",") if item.strip()), None)
+
+
 def get_api_base_url() -> str:
     secrets = getattr(st, "secrets", {})
     if "ARES_API_URL" in secrets:
@@ -19,7 +25,12 @@ def get_api_key() -> str:
     secrets = getattr(st, "secrets", {})
     if "ARES_API_KEY" in secrets:
         return str(secrets["ARES_API_KEY"])
-    return st.session_state.get("ARES_API_KEY") or os.getenv("ARES_API_KEY") or "dev-key-1"
+    configured_key = (
+        st.session_state.get("ARES_API_KEY")
+        or os.getenv("ARES_API_KEY")
+        or _first_configured_api_key(os.getenv("ARES_API_KEYS"))
+    )
+    return configured_key or "dev-key-1"
 
 
 def create_client() -> httpx.Client:
