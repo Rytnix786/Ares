@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from functools import lru_cache
 from pathlib import Path
 from typing import Annotated, Any
@@ -48,6 +49,15 @@ class AresSettings(BaseSettings):
     def parse_keys(cls, value: Any) -> list[str]:
         if value is None or value == "":
             return []
+        if isinstance(value, str):
+            raw = value.strip()
+            if raw.startswith("[") and raw.endswith("]"):
+                try:
+                    parsed = json.loads(raw)
+                except json.JSONDecodeError:
+                    parsed = None
+                if isinstance(parsed, list):
+                    return [str(item).strip() for item in parsed if str(item).strip()]
         if isinstance(value, str):
             return [item.strip() for item in value.split(",") if item.strip()]
         return list(value)

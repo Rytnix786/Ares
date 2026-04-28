@@ -20,6 +20,8 @@ async def test_promote_and_export_champion(db_session, sample_run):
     assert champion.is_active is True
     exported = await crud.export_champions(db_session)
     assert exported["champions"][0]["champion_run_id"] == sample_run.id
+    history = await crud.list_champion_history(db_session, sample_run.model_name)
+    assert history[0].champion_run_id == sample_run.id
 
 
 @pytest.mark.integration

@@ -8,6 +8,7 @@ from dashboard.api_client import get_api_base_url, get_api_key, safe_api_call
 
 def ensure_api_connection() -> bool:
     with st.sidebar.expander("Connection settings", expanded=False):
+        st.caption("Use the API root URL, for example `http://localhost:8000`.")
         st.text_input("ARES_API_URL", value=get_api_base_url(), key="ARES_API_URL")
         st.text_input("ARES_API_KEY", value=get_api_key(), key="ARES_API_KEY", type="password")
 

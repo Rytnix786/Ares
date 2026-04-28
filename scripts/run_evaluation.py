@@ -28,6 +28,11 @@ try:
 except ModuleNotFoundError:  # pragma: no cover
     structlog = None
 
+from ares.api.presenters import (
+    build_run_decision_payload,
+    extract_metrics,
+    extract_slice_regressions,
+)
 from ares.config import load_ares_config, settings
 from ares.db import crud
 from ares.db.session import dispose_engine, get_sessionmaker
@@ -76,28 +81,7 @@ def failure_payload(exc: BaseException) -> dict[str, Any]:
 
 
 def extract_metrics_for_gate(run_like: Any) -> dict[str, float]:
-    if run_like is None:
-        return {}
-    return {
-        "overall_f1": float(getattr(run_like, "overall_f1", 0.0)),
-        "overall_accuracy": float(getattr(run_like, "overall_accuracy", 0.0)),
-        "overall_precision": float(getattr(run_like, "overall_precision", 0.0)),
-        "overall_recall": float(getattr(run_like, "overall_recall", 0.0)),
-        "latency_p99_ms": float(getattr(run_like, "latency_p99_ms", 0.0)),
-        "model_size_mb": float(getattr(run_like, "model_size_mb", 0.0)),
-    }
-
-
-def build_metric_table(candidate_metrics: dict[str, float], champion_metrics: dict[str, float]) -> dict[str, dict[str, float]]:
-    keys = sorted(set(candidate_metrics) | set(champion_metrics))
-    return {
-        key: {
-            "champion": float(champion_metrics.get(key, 0.0)),
-            "candidate": float(candidate_metrics.get(key, 0.0)),
-            "delta": float(candidate_metrics.get(key, 0.0)) - float(champion_metrics.get(key, 0.0)),
-        }
-        for key in keys
-    }
+    return extract_metrics(run_like)
 
 
 def maybe_run_deepchecks(dataset: pd.DataFrame, predictions: list[Any], enabled: bool) -> dict[str, Any]:
@@ -187,25 +171,37 @@ async def persist_run(values: dict[str, Any]) -> Any:
             return cached
 
 
-def payload_from_run(run: Any, champion_metrics: dict[str, float] | None = None) -> dict[str, Any]:
+def payload_from_run(
+    run: Any,
+    champion_metrics: dict[str, float] | None = None,
+    champion_slices: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     champion_metrics = champion_metrics or {}
     candidate_metrics = extract_metrics_for_gate(run)
+    config_snapshot = getattr(run, "gate_config_snapshot", {}) or {}
+    slice_regressions = extract_slice_regressions(run.slice_metrics, config_snapshot)
+    comparison_payload = build_run_decision_payload(
+        candidate_metrics=candidate_metrics,
+        champion_metrics=champion_metrics,
+        candidate_slices=run.slice_metrics,
+        champion_slices=champion_slices,
+        verdict="PASS" if run.passed else "FAIL",
+        failure_reason=run.failure_reason,
+        config_snapshot=config_snapshot,
+        slice_regressions=slice_regressions,
+    )
     return {
         "passed": bool(run.passed),
         "run_id": run.id,
         "details_url": f"{settings.ARES_DASHBOARD_URL}/drill-down?run_id={run.id}",
-        "metric_table": build_metric_table(candidate_metrics, champion_metrics),
-        "slice_regressions": [
-            {"slice": name, "candidate_f1": float(metrics.get("f1", metrics.get("overall_f1", 0.0)))}
-            for name, metrics in (run.slice_metrics or {}).items()
-            if isinstance(metrics, dict) and not metrics.get("passed_critical_threshold", True)
-        ],
+        "slice_regressions": slice_regressions,
         "failure_reason": run.failure_reason,
-        "gate_config_snapshot": run.gate_config_snapshot,
+        "gate_config_snapshot": config_snapshot,
         "duration_seconds": run.duration_seconds,
         "mlflow_run_id": run.mlflow_run_id,
         "artifact_uri": run.artifact_uri,
         "mlflow_status": getattr(run, "mlflow_status", "pending"),
+        **comparison_payload,
     }
 
 
@@ -248,7 +244,8 @@ async def evaluate_once(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
     try:
         cached = await get_cached_run(args.commit_sha, args.model_name)
         if cached is not None:
-            return payload_from_run(cached), 0 if cached.passed else 1
+            champion_metrics, champion_run = await fetch_champion_metrics(args.model_name)
+            return payload_from_run(cached, champion_metrics, None if champion_run is None else champion_run.slice_metrics), 0 if cached.passed else 1
 
         start = time.perf_counter()
         config = load_ares_config()
@@ -282,15 +279,25 @@ async def evaluate_once(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         details_url = f"{settings.ARES_DASHBOARD_URL}/drill-down?run_id={run_id}"
         deepchecks_summary = maybe_run_deepchecks(dataset, evaluation_result.raw_predictions, args.run_deepchecks)
         duration_seconds = time.perf_counter() - start
+        comparison_payload = build_run_decision_payload(
+            candidate_metrics=candidate_metrics,
+            champion_metrics=champion_metrics,
+            candidate_slices=evaluation_result.slice_metrics,
+            champion_slices=None if _champion_run is None else _champion_run.slice_metrics,
+            verdict="PASS" if passed else "FAIL",
+            failure_reason=failure_reason,
+            config_snapshot=gate_config,
+            slice_regressions=slice_regressions,
+        )
         payload = {
             "passed": passed,
             "run_id": run_id,
             "details_url": details_url,
-            "metric_table": build_metric_table(candidate_metrics, champion_metrics),
             "slice_regressions": slice_regressions,
             "failure_reason": failure_reason,
             "gate_config_snapshot": gate_config,
             "duration_seconds": duration_seconds,
+            **comparison_payload,
         }
 
         mlflow_run_id, artifact_uri, mlflow_status, mlflow_error = log_with_mlflow(
@@ -347,7 +354,7 @@ async def evaluate_once(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
                 "mlflow_error": mlflow_error,
             }
         )
-        stored_payload = payload_from_run(run, champion_metrics)
+        stored_payload = payload_from_run(run, champion_metrics, None if _champion_run is None else _champion_run.slice_metrics)
         stored_payload["validation"] = validation_summary
         stored_payload["deepchecks"] = deepchecks_summary
         return stored_payload, 0 if run.passed else 1

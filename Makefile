@@ -1,12 +1,19 @@
 PYTHON ?= python
 
-.PHONY: dev lint test-unit test-integration test-e2e test test-all migrate migrate-down eval dashboard verify clean
+.PHONY: build build-pkg clean dashboard dev eval lint migrate migrate-down test test-all test-e2e test-integration test-unit verify
 
 reports:
 	$(PYTHON) -c "from pathlib import Path; Path('reports').mkdir(exist_ok=True)"
 
 dev:
 	docker compose up -d
+
+build:
+	docker compose build api worker dashboard
+	@echo Build complete
+
+build-pkg:
+	$(PYTHON) -m build
 
 lint:
 	$(PYTHON) -m ruff check . && $(PYTHON) -m mypy ares

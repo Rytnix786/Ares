@@ -40,6 +40,15 @@ async def get_previous_champion(db: AsyncSession, model_name: str) -> ModelChamp
     return result.scalar_one_or_none()
 
 
+async def list_champion_history(db: AsyncSession, model_name: str) -> list[ModelChampion]:
+    result = await db.execute(
+        select(ModelChampion)
+        .where(ModelChampion.model_name == model_name)
+        .order_by(ModelChampion.promoted_at.desc())
+    )
+    return list(result.scalars().all())
+
+
 async def promote_champion(db: AsyncSession, model_name: str, run_id: str, promoted_by: str, reason: str | None = None) -> ModelChampion:
     async with (db.begin_nested() if db.in_transaction() else db.begin()):
         current_result = await db.execute(select(ModelChampion).where(ModelChampion.model_name == model_name, ModelChampion.is_active.is_(True)).with_for_update())
