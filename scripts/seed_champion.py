@@ -17,6 +17,9 @@ from ares.db import crud
 from ares.db.session import get_sessionmaker
 from ares.evaluators.classification import ClassificationEvaluator
 
+SEED_MODEL_NAME = "baseline"
+SEED_RUN_ID = "baseline-seed-run"
+
 
 def extract_text(payload: Any) -> str:
     if isinstance(payload, str):
@@ -62,42 +65,65 @@ async def register_baseline(model_path: Path, *, model_size_mb: float) -> str:
     config = load_ares_config()
     val_df = pd.read_csv("data/golden_set/val.csv")
     evaluation = ClassificationEvaluator(str(model_path), config).evaluate(val_df, commit_sha="baseline-seed")
-    run_id = "baseline-seed-run"
     async with get_sessionmaker()() as session:
         async with session.begin():
-            await crud.create_evaluation_run(
-                session,
-                id=run_id,
-                commit_sha="baseline-seed",
-                model_name="baseline",
-                model_version="champion_v1",
-                branch="main",
-                pr_number=None,
-                overall_f1=float(evaluation.overall_metrics.get("overall_f1", 0.0)),
-                overall_accuracy=float(evaluation.overall_metrics.get("overall_accuracy", 0.0)),
-                overall_precision=float(evaluation.overall_metrics.get("overall_precision", 0.0)),
-                overall_recall=float(evaluation.overall_metrics.get("overall_recall", 0.0)),
-                latency_p50_ms=evaluation.latency_p50_ms,
-                latency_p99_ms=evaluation.latency_p99_ms,
-                model_size_mb=model_size_mb,
-                slice_metrics=evaluation.slice_metrics,
-                gate_config_snapshot=config.get("gate", {}),
-                metadata_json={"artifact_path": str(model_path)},
-                passed=evaluation.passed,
-                failure_reason=evaluation.failure_reason,
-                golden_set_version=settings.GOLDEN_SET_VERSION,
-                n_samples_evaluated=len(val_df),
-                duration_seconds=0.0,
-                mlflow_run_id=None,
-                artifact_uri=str(model_path),
-                mlflow_status="seeded",
-                mlflow_error=None,
-            )
-        await crud.promote_champion(session, "baseline", run_id, "seed_champion", "Initial baseline champion")
-    return run_id
+            existing_champion = await crud.get_active_champion(session, SEED_MODEL_NAME)
+            if existing_champion is not None and existing_champion.champion_run_id == SEED_RUN_ID:
+                return SEED_RUN_ID
+
+            existing_run = await crud.get_evaluation_run(session, SEED_RUN_ID)
+            if existing_run is None:
+                await crud.create_evaluation_run(
+                    session,
+                    id=SEED_RUN_ID,
+                    commit_sha="baseline-seed",
+                    model_name=SEED_MODEL_NAME,
+                    model_version="champion_v1",
+                    branch="main",
+                    pr_number=None,
+                    overall_f1=float(evaluation.overall_metrics.get("overall_f1", 0.0)),
+                    overall_accuracy=float(evaluation.overall_metrics.get("overall_accuracy", 0.0)),
+                    overall_precision=float(evaluation.overall_metrics.get("overall_precision", 0.0)),
+                    overall_recall=float(evaluation.overall_metrics.get("overall_recall", 0.0)),
+                    latency_p50_ms=evaluation.latency_p50_ms,
+                    latency_p99_ms=evaluation.latency_p99_ms,
+                    model_size_mb=model_size_mb,
+                    slice_metrics=evaluation.slice_metrics,
+                    gate_config_snapshot=config.get("gate", {}),
+                    metadata_json={"artifact_path": str(model_path)},
+                    passed=evaluation.passed,
+                    failure_reason=evaluation.failure_reason,
+                    golden_set_version=settings.GOLDEN_SET_VERSION,
+                    n_samples_evaluated=len(val_df),
+                    duration_seconds=0.0,
+                    mlflow_run_id=None,
+                    artifact_uri=str(model_path),
+                    mlflow_status="seeded",
+                    mlflow_error=None,
+                )
+
+            if existing_champion is None or existing_champion.champion_run_id != SEED_RUN_ID:
+                await crud.promote_champion(
+                    session,
+                    SEED_MODEL_NAME,
+                    SEED_RUN_ID,
+                    "seed_champion",
+                    "Initial baseline champion",
+                )
+    return SEED_RUN_ID
+
+
+async def champion_already_seeded() -> bool:
+    async with get_sessionmaker()() as session:
+        champion = await crud.get_active_champion(session, SEED_MODEL_NAME)
+        return champion is not None and champion.champion_run_id == SEED_RUN_ID
 
 
 async def main() -> None:
+    if await champion_already_seeded():
+        print("Champion already seeded, skipping")
+        return
+
     train_path = Path("data/golden_set/train.csv")
     model_path = Path("models/baseline/champion_v1.joblib")
     model_size_mb = train_baseline_model(train_path, model_path)

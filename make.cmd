@@ -6,6 +6,8 @@ set "TARGET=%~1"
 
 if "%TARGET%"=="" goto :usage
 
+if "%TARGET%"=="build" goto :build
+if "%TARGET%"=="build-pkg" goto :build_pkg
 if "%TARGET%"=="reports" goto :reports
 if "%TARGET%"=="dev" goto :dev
 if "%TARGET%"=="lint" goto :lint
@@ -23,6 +25,16 @@ if "%TARGET%"=="clean" goto :clean
 
 echo Unknown target: %TARGET%
 goto :usage
+
+:build
+docker compose build api worker dashboard
+if errorlevel 1 exit /b %errorlevel%
+echo Build complete
+exit /b 0
+
+:build_pkg
+%PYTHON% -m build
+exit /b %errorlevel%
 
 :reports
 %PYTHON% -c "from pathlib import Path; Path('reports').mkdir(exist_ok=True)"
@@ -88,5 +100,5 @@ exit /b %errorlevel%
 
 :usage
 echo Usage: make ^<target^>
-echo Targets: reports dev lint test-unit test-integration test-e2e test test-all migrate migrate-down eval dashboard verify clean
+echo Targets: build build-pkg reports dev lint test-unit test-integration test-e2e test test-all migrate migrate-down eval dashboard verify clean
 exit /b 1

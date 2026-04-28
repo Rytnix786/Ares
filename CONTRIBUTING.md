@@ -1,44 +1,74 @@
 # Contributing
 
-## Local setup
+## Local setup on Windows
 
-1. `python -m venv .venv`
-2. `. .venv/Scripts/activate`
-3. `pip install -e ".[dev,eval,dashboard]"`
+Run these commands from `H:\Projects\Ares`:
+
+1. `copy .env.example .env`
+2. `python -m venv .venv`
+3. `.venv\Scripts\python -m pip install -e ".[dev,eval,dashboard]"`
 4. `pre-commit install`
+5. `docker compose up -d && python -m alembic upgrade head && python scripts/seed_champion.py`
 
-For local overrides, copy `.env.example` to `.env`. The tracked compose file can also boot from `.env.example` defaults when `.env` is absent.
-
-Quarterly, run `pre-commit autoupdate` and review pinned hook revisions before committing the updated config.
+The repository includes `make.cmd`, so `make <target>` works on Windows without GNU Make.
 
 ## Common commands
 
+- `make build`
+- `make build-pkg`
 - `make lint`
-- `make test`
-- `make migrate`
+- `make test-unit`
+- `make test-integration`
+- `make test-all`
 - `make eval`
 - `make verify`
 
-On Windows, this repository includes a `make.cmd` wrapper so the same `make <target>` commands work without a separate GNU Make installation.
+`make verify` is the canonical local quality gate and matches the repository automation workflow.
 
-`make verify` is the canonical local quality gate and matches the `Ares Quality Gate` GitHub Actions workflow.
+## Add a new evaluator in under 50 lines
 
-## Evaluator extension workflow
+1. Create a class under `ares/evaluators/` that subclasses `BaseEvaluator`.
+2. Implement `load_model()`, `predict()`, and `compute_metrics()`.
+3. Add unit coverage for dataset validation, metric output, and slice behavior.
 
-New evaluators should subclass `BaseEvaluator` and implement only `load_model()`, `predict()`, and `compute_metrics()`. Any evaluator change must include unit coverage for required columns, metric output, and slice behavior.
+`BaseEvaluator` already handles shared dataset validation, latency measurement, and slice analysis.
 
-## Gate rule extension workflow
+## Add a new gate rule
 
-New gate rules must be added to `ares.config.yaml`, documented in `README.md`, and covered with unit tests that demonstrate both pass and fail paths.
+1. Add the threshold to `ares.config.yaml` under `gate:`.
+2. Update `ares/gate/rules_engine.py` where current tolerance checks are evaluated.
+3. Document the rule in `README.md`.
+4. Add unit tests for both pass and fail paths in `tests/unit/test_gate.py`.
 
 ## Docker and local overrides
 
-You may create an untracked `docker-compose.override.yml` for local port, volume, or environment customization. Do not edit tracked compose files for personal setup.
+You may create an untracked `docker-compose.override.yml` for local-only customization. Do not edit tracked compose files for personal machine setup.
+
+## Pre-commit
+
+Install hooks once with:
+
+```bash
+pre-commit install
+```
+
+Quarterly, review updates with `pre-commit autoupdate` before committing hook changes.
 
 ## PR checklist
 
 - [ ] Tests added or updated
-- [ ] Gate rule changes documented
+- [ ] Gate or evaluator behavior documented
 - [ ] Migration included for schema changes
-- [ ] Docker and CI impact reviewed
+- [ ] Docker / CI impact reviewed
 - [ ] README / docs updated when behavior changes
+- [ ] Verification evidence included in the PR description
+
+## Verification evidence requirement
+
+Every substantive PR should include the exact commands run and outcomes. At minimum, capture:
+
+- `make lint`
+- `make test-unit`
+- `make test-integration`
+- `make test-all`
+- `make verify`

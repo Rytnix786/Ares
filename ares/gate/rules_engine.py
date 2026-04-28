@@ -9,8 +9,11 @@ from ares.metrics.significance import is_improvement_significant
 
 
 def snapshot_gate_config(config: dict[str, Any] | None = None) -> dict[str, Any]:
-    source = config or load_ares_config()
-    return dict(source.get("gate", {}))
+    if config is None:
+        return dict(load_ares_config().get("gate", {}))
+    if "gate" in config and isinstance(config.get("gate"), Mapping):
+        return dict(config.get("gate", {}))
+    return dict(config)
 
 
 def evaluate(new_metrics: Mapping[str, float], champion_metrics: Mapping[str, float], slice_metrics: Mapping[str, Any] | None = None, config: dict[str, Any] | None = None, n_samples: int = 1) -> GateDecision:

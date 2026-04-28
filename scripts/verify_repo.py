@@ -36,15 +36,15 @@ def main() -> int:
     run_step("Docker Compose config", ["docker", "compose", "config", "-q"])
     run_step("DVC dry run", [PYTHON, "-m", "dvc", "repro", "--dry"])
     run_step(
-        "Dashboard bytecode check",
+        "Targeted compile check",
         [
             PYTHON,
             "-m",
-            "py_compile",
-            "dashboard/app.py",
-            "dashboard/pages/01_leaderboard.py",
-            "dashboard/pages/02_drill_down.py",
-            "dashboard/pages/03_drift_monitor.py",
+            "compileall",
+            "ares",
+            "dashboard",
+            "scripts",
+            "tests",
         ],
     )
     print("\nVerification complete.")

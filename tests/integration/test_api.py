@@ -33,6 +33,16 @@ async def test_get_champion_returns_schema_payload(api_client, sample_champion):
 
 @pytest.mark.integration
 @pytest.mark.asyncio
+async def test_champion_history_returns_audit_trail(api_client, sample_champion):
+    response = await api_client.get("/api/v1/champions/default-model/history", headers={"X-API-Key": "test-key"})
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["model_name"] == "default-model"
+    assert payload["history"][0]["champion_run_id"] == sample_champion.champion_run_id
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
 async def test_export_compare_drift_and_health_routes(api_client, sample_champion, sample_run):
     export_response = await api_client.get("/api/v1/champions/export", headers={"X-API-Key": "test-key"})
     assert export_response.status_code == 200
@@ -53,7 +63,10 @@ async def test_export_compare_drift_and_health_routes(api_client, sample_champio
         },
     )
     assert compare_response.status_code == 200
-    assert compare_response.json()["decision"] in {"PASS", "FAIL"}
+    compare_payload = compare_response.json()
+    assert compare_payload["decision"] in {"PASS", "FAIL"}
+    assert compare_payload["decision_narrative"]
+    assert "overall_f1" in compare_payload["metric_table"]
 
     drift_create = await api_client.post(
         "/api/v1/drift/reports",
@@ -76,6 +89,20 @@ async def test_export_compare_drift_and_health_routes(api_client, sample_champio
 
     gate_config = await api_client.get("/api/v1/gate/config", headers={"X-API-Key": "test-key"})
     assert gate_config.status_code == 200
+
+    simulate_response = await api_client.post(
+        "/api/v1/gate/simulate",
+        headers={"X-API-Key": "test-key"},
+        json={
+            "run_id": sample_run.id,
+            "override_thresholds": {"max_regression_f1": 0.01, "critical_slice_min_f1": 0.7},
+        },
+    )
+    assert simulate_response.status_code == 200
+    simulate_payload = simulate_response.json()
+    assert simulate_payload["run_id"] == sample_run.id
+    assert simulate_payload["decision_narrative"]
+    assert "overall_f1" in simulate_payload["metric_table"]
 
     ready = await api_client.get("/health/ready")
     health = await api_client.get("/health")

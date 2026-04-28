@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from types import SimpleNamespace
-from typing import cast
+from typing import Any, cast
 
 import pytest
 from fastapi import HTTPException
@@ -44,6 +44,15 @@ def test_settings_merge_legacy_api_key() -> None:
     )
     assert settings.ARES_API_KEYS == ["current", "legacy"]
     assert settings.is_sqlite is False
+
+
+def test_settings_parse_json_api_keys() -> None:
+    settings = AresSettings(
+        ENVIRONMENT="development",
+        DATABASE_URL="postgresql+asyncpg://ares:ares@localhost:5432/ares",
+        ARES_API_KEYS=cast(Any, '["current", "backup"]'),
+    )
+    assert settings.ARES_API_KEYS == ["current", "backup"]
 
 
 def test_settings_sqlite_property() -> None:
