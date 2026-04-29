@@ -6,5 +6,5 @@ COPY . .
 RUN pip install --no-cache-dir -e ".[dashboard]"
 RUN chown -R ares:ares /app
 USER ares
-ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/app
 CMD ["streamlit", "run", "dashboard/app.py", "--server.address=0.0.0.0"]

@@ -7,9 +7,13 @@ from typing import Any
 
 import httpx
 import streamlit as st
+from dotenv import load_dotenv
+from streamlit.errors import StreamlitSecretNotFoundError
 
 DEFAULT_API_ORIGIN = "http://localhost:8000"
 API_V1_PREFIX = "/api/v1"
+
+load_dotenv()
 
 
 def _first_configured_api_key(value: str | None) -> str | None:
@@ -33,11 +37,17 @@ def _strip_api_v1_suffix(value: str) -> str:
     return normalized
 
 
+def get_streamlit_secret(key: str, default: Any = None) -> Any:
+    try:
+        return st.secrets.get(key, default)
+    except StreamlitSecretNotFoundError:
+        return default
+
+
 def get_api_base_url() -> str:
-    secrets = getattr(st, "secrets", {})
     configured = (
         st.session_state.get("ARES_API_URL")
-        or secrets.get("ARES_API_URL")
+        or get_streamlit_secret("ARES_API_URL")
         or os.getenv("ARES_API_URL")
         or DEFAULT_API_ORIGIN
     )
@@ -52,10 +62,9 @@ def api_v1_path(path: str) -> str:
 
 
 def get_api_key() -> str:
-    secrets = getattr(st, "secrets", {})
     configured_key = (
         st.session_state.get("ARES_API_KEY")
-        or secrets.get("ARES_API_KEY")
+        or get_streamlit_secret("ARES_API_KEY")
         or os.getenv("ARES_API_KEY")
         or _first_configured_api_key(os.getenv("ARES_API_KEYS"))
     )

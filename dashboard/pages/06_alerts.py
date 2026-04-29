@@ -1,9 +1,17 @@
 from __future__ import annotations
 
+# ruff: noqa: E402
+import sys
+from pathlib import Path
+
 import pandas as pd
 import streamlit as st
 
-from dashboard.api_client import api_v1_path, safe_api_call
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
+from dashboard.api_client import api_v1_path, get_streamlit_secret, safe_api_call
 from dashboard.components.connection_status import ensure_api_connection
 from dashboard.components.real_time_metrics import (
     auto_refresh_sidebar_controls,
@@ -47,7 +55,7 @@ if ensure_api_connection():
             st.markdown("#### Slack")
             slack_webhook = st.text_input(
                 "Slack Webhook URL",
-                value=st.secrets.get("SLACK_WEBHOOK_URL", ""),
+                value=get_streamlit_secret("SLACK_WEBHOOK_URL", ""),
                 type="password",
                 key="slack_webhook_url",
             )
@@ -64,7 +72,7 @@ if ensure_api_connection():
             st.markdown("#### Email")
             email_recipient = st.text_input(
                 "Alert email recipient",
-                value=st.secrets.get("ALERT_EMAIL", ""),
+                value=get_streamlit_secret("ALERT_EMAIL", ""),
                 key="alert_email",
             )
             if email_recipient:
@@ -140,7 +148,7 @@ if ensure_api_connection():
         )
 
         if st.button("Send test Slack alert", type="primary"):
-            webhook_url = st.secrets.get("SLACK_WEBHOOK_URL", "")
+            webhook_url = get_streamlit_secret("SLACK_WEBHOOK_URL", "")
             if not webhook_url:
                 st.error("No Slack webhook URL configured. Set `SLACK_WEBHOOK_URL` in secrets first.")
             else:
