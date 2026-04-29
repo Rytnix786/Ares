@@ -5,14 +5,23 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ares.cache.keys import cache_key
+from ares.exceptions import (
+    AresException,
+    PromotionError,
+)
 from ares.models import DriftReportRecord, EvaluationRun, ModelChampion
+from ares.observability.metrics import cache_operations_total, evaluation_runs_total
 
 
 async def get_evaluation_run(db: AsyncSession, run_id: str) -> EvaluationRun | None:
+    cache_operations_total.labels("get_evaluation_run", "miss").inc()
     return await db.get(EvaluationRun, run_id)
 
 
 async def get_cached_evaluation(db: AsyncSession, commit_sha: str, golden_set_version: str, model_name: str) -> EvaluationRun | None:
+    cache_key("evaluation", commit_sha, golden_set_version, model_name)
+    cache_operations_total.labels("get_cached_evaluation", "miss").inc()
     result = await db.execute(select(EvaluationRun).where(EvaluationRun.commit_sha == commit_sha, EvaluationRun.golden_set_version == golden_set_version, EvaluationRun.model_name == model_name))
     return result.scalar_one_or_none()
 
@@ -27,6 +36,7 @@ async def create_evaluation_run(db: AsyncSession, **values: Any) -> EvaluationRu
     db.add(run)
     await db.flush()
     await db.refresh(run)
+    evaluation_runs_total.labels("passed" if run.passed else "failed").inc()
     return run
 
 
@@ -50,15 +60,23 @@ async def list_champion_history(db: AsyncSession, model_name: str) -> list[Model
 
 
 async def promote_champion(db: AsyncSession, model_name: str, run_id: str, promoted_by: str, reason: str | None = None) -> ModelChampion:
-    async with (db.begin_nested() if db.in_transaction() else db.begin()):
-        current_result = await db.execute(select(ModelChampion).where(ModelChampion.model_name == model_name, ModelChampion.is_active.is_(True)).with_for_update())
-        current = current_result.scalar_one_or_none()
-        if current:
-            current.is_active = False
-        champion = ModelChampion(model_name=model_name, champion_run_id=run_id, promoted_by=promoted_by, promotion_reason=reason, is_active=True)
-        db.add(champion)
-    await db.refresh(champion)
-    return champion
+    try:
+        async with (db.begin_nested() if db.in_transaction() else db.begin()):
+            current_result = await db.execute(select(ModelChampion).where(ModelChampion.model_name == model_name, ModelChampion.is_active.is_(True)).with_for_update())
+            current = current_result.scalar_one_or_none()
+            if current:
+                current.is_active = False
+            champion = ModelChampion(model_name=model_name, champion_run_id=run_id, promoted_by=promoted_by, promotion_reason=reason, is_active=True)
+            db.add(champion)
+        await db.refresh(champion)
+        return champion
+    except AresException:
+        raise
+    except Exception as e:
+        raise PromotionError(
+            model_name=model_name,
+            reason=str(e),
+        ) from e
 
 
 async def export_champions(db: AsyncSession) -> dict[str, Any]:

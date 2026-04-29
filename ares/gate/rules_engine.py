@@ -6,6 +6,7 @@ from typing import Any
 from ares.config import load_ares_config
 from ares.gate.decision import GateDecision
 from ares.metrics.significance import is_improvement_significant
+from ares.observability.metrics import gate_decisions_total
 
 
 def snapshot_gate_config(config: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -47,6 +48,8 @@ def evaluate(new_metrics: Mapping[str, float], champion_metrics: Mapping[str, fl
     if slice_regressions:
         failures.append("critical slice threshold failed")
     if failures:
+        gate_decisions_total.labels("FAIL").inc()
         return GateDecision("FAIL", False, "; ".join(failures), deltas, slice_regressions, False)
     improvement, _ = is_improvement_significant(float(new_metrics.get("overall_f1", 0.0)), float(champion_metrics.get("overall_f1", 0.0)), max(n_samples, 1), alpha)
+    gate_decisions_total.labels("PASS").inc()
     return GateDecision("PASS", True, "candidate is within configured regression tolerances", deltas, [], deltas.get("overall_f1", 0.0) > 0 and improvement)

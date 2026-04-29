@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ares.api.auth import require_api_key
+from ares.api.auth import require_scope
 from ares.api.limiting import limiter
 from ares.api.presenters import (
     build_run_decision_payload,
@@ -16,19 +16,27 @@ from ares.db import crud
 from ares.db.session import get_db
 from ares.gate.rules_engine import evaluate, snapshot_gate_config
 
-router = APIRouter(prefix="/api/v1/gate", tags=["gate"], dependencies=[Depends(require_api_key)])
+router = APIRouter(prefix="/api/v1/gate", tags=["gate"])
 
 
 @router.get("/config")
 @limiter.limit(settings.RATE_LIMIT_READ)
-async def get_gate_config(request: Request) -> dict[str, object]:
+async def get_gate_config(
+    request: Request,
+    _principal: object = Depends(require_scope("read")),
+) -> dict[str, object]:
     del request
     return snapshot_gate_config()
 
 
 @router.post("/simulate", response_model=SimulationResponse)
 @limiter.limit(settings.RATE_LIMIT_EVALUATE)
-async def simulate_gate(request: Request, payload: SimulationRequest, db: AsyncSession = Depends(get_db)) -> SimulationResponse:
+async def simulate_gate(
+    request: Request,
+    payload: SimulationRequest,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("write")),
+) -> SimulationResponse:
     del request
     run = await crud.get_evaluation_run(db, payload.run_id)
     if run is None:

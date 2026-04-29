@@ -666,3 +666,61 @@ Also perform:
 ## Immediate Next Step
 
 Proceed to Milestone 1: scaffold the repository foundation.
+
+---
+
+## Verified Product Excellence Delta — 2026-04-29
+
+This section supersedes stale assumptions in `ares-product-excellence-plan-4c367e.md` where the repository has already moved beyond the original gap analysis.
+
+### Verified implemented and working
+
+- **Gap 4 dashboard/frontend:** implemented beyond the original minimal state. The dashboard now includes model comparison, promotion workflow, alert configuration, real-time metric controls, connection status, and reusable empty/error/loading state helpers.
+- **Custom exception foundation:** implemented in `ares/exceptions.py` and covered by unit tests.
+- **Structured API error and request correlation:** API responses now include `X-Request-ID`; mutation audit logging exists and is best-effort so audit sink failures do not break product flows.
+- **Integration/e2e coverage:** integration, migration, API, and e2e tests are present and passing.
+- **Migration safety:** Alembic test configuration now works with minimal test configs; audit migration is chained after the MLflow migration.
+- **Security/auth baseline:** API keys support scoped principals (`read`, `write`, `admin`) while preserving backward-compatible full access for existing unscoped keys.
+
+### Remaining roadmap after this delta
+
+The original external excellence plan should **not** be executed verbatim anymore. Several items in that plan are already implemented or intentionally deferred. The remaining work should be limited to the following real product-excellence gaps:
+
+#### P0 — Operational readiness before production hosting
+
+1. **Backup/restore automation**
+   - Add scripted dry-run backup support for PostgreSQL, MLflow artifacts, and MinIO/object-store artifacts.
+   - Add restore procedure documentation with verification steps.
+   - Add a lightweight CI-safe dry-run test so the backup workflow does not silently rot.
+
+#### P1 — Hosted/security maturity if Ares becomes externally hosted or multi-tenant
+
+2. **DB-backed API key lifecycle**
+   - Current scoped API-key support is sufficient for local/reference deployments.
+   - Add persisted API key records only when lifecycle controls are required: create, revoke, expire, rotate, last-used tracking, and auditability.
+   - Preserve the existing environment-based key path for simple/self-hosted deployments.
+
+3. **Deeper observability and rate-limit analytics**
+   - Add explicit business metrics for gate pass/fail totals, promotions, drift alert counts, auth failures, and rate-limit hits.
+   - Document metric names and labels.
+   - Add targeted tests for metrics exposure where practical.
+
+#### P2 — Reference implementation polish
+
+4. **Dashboard screenshots/GIFs for README assets**
+   - Capture real dashboard visuals after running the sample stack.
+   - Update README/docs assets so the project presents as a polished OSS reference.
+
+5. **Feature flags only when rollout risk exists**
+   - Do not add a feature-flag system prematurely.
+   - Introduce it when there are risky features that need staged rollout, kill switches, or experiments.
+
+6. **General webhook platform only if integrations become product scope**
+   - Current Slack/dashboard alerting is enough for the reference baseline.
+   - Add generic webhook management, retries, and HMAC signatures only when third-party integration breadth becomes a requirement.
+
+### Verification evidence
+
+- `python -m ruff check .` → passed.
+- `python -m mypy ares` → passed.
+- `python -m pytest --cov=ares --cov-report=term-missing --cov-fail-under=90` → `182 passed`, total coverage `91.26%`.

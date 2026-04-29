@@ -21,7 +21,7 @@ dependencies = [
   "scipy>=1.13.0",
   "scikit-learn>=1.4.0",
   "celery[redis]>=5.3.6",
-  "redis>=5.0.3",
+  "redis[hiredis]>=5.0.0",
   "python-dotenv>=1.0.1",
   "structlog>=24.1.0",
   "prometheus-fastapi-instrumentator>=6.1.0",
@@ -32,7 +32,7 @@ dependencies = [
 [project.optional-dependencies]
 dashboard = ["streamlit>=1.33.0", "plotly>=5.21.0"]
 eval = ["mlflow>=2.12.0", "dvc[s3]>=3.49.0", "deepchecks>=0.18.0", "evidently>=0.4.0"]
-dev = ["build>=1.0.0", "pytest>=8.1.0", "pytest-asyncio>=0.23.0", "pytest-cov>=5.0.0", "pytest-xdist>=3.6.0", "ruff>=0.4.0", "mypy>=1.9.0", "pre-commit>=3.7.0", "types-PyYAML>=6.0.12"]
+dev = ["build>=1.0.0", "pytest>=8.1.0", "pytest-asyncio>=0.23.0", "pytest-cov>=5.0.0", "pytest-xdist>=3.6.0", "pytest-benchmark>=4.0.0", "fakeredis>=2.20.0", "ruff>=0.4.0", "mypy>=1.9.0", "pre-commit>=3.7.0", "types-PyYAML>=6.0.12"]
 otel = ["opentelemetry-api>=1.24.0", "opentelemetry-sdk>=1.24.0", "opentelemetry-exporter-otlp>=1.24.0", "opentelemetry-instrumentation-fastapi>=0.45b0"]
 
 [tool.pytest.ini_options]
@@ -42,6 +42,7 @@ testpaths = ["tests"]
 markers = [
   "integration: marks tests requiring database integration",
   "e2e: marks end-to-end workflow tests",
+  "performance: marks performance and benchmark tests",
   "serial: marks tests that must not run in parallel"
 ]
 

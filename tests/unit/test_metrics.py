@@ -50,3 +50,14 @@ def test_compute_drift_report_severity_branches(monkeypatch: pytest.MonkeyPatch)
     none = compute_drift_report("stable", np.arange(20), np.arange(20), kl_threshold=1.0, psi_threshold=1.0)
     assert none.severity == "none"
     assert none.is_alerting is False
+
+
+def test_request_id_propagation() -> None:
+    """Verify request_id is bound to log context."""
+    from ares.observability.metrics import get_current_request_id, request_id_var
+
+    token = request_id_var.set("test-request-123")
+    try:
+        assert get_current_request_id() == "test-request-123"
+    finally:
+        request_id_var.reset(token)

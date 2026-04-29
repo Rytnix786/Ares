@@ -150,6 +150,7 @@ For local Docker and Supabase-backed production, keep configuration limited to t
 |---|---|---|
 | `DATABASE_URL` | `postgresql+asyncpg://ares:ares@localhost:55432/ares` | `postgresql+asyncpg://postgres:<password>@db.<ref>.supabase.co:5432/postgres` |
 | `ARES_API_KEYS` | `dev-key-1,dev-key-2` or JSON array | Rotated production key set |
+| `ARES_API_KEY_SCOPES` | optional JSON map | Per-key scopes: `read`, `write`, `admin` |
 | `ARES_API_URL` | `http://localhost:8000` | Public API root URL |
 | `ARES_DASHBOARD_URL` | `http://localhost:8501` | Public dashboard URL |
 
@@ -158,6 +159,8 @@ Notes:
 - Container-to-container communication in Compose uses service DNS names such as `db`, `api`, and `dashboard`.
 - Do **not** use `localhost` for container-to-container traffic.
 - Notification failures must not roll back database state.
+- API keys can be scoped with `ARES_API_KEY_SCOPES`, for example `{"reader":["read"],"operator":["read","write"],"admin":["read","write","admin"]}`. Keys without explicit scopes keep full access for backward compatibility.
+- API responses include an `X-Request-ID` header so dashboard/API failures can be correlated with structured logs and audit records.
 
 ## Configuration Reference
 

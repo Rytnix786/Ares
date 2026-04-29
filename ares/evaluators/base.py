@@ -9,6 +9,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from ares.exceptions import DatasetSchemaError, PredictionError
 from ares.metrics.slice_analysis import evaluate_slices
 
 
@@ -45,7 +46,7 @@ class BaseEvaluator(ABC):
     def evaluate(self, dataset: pd.DataFrame, commit_sha: str = "local") -> EvaluationResult:
         missing = self.required_columns - set(dataset.columns)
         if missing:
-            raise ValueError(f"missing required dataset columns: {sorted(missing)}")
+            raise DatasetSchemaError(missing_columns=sorted(missing))
         if self._model is None:
             self.load_model()
         gate_config = self.config.get("gate", {}) if isinstance(self.config, dict) else {}
@@ -54,7 +55,10 @@ class BaseEvaluator(ABC):
         predictions = self.predict(dataset["input"].tolist())
         elapsed_ms = (time.perf_counter() - start) * 1000
         if len(predictions) != len(dataset):
-            raise ValueError("prediction count does not match dataset rows")
+            raise PredictionError(
+                reason=f"prediction count ({len(predictions)}) does not match dataset rows ({len(dataset)})",
+                details={"prediction_count": len(predictions), "dataset_rows": len(dataset)},
+            )
         latencies = [elapsed_ms / max(len(predictions), 1)] * len(predictions)
         overall = self.compute_metrics(predictions, dataset["expected_label"].tolist())
         slices = evaluate_slices(dataset, predictions, metric_fn=self.compute_metrics, critical_threshold=critical_threshold)

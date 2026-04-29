@@ -41,4 +41,5 @@ class EvaluationRun(Base):
     artifact_uri: Mapped[str | None] = mapped_column(String(2048), nullable=True)
     mlflow_status: Mapped[str] = mapped_column(String(32), nullable=False, default="pending")
     mlflow_error: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    mlflow_error_category: Mapped[str | None] = mapped_column(String(128), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)

@@ -80,3 +80,72 @@ def safe_api_call(request_fn: Callable[[httpx.Client], Any]) -> tuple[Any | None
         return None, f"API request failed: {exc.response.status_code} {exc.response.text}"
     except httpx.HTTPError as exc:
         return None, f"Unable to connect to Ares API: {exc}"
+
+
+def promote_champion(model_name: str, run_id: str, promoted_by: str, reason: str | None = None) -> tuple[Any | None, str | None]:
+    """Promote a run to champion for the given model."""
+    return safe_api_call(
+        lambda client: client.post(
+            api_v1_path(f"/champions/{model_name}/promote"),
+            json={"run_id": run_id, "promoted_by": promoted_by, "reason": reason},
+        )
+    )
+
+
+def rollback_champion(model_name: str, previous_run_id: str, promoted_by: str, reason: str | None = None) -> tuple[Any | None, str | None]:
+    """Rollback champion by re-promoting the previous champion's run_id."""
+    return safe_api_call(
+        lambda client: client.post(
+            api_v1_path(f"/champions/{model_name}/promote"),
+            json={"run_id": previous_run_id, "promoted_by": promoted_by, "reason": f"Rollback: {reason}" if reason else "Rollback"},
+        )
+    )
+
+
+def get_champion_history(model_name: str) -> tuple[Any | None, str | None]:
+    """Get promotion history for a model."""
+    return safe_api_call(
+        lambda client: client.get(api_v1_path(f"/champions/{model_name}/history"))
+    )
+
+
+def get_champion_export() -> tuple[Any | None, str | None]:
+    """Export all active champions."""
+    return safe_api_call(
+        lambda client: client.get(api_v1_path("/champions/export"))
+    )
+
+
+def get_gate_config() -> tuple[Any | None, str | None]:
+    """Get current gate configuration and thresholds."""
+    return safe_api_call(
+        lambda client: client.get(api_v1_path("/gate/config"))
+    )
+
+
+def get_drift_reports(model_name: str | None = None) -> tuple[Any | None, str | None]:
+    """Get drift reports, optionally filtered by model name."""
+    path = api_v1_path("/drift/reports")
+    if model_name:
+        path = f"{path}?model_name={model_name}"
+    return safe_api_call(
+        lambda client: client.get(path)
+    )
+
+
+def create_test_drift_report(message: str) -> tuple[Any | None, str | None]:
+    """Create a test drift report to verify alert channels."""
+    return safe_api_call(
+        lambda client: client.post(
+            api_v1_path("/drift/reports"),
+            json={
+                "model_name": "test-model",
+                "feature": "test-feature",
+                "kl_divergence": 0.0,
+                "psi": 0.0,
+                "is_alerting": False,
+                "severity": "low",
+                "payload": {"test": True, "message": message},
+            },
+        )
+    )

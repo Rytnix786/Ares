@@ -10,6 +10,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 from ares.evaluators.base import BaseEvaluator
+from ares.exceptions import ModelLoadError
 
 
 def _extract_text(payload: Any) -> str:
@@ -38,13 +39,25 @@ class ClassificationEvaluator(BaseEvaluator):
     def load_model(self) -> None:
         path = Path(self.model_path)
         if path.suffix == ".joblib" and path.is_file():
-            self._model = joblib.load(path)
+            try:
+                self._model = joblib.load(path)
+            except Exception as e:
+                raise ModelLoadError(
+                    model_path=str(path),
+                    reason=str(e),
+                ) from e
             return
-        self._model = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {
-            "default_label": self.config.get("default_label", "positive"),
-            "positive_keywords": ["positive", "great", "resolved", "stable", "clearly"],
-            "negative_keywords": ["negative", "failed", "broken", "escalation", "ambiguous"],
-        }
+        try:
+            self._model = json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {
+                "default_label": self.config.get("default_label", "positive"),
+                "positive_keywords": ["positive", "great", "resolved", "stable", "clearly"],
+                "negative_keywords": ["negative", "failed", "broken", "escalation", "ambiguous"],
+            }
+        except Exception as e:
+            raise ModelLoadError(
+                model_path=str(path),
+                reason=str(e),
+            ) from e
 
     def predict(self, inputs: list[Any]) -> list[Any]:
         if isinstance(self._model, dict) and {"model", "scaler"}.issubset(self._model):
