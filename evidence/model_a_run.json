@@ -1,0 +1,138 @@
+{
+  "passed": true,
+  "run_id": "d9c2bd30-a524-47bc-906b-ca2454267a7d",
+  "details_url": "http://localhost:8501/drill-down?run_id=d9c2bd30-a524-47bc-906b-ca2454267a7d",
+  "slice_regressions": [],
+  "failure_reason": null,
+  "gate_config_snapshot": {
+    "max_regression_f1": 0.02,
+    "max_regression_accuracy": 0.015,
+    "critical_slice_min_f1": 0.6,
+    "max_latency_regression_pct": 10.0,
+    "significance_alpha": 0.05,
+    "max_size_increase_pct": 10.0
+  },
+  "duration_seconds": 0.3653473999875132,
+  "mlflow_run_id": null,
+  "artifact_uri": null,
+  "mlflow_status": "skipped",
+  "champion_metrics": {},
+  "delta_metrics": {
+    "latency_p99_ms": 0.009925417133469403,
+    "overall_recall": 0.6137724550898204,
+    "latency_p50_ms": 0.009925417133469403,
+    "overall_accuracy": 0.8696898351929573,
+    "overall_f1": 0.6927347332850592,
+    "overall_precision": 0.7950138504155124,
+    "model_size_mb": 0.214627
+  },
+  "metric_table": {
+    "latency_p50_ms": {
+      "champion": 0.0,
+      "candidate": 0.009925417133469403,
+      "delta": 0.009925417133469403,
+      "status": "baseline"
+    },
+    "latency_p99_ms": {
+      "champion": 0.0,
+      "candidate": 0.009925417133469403,
+      "delta": 0.009925417133469403,
+      "status": "baseline"
+    },
+    "model_size_mb": {
+      "champion": 0.0,
+      "candidate": 0.214627,
+      "delta": 0.214627,
+      "status": "baseline"
+    },
+    "overall_accuracy": {
+      "champion": 0.0,
+      "candidate": 0.8696898351929573,
+      "delta": 0.8696898351929573,
+      "status": "baseline"
+    },
+    "overall_f1": {
+      "champion": 0.0,
+      "candidate": 0.6927347332850592,
+      "delta": 0.6927347332850592,
+      "status": "baseline"
+    },
+    "overall_precision": {
+      "champion": 0.0,
+      "candidate": 0.7950138504155124,
+      "delta": 0.7950138504155124,
+      "status": "baseline"
+    },
+    "overall_recall": {
+      "champion": 0.0,
+      "candidate": 0.6137724550898204,
+      "delta": 0.6137724550898204,
+      "status": "baseline"
+    }
+  },
+  "slice_comparison": [
+    {
+      "slice": "critical",
+      "champion_f1": null,
+      "candidate_f1": 0.7402234636871509,
+      "delta": null,
+      "status": "baseline",
+      "threshold": 0.6,
+      "is_critical": true
+    },
+    {
+      "slice": "easy",
+      "champion_f1": null,
+      "candidate_f1": 0.7336448598130841,
+      "delta": null,
+      "status": "baseline",
+      "threshold": null,
+      "is_critical": false
+    },
+    {
+      "slice": "edge_case",
+      "champion_f1": null,
+      "candidate_f1": 0.9463986599664992,
+      "delta": null,
+      "status": "baseline",
+      "threshold": 0.6,
+      "is_critical": true
+    },
+    {
+      "slice": "typical",
+      "champion_f1": null,
+      "candidate_f1": 0.28240252897787144,
+      "delta": null,
+      "status": "baseline",
+      "threshold": null,
+      "is_critical": false
+    }
+  ],
+  "decision_narrative": "Candidate PASSED. No champion exists yet, so this run establishes the baseline.",
+  "validation": {
+    "split": "test",
+    "dataset_path": "data\\golden_set\\adult_real\\test.csv",
+    "row_count": 9769,
+    "label_distribution": {
+      "negative": 0.7606715119254785,
+      "positive": 0.23932848807452145
+    },
+    "slice_distribution": {
+      "typical": 0.6088647763332992,
+      "easy": 0.16705906438734774,
+      "critical": 0.11311290817893337,
+      "edge_case": 0.1109632511004197
+    },
+    "checksum": "780c271471f99f5850b37ffbd5e039a0ebaeff3539e13c27bd9a00b7c33aea37",
+    "checksum_status": "verified",
+    "outlier_rows": [],
+    "freshness": {
+      "status": "fresh",
+      "age_days": 0
+    }
+  },
+  "deepchecks": {
+    "status": "skipped",
+    "reason": "disabled"
+  }
+}

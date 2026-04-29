@@ -1,0 +1,64 @@
+{
+  "verified_at": "2026-04-29T21:05:04.751257+00:00",
+  "dataset": {
+    "source": "sklearn_openml_adult_v2",
+    "train_rows": 29305,
+    "val_rows": 9768,
+    "test_rows": 9769,
+    "positive_rate": 0.23928176569346055,
+    "negative_rate": 0.7607182343065395,
+    "golden_set_validation": "PASSED"
+  },
+  "model_a": {
+    "artifact": "models/candidate_A.joblib",
+    "features_used": [
+      "age",
+      "workclass",
+      "education-num",
+      "marital-status",
+      "occupation",
+      "relationship",
+      "race",
+      "sex",
+      "capital-gain",
+      "capital-loss",
+      "hours-per-week",
+      "native-country"
+    ],
+    "val_f1": 0.697931697931698,
+    "test_f1": 0.6927347332850592,
+    "gate_decision": "PASS",
+    "run_id": "d9c2bd30-a524-47bc-906b-ca2454267a7d",
+    "critical_slice_f1": 0.7402234636871509,
+    "decision_narrative": "Candidate PASSED. No champion exists yet, so this run establishes the baseline."
+  },
+  "model_b": {
+    "artifact": "models/candidate_B.joblib",
+    "features_used": [
+      "age",
+      "workclass",
+      "education-num",
+      "marital-status",
+      "occupation",
+      "relationship",
+      "race",
+      "sex",
+      "hours-per-week",
+      "native-country"
+    ],
+    "val_f1": 0.36490528414755735,
+    "test_f1": 0.35325365205843295,
+    "gate_decision": "FAIL",
+    "run_id": "6f9ef903-1846-4f39-9d5a-a638ec9149cf",
+    "critical_slice_f1": 0.4878048780487805,
+    "decision_narrative": "Candidate FAILED. Critical slice 'critical' scored 0.488, below the required floor of 0.600. Reason: overall_f1 regression -0.3395 exceeds tolerance; overall_accuracy regression -0.0691 exceeds tolerance; critical slice threshold failed."
+  },
+  "gate_discriminated": true,
+  "pipeline_integrity": {
+    "used_existing_run_evaluation_script": true,
+    "synthetic_data_used": false,
+    "metrics_hardcoded": false,
+    "api_champion_endpoint_ok": true,
+    "api_evaluations_endpoint_ok": true
+  }
+}

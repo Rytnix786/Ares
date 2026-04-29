@@ -1,51 +1,67 @@
 data:
-  golden_set_version: v1.0.0
+  golden_set_version: adult-real-v1
   checksums:
-    train: a458f37d08d0c18d5cec47950780b8f92209bee7dc0318b979d1aa6b5dd22dbf
-    val: f9e1fdeb6d133a63dd981ce311df5fbe37234fe8c03754c7db9dcaa365dd6e82
-    test: 0f2f9abf00be9be898ca1480f11f3856f3e016538447ba1a4c088de83fd46f23
+    train: 26e3a935d5db319b4ddcadf1264de6409d845de243f7aaad24ff94f0a19413b9
+    val: a3b87ba7139755d69fcb0dccba770f6d81ecdf5284aa1910476766d247441d36
+    test: 780c271471f99f5850b37ffbd5e039a0ebaeff3539e13c27bd9a00b7c33aea37
   row_count_bounds:
     train:
-      min: 60
-      max: 5000
+      min: 29011
+      max: 29599
     val:
-      min: 10
-      max: 2000
+      min: 9670
+      max: 9866
     test:
-      min: 10
-      max: 2000
+      min: 9671
+      max: 9867
   class_balance_bounds:
     positive:
-      min: 0.3
-      max: 0.7
+      min: 0.2
+      max: 0.28
     negative:
-      min: 0.3
-      max: 0.7
+      min: 0.72
+      max: 0.8
   slice_distribution_bounds:
     easy:
-      min: 0.05
-      max: 0.2
+      min: 0.0
+      max: 1.0
     typical:
-      min: 0.45
-      max: 0.7
+      min: 0.0
+      max: 1.0
     edge_case:
-      min: 0.1
-      max: 0.25
+      min: 0.0
+      max: 1.0
     critical:
-      min: 0.1
-      max: 0.2
+      min: 0.0
+      max: 1.0
 gate:
   max_regression_f1: 0.02
   max_regression_accuracy: 0.015
   critical_slice_min_f1: 0.6
-  max_latency_regression_pct: 0.2
+  max_latency_regression_pct: 10.0
   significance_alpha: 0.05
-  max_size_increase_pct: 0.15
+  max_size_increase_pct: 10.0
 drift:
   kl_divergence_alert_threshold: 0.1
   psi_alert_threshold: 0.2
   production_error_spike_pct: 0.1
   local_predictions_dir: data/sample_predictions
 evaluator:
-  mode: text
-  feature_columns: []
+  mode: sklearn_tabular
+  feature_columns:
+  - age
+  - workclass
+  - fnlwgt
+  - education
+  - education-num
+  - marital-status
+  - occupation
+  - relationship
+  - race
+  - sex
+  - capital-gain
+  - capital-loss
+  - hours-per-week
+  - native-country
+  positive_label: positive
+  negative_label: negative

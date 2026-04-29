@@ -1,0 +1,157 @@
+{
+  "passed": false,
+  "run_id": "6f9ef903-1846-4f39-9d5a-a638ec9149cf",
+  "details_url": "http://localhost:8501/drill-down?run_id=6f9ef903-1846-4f39-9d5a-a638ec9149cf",
+  "slice_regressions": [
+    {
+      "slice": "critical",
+      "candidate_f1": 0.4878048780487805,
+      "threshold": 0.6
+    },
+    {
+      "slice": "edge_case",
+      "candidate_f1": 0.3687002652519894,
+      "threshold": 0.6
+    }
+  ],
+  "failure_reason": "overall_f1 regression -0.3395 exceeds tolerance; overall_accuracy regression -0.0691 exceeds tolerance; critical slice threshold failed",
+  "gate_config_snapshot": {
+    "max_regression_f1": 0.02,
+    "max_regression_accuracy": 0.015,
+    "critical_slice_min_f1": 0.6,
+    "max_latency_regression_pct": 10.0,
+    "significance_alpha": 0.05,
+    "max_size_increase_pct": 10.0
+  },
+  "duration_seconds": 0.38844879998941906,
+  "mlflow_run_id": null,
+  "artifact_uri": null,
+  "mlflow_status": "skipped",
+  "champion_metrics": {
+    "overall_f1": 0.6927347332850592,
+    "overall_accuracy": 0.8696898351929573,
+    "overall_precision": 0.7950138504155124,
+    "overall_recall": 0.6137724550898204,
+    "latency_p50_ms": 0.009925417133469403,
+    "latency_p99_ms": 0.009925417133469403,
+    "model_size_mb": 0.214627
+  },
+  "delta_metrics": {
+    "overall_f1": -0.33948108122662624,
+    "overall_precision": -0.005696342997114745,
+    "latency_p99_ms": -0.0007622172181407875,
+    "overall_recall": -0.38622754491017963,
+    "overall_accuracy": -0.06909612038079638,
+    "model_size_mb": -0.16287400000000002,
+    "latency_p50_ms": -0.0007622172181407875
+  },
+  "metric_table": {
+    "latency_p50_ms": {
+      "champion": 0.009925417133469403,
+      "candidate": 0.009163199915328615,
+      "delta": -0.0007622172181407875,
+      "status": "improved"
+    },
+    "latency_p99_ms": {
+      "champion": 0.009925417133469403,
+      "candidate": 0.009163199915328615,
+      "delta": -0.0007622172181407875,
+      "status": "improved"
+    },
+    "model_size_mb": {
+      "champion": 0.214627,
+      "candidate": 0.051753,
+      "delta": -0.16287400000000002,
+      "status": "improved"
+    },
+    "overall_accuracy": {
+      "champion": 0.8696898351929573,
+      "candidate": 0.8005937148121609,
+      "delta": -0.06909612038079638,
+      "status": "regressed"
+    },
+    "overall_f1": {
+      "champion": 0.6927347332850592,
+      "candidate": 0.35325365205843295,
+      "delta": -0.33948108122662624,
+      "status": "regressed"
+    },
+    "overall_precision": {
+      "champion": 0.7950138504155124,
+      "candidate": 0.7893175074183977,
+      "delta": -0.005696342997114745,
+      "status": "regressed"
+    },
+    "overall_recall": {
+      "champion": 0.6137724550898204,
+      "candidate": 0.2275449101796407,
+      "delta": -0.38622754491017963,
+      "status": "regressed"
+    }
+  },
+  "slice_comparison": [
+    {
+      "slice": "critical",
+      "champion_f1": 0.7402234636871509,
+      "candidate_f1": 0.4878048780487805,
+      "delta": -0.2524185856383704,
+      "status": "regressed",
+      "threshold": 0.6,
+      "is_critical": true
+    },
+    {
+      "slice": "easy",
+      "champion_f1": 0.7336448598130841,
+      "candidate_f1": 0.47420417124039516,
+      "delta": -0.259440688572689,
+      "status": "regressed",
+      "threshold": null,
+      "is_critical": false
+    },
+    {
+      "slice": "edge_case",
+      "champion_f1": 0.9463986599664992,
+      "candidate_f1": 0.3687002652519894,
+      "delta": -0.5776983947145098,
+      "status": "regressed",
+      "threshold": 0.6,
+      "is_critical": true
+    },
+    {
+      "slice": "typical",
+      "champion_f1": 0.28240252897787144,
+      "candidate_f1": 0.09573091849935317,
+      "delta": -0.18667161047851827,
+      "status": "regressed",
+      "threshold": null,
+      "is_critical": false
+    }
+  ],
+  "decision_narrative": "Candidate FAILED. Critical slice 'critical' scored 0.488, below the required floor of 0.600. Reason: overall_f1 regression -0.3395 exceeds tolerance; overall_accuracy regression -0.0691 exceeds tolerance; critical slice threshold failed.",
+  "validation": {
+    "split": "test",
+    "dataset_path": "data\\golden_set\\adult_real\\test.csv",
+    "row_count": 9769,
+    "label_distribution": {
+      "negative": 0.7606715119254785,
+      "positive": 0.23932848807452145
+    },
+    "slice_distribution": {
+      "typical": 0.6088647763332992,
+      "easy": 0.16705906438734774,
+      "critical": 0.11311290817893337,
+      "edge_case": 0.1109632511004197
+    },
+    "checksum": "780c271471f99f5850b37ffbd5e039a0ebaeff3539e13c27bd9a00b7c33aea37",
+    "checksum_status": "verified",
+    "outlier_rows": [],
+    "freshness": {
+      "status": "fresh",
+      "age_days": 0
+    }
+  },
+  "deepchecks": {
+    "status": "skipped",
+    "reason": "disabled"
+  }
+}
