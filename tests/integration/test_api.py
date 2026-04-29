@@ -14,6 +14,15 @@ def test_openapi_loads():
     assert client.get("/openapi.json").status_code == 200
 
 
+def test_request_id_header_is_returned_for_api_errors():
+    client = TestClient(app)
+
+    response = client.get("/api/v1/champions/default-model", headers={"X-API-Key": "not-valid"})
+
+    assert response.status_code == 401
+    assert response.headers["X-Request-ID"]
+
+
 @pytest.mark.integration
 @pytest.mark.asyncio
 async def test_list_evaluations_returns_seeded_run(api_client, sample_run):
@@ -29,6 +38,21 @@ async def test_get_champion_returns_schema_payload(api_client, sample_champion):
     response = await api_client.get("/api/v1/champions/default-model", headers={"X-API-Key": "test-key"})
     assert response.status_code == 200
     assert response.json()["champion_run_id"] == sample_champion.champion_run_id
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
+async def test_get_evaluation_detail_returns_comparison_payload(api_client, sample_champion, sample_run):
+    response = await api_client.get(
+        f"/api/v1/evaluations/{sample_run.id}",
+        headers={"X-API-Key": "test-key"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["id"] == sample_run.id
+    assert "metric_table" in payload
+    assert "decision_narrative" in payload
 
 
 @pytest.mark.integration
@@ -108,3 +132,58 @@ async def test_export_compare_drift_and_health_routes(api_client, sample_champio
     health = await api_client.get("/health")
     assert ready.status_code == 200
     assert health.status_code == 200
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
+async def test_compare_first_run_without_champion_passes(api_client):
+    response = await api_client.post(
+        "/api/v1/evaluate/compare",
+        headers={"X-API-Key": "test-key"},
+        json={
+            "model_name": "brand-new-model",
+            "commit_sha": "new-model-commit",
+            "new_metrics": {"overall_f1": 0.8, "overall_accuracy": 0.82},
+            "slice_metrics": {"typical": {"f1": 0.8, "is_critical": False}},
+            "n_samples": 50,
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["decision"] == "PASS"
+    assert payload["is_first_run"] is True
+    assert payload["should_promote"] is True
+
+
+@pytest.mark.integration
+@pytest.mark.asyncio
+async def test_read_scoped_api_key_can_read_but_cannot_mutate(
+    api_client,
+    sample_champion,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    from ares.config import AresSettings
+
+    monkeypatch.setattr(
+        "ares.api.auth.settings",
+        AresSettings(
+            ENVIRONMENT="development",
+            ARES_API_KEYS=["reader-key"],
+            ARES_API_KEY_SCOPES={"reader-key": ["read"]},
+        ),
+    )
+
+    read_response = await api_client.get(
+        "/api/v1/champions/default-model",
+        headers={"X-API-Key": "reader-key"},
+    )
+    assert read_response.status_code == 200
+
+    promote_response = await api_client.post(
+        "/api/v1/champions/default-model/promote",
+        headers={"X-API-Key": "reader-key"},
+        json={"run_id": sample_champion.champion_run_id, "promoted_by": "reader", "reason": "scope test"},
+    )
+    assert promote_response.status_code == 403
+    assert promote_response.json()["detail"]["error_code"] == "INSUFFICIENT_SCOPE"

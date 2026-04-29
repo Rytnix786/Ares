@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import pool
@@ -12,14 +13,18 @@ from ares.config import settings
 from ares.models import Base
 
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.async_database_url)
-if config.config_file_name is not None:
+configured_url = config.get_main_option("sqlalchemy.url")
+if os.environ.get("DATABASE_URL") and (not configured_url or "localhost:55432" in configured_url):
+    config.set_main_option("sqlalchemy.url", settings.async_database_url)
+elif not configured_url:
+    config.set_main_option("sqlalchemy.url", settings.async_database_url)
+if config.config_file_name is not None and config.file_config.has_section("formatters"):
     fileConfig(config.config_file_name)
 target_metadata = Base.metadata
 
 
 def run_migrations_offline() -> None:
-    context.configure(url=settings.async_database_url, target_metadata=target_metadata, literal_binds=True, dialect_opts={"paramstyle": "named"})
+    context.configure(url=config.get_main_option("sqlalchemy.url"), target_metadata=target_metadata, literal_binds=True, dialect_opts={"paramstyle": "named"})
     with context.begin_transaction():
         context.run_migrations()
 

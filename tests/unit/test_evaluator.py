@@ -1,16 +1,17 @@
 import pandas as pd
 
 from ares.evaluators.classification import ClassificationEvaluator
+from ares.exceptions import DatasetSchemaError
 
 
 def test_evaluator_validates_required_columns():
     evaluator = ClassificationEvaluator("missing.json")
     try:
         evaluator.evaluate(pd.DataFrame({"id": [1]}))
-    except ValueError as exc:
-        assert "missing required dataset columns" in str(exc)
+    except DatasetSchemaError:
+        pass  # Expected
     else:
-        raise AssertionError("expected ValueError")
+        raise AssertionError("expected DatasetSchemaError")
 
 
 def test_classification_evaluator_runs():

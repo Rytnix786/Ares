@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,26 @@ from ares.config import settings
 log = logging.getLogger(__name__)
 
 REQUIRED_COLUMNS = {"id", "input", "expected_label", "slice"}
+
+
+def detect_outliers(dataset: pd.DataFrame, column: str = "difficulty", z_threshold: float = 3.0) -> list[int]:
+    if column not in dataset.columns or dataset.empty:
+        return []
+    series = pd.to_numeric(dataset[column], errors="coerce").dropna()
+    if series.empty or float(series.std(ddof=0)) == 0.0:
+        return []
+    mean = float(series.mean())
+    std = float(series.std(ddof=0))
+    return [int(index) for index, value in series.items() if abs((float(value) - mean) / std) > z_threshold]
+
+
+def freshness_status(dataset_path: str | Path, max_age_days: int = 30) -> dict[str, Any]:
+    path = Path(dataset_path)
+    if not path.exists():
+        return {"status": "missing", "age_days": None}
+    modified = datetime.fromtimestamp(path.stat().st_mtime, tz=UTC)
+    age_days = (datetime.now(UTC) - modified).days
+    return {"status": "fresh" if age_days <= max_age_days else "stale", "age_days": age_days}
 
 
 def sha256_file(path: Path) -> str:
@@ -93,4 +114,6 @@ def validate_golden_set(
         "slice_distribution": {str(k): float(v) for k, v in slice_distribution.items()},
         "checksum": checksum,
         "checksum_status": checksum_status,
+        "outlier_rows": detect_outliers(dataset),
+        "freshness": freshness_status(dataset_file, int(data_cfg.get("max_age_days", 30))),
     }

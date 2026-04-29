@@ -5,7 +5,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ares.api.auth import require_api_key
+from ares.api.auth import require_scope
 from ares.api.limiting import limiter
 from ares.api.presenters import (
     build_run_decision_payload,
@@ -18,7 +18,7 @@ from ares.db import crud
 from ares.db.session import get_db
 from ares.gate import rules_engine
 
-router = APIRouter(prefix="/api/v1", tags=["evaluations"], dependencies=[Depends(require_api_key)])
+router = APIRouter(prefix="/api/v1", tags=["evaluations"])
 
 
 async def _serialize_run(db: AsyncSession, run: Any) -> EvaluationRunResponse:
@@ -72,7 +72,12 @@ async def _serialize_run(db: AsyncSession, run: Any) -> EvaluationRunResponse:
 
 @router.post("/evaluate/compare", response_model=ComparisonResponse)
 @limiter.limit(settings.RATE_LIMIT_EVALUATE)
-async def compare_with_champion(request: Request, payload: CompareRequest, db: AsyncSession = Depends(get_db)) -> ComparisonResponse:
+async def compare_with_champion(
+    request: Request,
+    payload: CompareRequest,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("write")),
+) -> ComparisonResponse:
     del request
     champion = await crud.get_active_champion(db, payload.model_name)
     gate_config = rules_engine.snapshot_gate_config()
@@ -124,7 +129,11 @@ async def compare_with_champion(request: Request, payload: CompareRequest, db: A
 
 @router.get("/evaluations/", response_model=list[EvaluationRunResponse])
 @limiter.limit(settings.RATE_LIMIT_READ)
-async def list_runs(request: Request, db: AsyncSession = Depends(get_db)) -> list[EvaluationRunResponse]:
+async def list_runs(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("read")),
+) -> list[EvaluationRunResponse]:
     del request
     runs = await crud.list_evaluation_runs(db)
     return [await _serialize_run(db, run) for run in runs]
@@ -132,7 +141,12 @@ async def list_runs(request: Request, db: AsyncSession = Depends(get_db)) -> lis
 
 @router.get("/evaluations/{run_id}", response_model=EvaluationRunResponse)
 @limiter.limit(settings.RATE_LIMIT_READ)
-async def get_run(request: Request, run_id: str, db: AsyncSession = Depends(get_db)) -> EvaluationRunResponse:
+async def get_run(
+    request: Request,
+    run_id: str,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("read")),
+) -> EvaluationRunResponse:
     del request
     run = await crud.get_evaluation_run(db, run_id)
     if run is None:

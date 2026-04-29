@@ -5,7 +5,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ares.api.auth import require_api_key
+from ares.api.auth import require_scope
 from ares.api.limiting import limiter
 from ares.api.presenters import extract_metrics
 from ares.api.schemas.champion import (
@@ -21,7 +21,7 @@ from ares.config import settings
 from ares.db import crud
 from ares.db.session import get_db
 
-router = APIRouter(prefix="/api/v1/champions", tags=["champions"], dependencies=[Depends(require_api_key)])
+router = APIRouter(prefix="/api/v1/champions", tags=["champions"])
 
 
 def _snapshot_from_run(run: Any) -> ChampionEvaluationSnapshot | None:
@@ -42,7 +42,11 @@ def _snapshot_from_run(run: Any) -> ChampionEvaluationSnapshot | None:
 
 @router.get("/export", response_model=ChampionExportResponse)
 @limiter.limit(settings.RATE_LIMIT_READ)
-async def export(request: Request, db: AsyncSession = Depends(get_db)) -> ChampionExportResponse:
+async def export(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("read")),
+) -> ChampionExportResponse:
     del request
     payload = await crud.export_champions(db)
     champions = []
@@ -62,7 +66,12 @@ async def export(request: Request, db: AsyncSession = Depends(get_db)) -> Champi
 
 @router.get("/{model_name}", response_model=ChampionResponse)
 @limiter.limit(settings.RATE_LIMIT_READ)
-async def get_champion(request: Request, model_name: str, db: AsyncSession = Depends(get_db)) -> ChampionResponse:
+async def get_champion(
+    request: Request,
+    model_name: str,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("read")),
+) -> ChampionResponse:
     del request
     champion = await crud.get_active_champion(db, model_name)
     if champion is None:
@@ -80,7 +89,13 @@ async def get_champion(request: Request, model_name: str, db: AsyncSession = Dep
 
 @router.post("/{model_name}/promote", response_model=ChampionResponse)
 @limiter.limit(settings.RATE_LIMIT_CHAMPION_MUTATION)
-async def promote(request: Request, model_name: str, payload: PromoteChampionRequest, db: AsyncSession = Depends(get_db)) -> ChampionResponse:
+async def promote(
+    request: Request,
+    model_name: str,
+    payload: PromoteChampionRequest,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("write")),
+) -> ChampionResponse:
     del request
     champion = await crud.promote_champion(db, model_name, payload.run_id, payload.promoted_by, payload.reason)
     return ChampionResponse(
@@ -96,7 +111,12 @@ async def promote(request: Request, model_name: str, payload: PromoteChampionReq
 
 @router.get("/{model_name}/previous", response_model=ChampionResponse)
 @limiter.limit(settings.RATE_LIMIT_READ)
-async def previous(request: Request, model_name: str, db: AsyncSession = Depends(get_db)) -> ChampionResponse:
+async def previous(
+    request: Request,
+    model_name: str,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("read")),
+) -> ChampionResponse:
     del request
     champion = await crud.get_previous_champion(db, model_name)
     if champion is None:
@@ -114,7 +134,12 @@ async def previous(request: Request, model_name: str, db: AsyncSession = Depends
 
 @router.get("/{model_name}/history", response_model=ChampionHistoryResponse)
 @limiter.limit(settings.RATE_LIMIT_READ)
-async def history(request: Request, model_name: str, db: AsyncSession = Depends(get_db)) -> ChampionHistoryResponse:
+async def history(
+    request: Request,
+    model_name: str,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("read")),
+) -> ChampionHistoryResponse:
     del request
     history_rows = await crud.list_champion_history(db, model_name)
     return ChampionHistoryResponse(

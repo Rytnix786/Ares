@@ -27,3 +27,6 @@ reports/*.db
 !.gitkeep
 docker-compose.override.yml
 .DS_Store
+ares-remaining-gaps-implementation-plan-v3-2c73ea.md
+plan.md
+plan.md

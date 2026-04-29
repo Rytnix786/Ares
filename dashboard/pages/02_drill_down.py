@@ -1,11 +1,25 @@
 from __future__ import annotations
 
+# ruff: noqa: E402
+import sys
+from pathlib import Path
+
 import pandas as pd
 import streamlit as st
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 from dashboard.api_client import api_v1_path, safe_api_call
 from dashboard.components.charts import metric_delta_heatmap, slice_bar, slice_delta_heatmap
 from dashboard.components.connection_status import ensure_api_connection
+from dashboard.components.real_time_metrics import (
+    auto_refresh_sidebar_controls,
+    maybe_auto_refresh,
+    refresh_button,
+)
+from dashboard.components.state_handlers import empty_state, error_state
 
 
 def _narrative_box(payload: dict) -> None:
@@ -35,23 +49,28 @@ def _metric_dataframe(payload: dict) -> pd.DataFrame:
 def _slice_dataframe(payload: dict) -> pd.DataFrame:
     return pd.DataFrame(payload.get("slice_comparison", []) or [])
 
+
+auto_refresh_sidebar_controls()
+
 if ensure_api_connection():
     st.title("Drill Down")
+    refresh_button()
     run_id = st.query_params.get("run_id", "")
     if not run_id:
-        st.info("Select a run from the leaderboard or open a dashboard details URL.")
+        empty_state("Select a run from the leaderboard or open a dashboard details URL.", icon="🔍")
     else:
         payload, error = safe_api_call(lambda client: client.get(api_v1_path(f"/evaluations/{run_id}")))
         if error:
             if "404" in error:
                 st.warning("Run not found. Select a different evaluation from the leaderboard.")
             else:
-                st.error(error)
+                error_state(error, retry=True)
         else:
             payload = payload or {}
             _narrative_box(payload)
             st.subheader(f"Run {run_id}")
-            col1, col2, col3, col4 = st.columns(4)
+            col1, col2 = st.columns(2)
+            col3, col4 = st.columns(2)
             col1.metric("Decision", "PASS" if payload.get("passed") else "FAIL")
             col2.metric("F1", f"{payload.get('overall_f1', 0.0):.3f}")
             col3.metric("Accuracy", f"{payload.get('overall_accuracy', 0.0):.3f}")
@@ -114,3 +133,5 @@ if ensure_api_connection():
                             sim_metrics_df = _metric_dataframe(simulation_payload)
                             if not sim_metrics_df.empty:
                                 st.dataframe(sim_metrics_df, use_container_width=True, hide_index=True)
+
+    maybe_auto_refresh()

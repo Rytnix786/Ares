@@ -1,6 +1,6 @@
 PYTHON ?= python
 
-.PHONY: build build-pkg clean dashboard dev eval lint migrate migrate-down test test-all test-e2e test-integration test-unit verify
+.PHONY: benchmark build build-pkg clean dashboard dev eval lint migrate migrate-down test test-all test-e2e test-integration test-unit verify
 
 reports:
 	$(PYTHON) -c "from pathlib import Path; Path('reports').mkdir(exist_ok=True)"
@@ -47,6 +47,9 @@ dashboard:
 
 verify: reports
 	$(PYTHON) scripts/verify_repo.py
+
+benchmark:
+	$(PYTHON) -m pytest tests/performance --benchmark-only -v
 
 clean:
 	$(PYTHON) -c "from pathlib import Path; [p.unlink() for pattern in ('reports/*.json','reports/*.html','reports/*.md','reports/*.txt','reports/*.db','reports/test-results.xml','reports/coverage.xml') for p in Path('.').glob(pattern) if p.exists()]"

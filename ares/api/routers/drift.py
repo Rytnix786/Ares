@@ -3,19 +3,25 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ares.api.auth import require_api_key
+from ares.api.auth import require_scope
 from ares.api.limiting import limiter
 from ares.api.schemas.drift import DriftReportIn, DriftReportResponse
 from ares.config import settings
 from ares.db import crud
 from ares.db.session import get_db
 
-router = APIRouter(prefix="/api/v1/drift", tags=["drift"], dependencies=[Depends(require_api_key)])
+router = APIRouter(prefix="/api/v1/drift", tags=["drift"])
 
 
 @router.post("/reports", response_model=DriftReportResponse)
 @limiter.limit(settings.RATE_LIMIT_CHAMPION_MUTATION)
-async def create_report(request: Request, payload: DriftReportIn, db: AsyncSession = Depends(get_db)) -> DriftReportResponse:
+async def create_report(
+    request: Request,
+    payload: DriftReportIn,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("write")),
+) -> DriftReportResponse:
+    del request, _principal
     async with (db.begin_nested() if db.in_transaction() else db.begin()):
         report = await crud.create_drift_report(db, **payload.model_dump())
     return DriftReportResponse(
@@ -33,7 +39,13 @@ async def create_report(request: Request, payload: DriftReportIn, db: AsyncSessi
 
 @router.get("/reports", response_model=list[DriftReportResponse])
 @limiter.limit(settings.RATE_LIMIT_READ)
-async def list_reports(request: Request, model_name: str | None = None, db: AsyncSession = Depends(get_db)) -> list[DriftReportResponse]:
+async def list_reports(
+    request: Request,
+    model_name: str | None = None,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("read")),
+) -> list[DriftReportResponse]:
+    del request, _principal
     reports = await crud.list_drift_reports(db, model_name=model_name)
     return [
         DriftReportResponse(
