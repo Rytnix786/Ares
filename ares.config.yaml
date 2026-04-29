@@ -46,3 +46,6 @@ drift:
   psi_alert_threshold: 0.2
   production_error_spike_pct: 0.1
   local_predictions_dir: data/sample_predictions
+evaluator:
+  mode: text
+  feature_columns: []

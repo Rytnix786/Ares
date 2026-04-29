@@ -4,10 +4,13 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
+import joblib
 import pandas as pd
 import pytest
+from sklearn.dummy import DummyClassifier
 
 from ares.evaluators.classification import ClassificationEvaluator
+from ares.exceptions import PredictionError
 
 
 @pytest.fixture
@@ -179,3 +182,98 @@ class TestClassificationEvaluator:
             evaluator = ClassificationEvaluator(str(model_path))
             with pytest.raises(ModelLoadError):
                 evaluator.load_model()
+
+    def test_explicit_sklearn_tabular_mode_evaluates_dict_payloads(self, tmp_path):
+        """Adult-style tabular payloads route through sklearn predict when explicitly configured."""
+        model_path = tmp_path / "adult.joblib"
+        model = DummyClassifier(strategy="most_frequent")
+        train_x = pd.DataFrame({"age": [24, 55, 44], "hours-per-week": [35, 50, 45]})
+        train_y = ["negative", "positive", "positive"]
+        model.fit(train_x, train_y)
+        joblib.dump(model, model_path)
+
+        dataset = pd.DataFrame(
+            {
+                "id": ["1", "2"],
+                "input": [
+                    {"age": 39, "hours-per-week": 40},
+                    {"age": 52, "hours-per-week": 55},
+                ],
+                "expected_label": ["positive", "positive"],
+                "slice": ["critical", "typical"],
+            }
+        )
+        config = {
+            "evaluator": {
+                "mode": "sklearn_tabular",
+                "feature_columns": ["age", "hours-per-week"],
+                "positive_label": "positive",
+                "negative_label": "negative",
+            },
+            "gate": {"critical_slice_min_f1": 0.5},
+        }
+
+        result = ClassificationEvaluator(str(model_path), config).evaluate(dataset, "adult-test")
+
+        assert result.commit_sha == "adult-test"
+        assert result.overall_metrics["overall_accuracy"] == 1.0
+        assert result.passed
+
+    def test_sklearn_tabular_mode_missing_features_raises_clear_error(self, tmp_path):
+        """Explicit tabular mode must fail loudly instead of falling back to text behavior."""
+        model_path = tmp_path / "adult.joblib"
+        model = DummyClassifier(strategy="most_frequent")
+        model.fit(pd.DataFrame({"age": [24, 55], "hours-per-week": [35, 50]}), ["negative", "positive"])
+        joblib.dump(model, model_path)
+
+        evaluator = ClassificationEvaluator(
+            str(model_path),
+            {"evaluator": {"mode": "sklearn_tabular", "feature_columns": ["age", "hours-per-week"]}},
+        )
+
+        with pytest.raises(PredictionError) as exc_info:
+            evaluator.predict([{"age": 42}])
+
+        assert "configured feature columns" in str(exc_info.value)
+        assert exc_info.value.details["required_feature_columns"] == ["age", "hours-per-week"]
+
+    def test_unspecified_mode_guarded_fallback_uses_tabular_when_features_present(self, tmp_path):
+        """When mode is omitted, sklearn tabular is only inferred with predict + configured columns."""
+        model_path = tmp_path / "adult.joblib"
+        model = DummyClassifier(strategy="constant", constant="positive")
+        model.fit(pd.DataFrame({"age": [24, 55], "hours-per-week": [35, 50]}), ["negative", "positive"])
+        joblib.dump(model, model_path)
+
+        evaluator = ClassificationEvaluator(
+            str(model_path),
+            {"evaluator": {"feature_columns": ["age", "hours-per-week"]}},
+        )
+        evaluator.load_model()
+
+        assert evaluator.predict([{"age": 42, "hours-per-week": 45}]) == ["positive"]
+
+    def test_text_mode_backward_compatibility_with_seeded_payloads(self):
+        """Backward-compatibility check for the original text/keyword demo path."""
+        dataset = pd.DataFrame(
+            {
+                "id": ["1", "2", "3", "4"],
+                "input": [
+                    '{"text": "clearly positive stable example"}',
+                    '{"text": "failed broken escalation example"}',
+                    '{"text": "mostly positive production traffic"}',
+                    '{"text": "ambiguous but still negative"}',
+                ],
+                "expected_label": ["positive", "negative", "positive", "negative"],
+                "slice": ["easy", "critical", "typical", "edge_case"],
+            }
+        )
+        evaluator = ClassificationEvaluator(
+            "missing.json",
+            {"evaluator": {"mode": "text"}, "gate": {"critical_slice_min_f1": 0.6}},
+        )
+
+        result = evaluator.evaluate(dataset, "text-compat")
+
+        assert result.commit_sha == "text-compat"
+        assert result.overall_metrics["overall_accuracy"] == 1.0
+        assert result.passed

@@ -14,8 +14,9 @@ from sklearn.preprocessing import StandardScaler
 
 from ares.config import load_ares_config, settings
 from ares.db import crud
-from ares.db.session import get_sessionmaker
+from ares.db.session import dispose_engine, get_engine, get_sessionmaker
 from ares.evaluators.classification import ClassificationEvaluator
+from ares.models import Base
 
 SEED_MODEL_NAME = "baseline"
 SEED_RUN_ID = "baseline-seed-run"
@@ -120,15 +121,22 @@ async def champion_already_seeded() -> bool:
 
 
 async def main() -> None:
-    if await champion_already_seeded():
-        print("Champion already seeded, skipping")
-        return
+    try:
+        if settings.is_sqlite:
+            async with get_engine().begin() as connection:
+                await connection.run_sync(Base.metadata.create_all)
 
-    train_path = Path("data/golden_set/train.csv")
-    model_path = Path("models/baseline/champion_v1.joblib")
-    model_size_mb = train_baseline_model(train_path, model_path)
-    run_id = await register_baseline(model_path, model_size_mb=model_size_mb)
-    print(run_id)
+        if await champion_already_seeded():
+            print("Champion already seeded, skipping")
+            return
+
+        train_path = Path("data/golden_set/train.csv")
+        model_path = Path("models/baseline/champion_v1.joblib")
+        model_size_mb = train_baseline_model(train_path, model_path)
+        run_id = await register_baseline(model_path, model_size_mb=model_size_mb)
+        print(run_id)
+    finally:
+        await dispose_engine()
 
 
 if __name__ == "__main__":
