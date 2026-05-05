@@ -60,6 +60,7 @@ ignore = ["E501", "B008"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/conftest.py" = ["ASYNC240"]
+"scripts/run_adult_income_evaluation.py" = ["ASYNC240"]
 
 [tool.mypy]
 python_version = "3.11"

@@ -3,7 +3,7 @@ from __future__ import annotations
 import ast
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import joblib
 import numpy as np
@@ -12,7 +12,6 @@ from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_sc
 
 from ares.evaluators.base import BaseEvaluator
 from ares.exceptions import ConfigurationInvalidError, ModelLoadError, PredictionError
-
 
 TEXT_MODE = "text"
 SKLEARN_TABULAR_MODE = "sklearn_tabular"
@@ -86,10 +85,10 @@ class ClassificationEvaluator(BaseEvaluator):
         mapping: dict[Any, str] = {}
         if "positive_label" in evaluator_config:
             positive = str(evaluator_config["positive_label"])
-            mapping.update({1: positive, "1": positive, True: positive, "true": positive, "True": positive})
+            mapping.update({1: positive, "1": positive, "true": positive, "True": positive})
         if "negative_label" in evaluator_config:
             negative = str(evaluator_config["negative_label"])
-            mapping.update({0: negative, "0": negative, False: negative, "false": negative, "False": negative})
+            mapping.update({0: negative, "0": negative, "false": negative, "False": negative})
         return mapping
 
     def load_model(self) -> None:
@@ -187,6 +186,7 @@ class ClassificationEvaluator(BaseEvaluator):
             )
         frame = self._build_tabular_frame(inputs)
         model = self._model.get("model") if isinstance(self._model, dict) and "model" in self._model else self._model
+        model = cast(Any, model)
         predictions = model.predict(frame)
         mapping = self._label_mapping()
         return [mapping.get(value, str(value)) for value in predictions]

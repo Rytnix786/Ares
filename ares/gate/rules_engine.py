@@ -9,6 +9,18 @@ from ares.metrics.significance import is_improvement_significant
 from ares.observability.metrics import gate_decisions_total
 
 
+def _as_ratio(value: Any, default: float) -> float:
+    """Return a fractional ratio for gate config values.
+
+    Historical configs use human-readable percentages such as ``10.0`` for
+    10%, while some tests and callers use fractional values such as ``0.10``.
+    Accept both forms at the service boundary so regression gates do not become
+    accidentally permissive when reading ``ares.config.yaml``.
+    """
+    ratio = float(value if value is not None else default)
+    return ratio / 100.0 if ratio > 1.0 else ratio
+
+
 def snapshot_gate_config(config: dict[str, Any] | None = None) -> dict[str, Any]:
     if config is None:
         return dict(load_ares_config().get("gate", {}))
@@ -22,8 +34,8 @@ def evaluate(new_metrics: Mapping[str, float], champion_metrics: Mapping[str, fl
     max_f1_drop = float(gate.get("max_regression_f1", 0.02))
     max_acc_drop = float(gate.get("max_regression_accuracy", 0.015))
     critical_floor = float(gate.get("critical_slice_min_f1", 0.60))
-    max_latency_pct = float(gate.get("max_latency_regression_pct", 0.20))
-    max_size_pct = float(gate.get("max_size_increase_pct", 0.15))
+    max_latency_pct = _as_ratio(gate.get("max_latency_regression_pct"), 0.20)
+    max_size_pct = _as_ratio(gate.get("max_size_increase_pct"), 0.15)
     alpha = float(gate.get("significance_alpha", 0.05))
     deltas = {key: float(new_metrics.get(key, 0.0)) - float(champion_metrics.get(key, 0.0)) for key in set(new_metrics) | set(champion_metrics)}
     failures: list[str] = []

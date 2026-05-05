@@ -21,6 +21,24 @@ class ChampionResponse(BaseModel):
     is_active: bool
 
 
+class ChampionRollbackRequest(BaseModel):
+    rolled_back_by: str = "api"
+    reason: str = Field(min_length=1)
+    target_run_id: str | None = None
+    dry_run: bool = False
+
+
+class ChampionRollbackResponse(BaseModel):
+    model_name: str
+    from_champion_id: str
+    from_run_id: str
+    to_run_id: str
+    rolled_back_by: str
+    reason: str
+    dry_run: bool
+    champion: ChampionResponse | None = None
+
+
 class ChampionEvaluationSnapshot(BaseModel):
     id: str | None = None
     commit_sha: str

@@ -1,6 +1,8 @@
 import os
 import uuid
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 os.environ.setdefault("ENVIRONMENT", "development")
 os.environ.setdefault("ARES_API_KEYS", "test-key")
@@ -15,6 +17,24 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from ares.api.main import app
 from ares.db.session import get_db
 from ares.models import Base, DriftReportRecord, EvaluationRun, ModelChampion
+
+
+class _FallbackBenchmark:
+    """Minimal pytest-benchmark-compatible fixture for environments without the plugin."""
+
+    def __call__(self, func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
+        return func(*args, **kwargs)
+
+    def pedantic(self, func: Callable[[], Any], *, rounds: int = 1, **_: Any) -> Any:
+        result: Any = None
+        for _round in range(rounds):
+            result = func()
+        return result
+
+
+@pytest.fixture
+def benchmark() -> _FallbackBenchmark:
+    return _FallbackBenchmark()
 
 TEST_DB_PATH = Path("tests") / f"ares_test_{uuid.uuid4().hex}.db"
 TEST_DATABASE_URL = f"sqlite+aiosqlite:///{TEST_DB_PATH.as_posix()}"
