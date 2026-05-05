@@ -15,6 +15,8 @@ from ares.api.schemas.champion import (
     ChampionHistoryEntry,
     ChampionHistoryResponse,
     ChampionResponse,
+    ChampionRollbackRequest,
+    ChampionRollbackResponse,
     PromoteChampionRequest,
 )
 from ares.config import settings
@@ -157,4 +159,45 @@ async def history(
             )
             for entry in history_rows
         ],
+    )
+
+
+@router.post("/{model_name}/rollback", response_model=ChampionRollbackResponse)
+@limiter.limit(settings.RATE_LIMIT_CHAMPION_MUTATION)
+async def rollback(
+    request: Request,
+    model_name: str,
+    payload: ChampionRollbackRequest,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("admin")),
+) -> ChampionRollbackResponse:
+    del request, _principal
+    result = await crud.rollback_champion(
+        db,
+        model_name,
+        rolled_back_by=payload.rolled_back_by,
+        reason=payload.reason,
+        target_run_id=payload.target_run_id,
+        dry_run=payload.dry_run,
+    )
+    champion = result["champion"]
+    return ChampionRollbackResponse(
+        model_name=model_name,
+        from_champion_id=result["from_champion"].id,
+        from_run_id=result["from_champion"].champion_run_id,
+        to_run_id=result["to_run_id"],
+        rolled_back_by=payload.rolled_back_by,
+        reason=payload.reason,
+        dry_run=payload.dry_run,
+        champion=None
+        if champion is None
+        else ChampionResponse(
+            id=champion.id,
+            model_name=champion.model_name,
+            champion_run_id=champion.champion_run_id,
+            promoted_at=champion.promoted_at.isoformat(),
+            promoted_by=champion.promoted_by,
+            promotion_reason=champion.promotion_reason,
+            is_active=champion.is_active,
+        ),
     )

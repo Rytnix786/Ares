@@ -101,12 +101,12 @@ def promote_champion(model_name: str, run_id: str, promoted_by: str, reason: str
     )
 
 
-def rollback_champion(model_name: str, previous_run_id: str, promoted_by: str, reason: str | None = None) -> tuple[Any | None, str | None]:
-    """Rollback champion by re-promoting the previous champion's run_id."""
+def rollback_champion(model_name: str, previous_run_id: str | None, promoted_by: str, reason: str | None = None, dry_run: bool = False) -> tuple[Any | None, str | None]:
+    """Governed rollback through the rollback endpoint."""
     return safe_api_call(
         lambda client: client.post(
-            api_v1_path(f"/champions/{model_name}/promote"),
-            json={"run_id": previous_run_id, "promoted_by": promoted_by, "reason": f"Rollback: {reason}" if reason else "Rollback"},
+            api_v1_path(f"/champions/{model_name}/rollback"),
+            json={"target_run_id": previous_run_id, "rolled_back_by": promoted_by, "reason": reason or "Rollback", "dry_run": dry_run},
         )
     )
 
@@ -140,6 +140,21 @@ def get_drift_reports(model_name: str | None = None) -> tuple[Any | None, str | 
     return safe_api_call(
         lambda client: client.get(path)
     )
+
+
+def get_drift_jobs() -> tuple[Any | None, str | None]:
+    return safe_api_call(lambda client: client.get(api_v1_path("/drift/jobs")))
+
+
+def get_alert_events(status: str | None = None) -> tuple[Any | None, str | None]:
+    path = api_v1_path("/alerts/events")
+    if status:
+        path = f"{path}?status={status}"
+    return safe_api_call(lambda client: client.get(path))
+
+
+def update_alert_event(event_id: str, status: str, actor: str | None = None) -> tuple[Any | None, str | None]:
+    return safe_api_call(lambda client: client.patch(api_v1_path(f"/alerts/events/{event_id}"), json={"status": status, "actor": actor}))
 
 
 def create_test_drift_report(message: str) -> tuple[Any | None, str | None]:

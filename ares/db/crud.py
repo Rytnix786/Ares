@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ares.cache.keys import cache_key
@@ -11,7 +11,15 @@ from ares.exceptions import (
     AresException,
     PromotionError,
 )
-from ares.models import DriftReportRecord, EvaluationRun, ModelChampion
+from ares.models import (
+    AlertEvent,
+    AuditLog,
+    DriftJob,
+    DriftJobRun,
+    DriftReportRecord,
+    EvaluationRun,
+    ModelChampion,
+)
 from ares.observability.metrics import cache_operations_total, evaluation_runs_total
 
 
@@ -158,3 +166,133 @@ async def list_drift_reports(db: AsyncSession, model_name: str | None = None, li
         stmt = stmt.where(DriftReportRecord.model_name == model_name)
     result = await db.execute(stmt)
     return list(result.scalars().all())
+
+
+async def create_drift_job(db: AsyncSession, **values: Any) -> DriftJob:
+    job = DriftJob(**values)
+    db.add(job)
+    await db.flush()
+    await db.refresh(job)
+    return job
+
+
+async def get_drift_job(db: AsyncSession, job_id: str) -> DriftJob | None:
+    return await db.get(DriftJob, job_id)
+
+
+async def list_drift_jobs(db: AsyncSession, model_name: str | None = None, status: str | None = None, limit: int = 100) -> list[DriftJob]:
+    stmt = select(DriftJob).order_by(DriftJob.created_at.desc()).limit(limit)
+    if model_name:
+        stmt = stmt.where(DriftJob.model_name == model_name)
+    if status:
+        stmt = stmt.where(DriftJob.status == status)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def create_drift_job_run(db: AsyncSession, **values: Any) -> DriftJobRun:
+    run = DriftJobRun(**values)
+    db.add(run)
+    await db.flush()
+    await db.refresh(run)
+    return run
+
+
+async def update_drift_job_run(db: AsyncSession, run_id: str, **values: Any) -> DriftJobRun | None:
+    run = await db.get(DriftJobRun, run_id)
+    if run is None:
+        return None
+    for key, value in values.items():
+        setattr(run, key, value)
+    await db.flush()
+    await db.refresh(run)
+    return run
+
+
+async def list_drift_job_runs(db: AsyncSession, job_id: str | None = None, model_name: str | None = None, limit: int = 100) -> list[DriftJobRun]:
+    stmt = select(DriftJobRun).order_by(DriftJobRun.created_at.desc()).limit(limit)
+    if job_id:
+        stmt = stmt.where(DriftJobRun.job_id == job_id)
+    if model_name:
+        stmt = stmt.where(DriftJobRun.model_name == model_name)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def list_due_drift_jobs(db: AsyncSession, now: datetime | None = None, limit: int = 100) -> list[DriftJob]:
+    now = now or datetime.utcnow()
+    result = await db.execute(
+        select(DriftJob)
+        .where(DriftJob.status == "active", DriftJob.next_run_at <= now)
+        .order_by(DriftJob.next_run_at.asc())
+        .limit(limit)
+    )
+    return list(result.scalars().all())
+
+
+async def mark_drift_job_scheduled(db: AsyncSession, job: DriftJob, *, interval_minutes: int = 60) -> None:
+    now = datetime.utcnow()
+    job.last_run_at = now
+    job.next_run_at = now + timedelta(minutes=interval_minutes)
+    job.updated_at = now
+    await db.flush()
+
+
+async def create_alert_event(db: AsyncSession, **values: Any) -> AlertEvent:
+    event = AlertEvent(**values)
+    db.add(event)
+    await db.flush()
+    await db.refresh(event)
+    return event
+
+
+async def list_alert_events(db: AsyncSession, model_name: str | None = None, status: str | None = None, limit: int = 100) -> list[AlertEvent]:
+    stmt = select(AlertEvent).order_by(AlertEvent.created_at.desc()).limit(limit)
+    if model_name:
+        stmt = stmt.where(AlertEvent.model_name == model_name)
+    if status:
+        stmt = stmt.where(AlertEvent.status == status)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def update_alert_event_status(db: AsyncSession, event_id: str, status: str, actor: str | None = None) -> AlertEvent | None:
+    event = await db.get(AlertEvent, event_id)
+    if event is None:
+        return None
+    now = datetime.utcnow()
+    event.status = status
+    if status == "acknowledged":
+        event.acknowledged_at = now
+        event.acknowledged_by = actor
+    if status == "resolved":
+        event.resolved_at = now
+        event.resolved_by = actor
+    await db.flush()
+    await db.refresh(event)
+    return event
+
+
+async def list_audit_logs(
+    db: AsyncSession,
+    *,
+    user: str | None = None,
+    action: str | None = None,
+    resource_type: str | None = None,
+    limit: int = 100,
+) -> list[AuditLog]:
+    stmt = select(AuditLog).order_by(AuditLog.timestamp.desc()).limit(limit)
+    if user:
+        stmt = stmt.where(AuditLog.user == user)
+    if action:
+        stmt = stmt.where(AuditLog.action == action)
+    if resource_type:
+        stmt = stmt.where(AuditLog.resource_type == resource_type)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def purge_audit_logs(db: AsyncSession, *, older_than: datetime) -> int:
+    result = await db.execute(delete(AuditLog).where(AuditLog.timestamp < older_than))
+    await db.flush()
+    return int(getattr(result, "rowcount", 0) or 0)

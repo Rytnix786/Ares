@@ -21,12 +21,20 @@ except ModuleNotFoundError:  # pragma: no cover - minimal smoke-test fallback
     SlowAPIMiddleware = None
 
 from ares.api.limiting import limiter
-from ares.api.routers import champions, drift, evaluations, gate, health
+from ares.api.routers import alerts, api_keys, audit, champions, drift, evaluations, gate, health
 from ares.api.schemas.error import ErrorResponse
 from ares.exceptions import AresException
 from ares.logging import configure_logging
 from ares.observability.metrics import MetricsMiddleware
 from ares.observability.telemetry import setup_telemetry
+
+ERROR_REMEDIATION = {
+    "MODEL_LOAD_FAILED": "Verify the model path/artifact URI, file permissions, and configured evaluator mode.",
+    "PREDICTION_FAILED": "Validate input schema and model compatibility before retrying the evaluation.",
+    "DATASET_SCHEMA_INVALID": "Fix the dataset columns or production prediction payload to match the documented schema.",
+    "PROMOTION_FAILED": "Check champion history, target run gate status, and rollback/promotion permissions.",
+    "INSUFFICIENT_SCOPE": "Use an API key with the required scope or ask an administrator to rotate/provision one.",
+}
 
 configure_logging()
 
@@ -60,6 +68,10 @@ async def ares_exception_handler(request: Request, exc: AresException) -> JSONRe
     error_response = ErrorResponse(
         error_code=exc.error_code,
         message=exc.user_message,
+        category=exc.__class__.__mro__[1].__name__.replace("Error", "").lower(),
+        remediation=ERROR_REMEDIATION.get(exc.error_code, "Review the error details, correct the request, and retry."),
+        retryable=exc.error_code.endswith("TIMEOUT"),
+        request_id=getattr(request.state, "request_id", None),
         details=exc.details,
     )
     return JSONResponse(
@@ -96,7 +108,7 @@ async def metrics_context_middleware(
     return cast(Response, await middleware(request, call_next))
 
 
-for router in [health.router, evaluations.router, champions.router, gate.router, drift.router]:
+for router in [health.router, evaluations.router, champions.router, gate.router, drift.router, alerts.router, api_keys.router, audit.router]:
     app.include_router(router)
 
 if Instrumentator is not None:
