@@ -12,7 +12,13 @@ from ares.models.base import Base
 class ModelChampion(Base):
     __tablename__ = "model_champions"
     __table_args__ = (
-        Index("uq_active_champion_per_model", "model_name", unique=True, postgresql_where=text("is_active = true")),
+        Index(
+            "uq_active_champion_per_model",
+            "model_name",
+            unique=True,
+            postgresql_where=text("is_active = true"),
+            sqlite_where=text("is_active = 1"),
+        ),
         Index("ix_model_champions_action", "action"),
         Index("ix_model_champions_previous_champion_id", "previous_champion_id"),
         Index("ix_model_champions_rolled_back_from_id", "rolled_back_from_id"),

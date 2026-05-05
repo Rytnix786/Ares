@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime
 from typing import Any
 
 from sqlalchemy import select
@@ -66,7 +67,7 @@ async def promote_champion(db: AsyncSession, model_name: str, run_id: str, promo
             current = current_result.scalar_one_or_none()
             if current:
                 current.is_active = False
-            champion = ModelChampion(model_name=model_name, champion_run_id=run_id, promoted_by=promoted_by, promotion_reason=reason, is_active=True)
+            champion = ModelChampion(model_name=model_name, champion_run_id=run_id, promoted_by=promoted_by, promotion_reason=reason, is_active=True, previous_champion_id=None if current is None else current.id, action="promotion")
             db.add(champion)
         await db.refresh(champion)
         return champion
@@ -77,6 +78,61 @@ async def promote_champion(db: AsyncSession, model_name: str, run_id: str, promo
             model_name=model_name,
             reason=str(e),
         ) from e
+
+
+async def rollback_champion(
+    db: AsyncSession,
+    model_name: str,
+    *,
+    rolled_back_by: str,
+    reason: str,
+    target_run_id: str | None = None,
+    dry_run: bool = False,
+) -> dict[str, Any]:
+    if not reason.strip():
+        raise PromotionError(model_name=model_name, reason="rollback reason is required")
+    try:
+        async with (db.begin_nested() if db.in_transaction() else db.begin()):
+            current_result = await db.execute(select(ModelChampion).where(ModelChampion.model_name == model_name, ModelChampion.is_active.is_(True)).with_for_update())
+            current = current_result.scalar_one_or_none()
+            if current is None:
+                raise PromotionError(model_name=model_name, reason="no active champion to roll back")
+            if target_run_id is None:
+                target = await get_previous_champion(db, model_name)
+                if target is None:
+                    raise PromotionError(model_name=model_name, reason="no previous champion available")
+                target_run_id = target.champion_run_id
+            target_run = await get_evaluation_run(db, target_run_id)
+            if target_run is None:
+                raise PromotionError(model_name=model_name, reason="target evaluation run not found", details={"target_run_id": target_run_id})
+            if target_run.model_name != model_name:
+                raise PromotionError(model_name=model_name, reason="target run belongs to a different model", details={"target_run_id": target_run_id, "target_model_name": target_run.model_name})
+            if not target_run.passed:
+                raise PromotionError(model_name=model_name, reason="target run did not pass the gate", details={"target_run_id": target_run_id})
+            if dry_run:
+                return {"model_name": model_name, "from_champion": current, "to_run_id": target_run_id, "champion": None, "dry_run": True}
+            current.is_active = False
+            champion = ModelChampion(
+                model_name=model_name,
+                champion_run_id=target_run_id,
+                promoted_by=rolled_back_by,
+                promotion_reason=reason,
+                is_active=True,
+                previous_champion_id=current.id,
+                action="rollback",
+                rolled_back_from_id=current.id,
+                rollback_reason=reason,
+                rollback_at=datetime.utcnow(),
+                lifecycle_metadata={"target_run_id": target_run_id},
+            )
+            db.add(champion)
+        if not dry_run:
+            await db.refresh(champion)
+        return {"model_name": model_name, "from_champion": current, "to_run_id": target_run_id, "champion": champion, "dry_run": False}
+    except AresException:
+        raise
+    except Exception as e:
+        raise PromotionError(model_name=model_name, reason=str(e)) from e
 
 
 async def export_champions(db: AsyncSession) -> dict[str, Any]:

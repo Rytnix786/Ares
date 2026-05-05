@@ -15,10 +15,11 @@ Commands run from `H:\Projects\Ares`:
 | Command | Result | Notes |
 |---|---:|---|
 | `python --version` | Python 3.14.0 | Local Windows environment. |
-| `python -m pytest --collect-only -q -o addopts=` | 212 collected tests | Collection succeeded. |
+| `python -m pytest --collect-only -q -o addopts=` | 215 collected tests | Collection succeeded after API-key lifecycle and rollback work already present in the branch. |
 | `python -m pytest -q -o addopts=` | Initially failed: 3 failed, 209 passed | Exposed baseline regressions in gate percentage handling and synthetic CLI smoke path. |
 | Targeted regression command | 22 passed | `tests/e2e/test_full_pipeline.py::test_cli_success`, golden-set tests, and gate rules tests pass after fixes. |
-| Full suite after fixes | 212 passed, 42 warnings in 12.95s | `python -m pytest -q -o addopts=` completed successfully. |
+| Full suite after fixes | 215 passed, 83 warnings in 12.93s | `python -m pytest -q -o addopts=` completed successfully before adding coverage hardening tests. |
+| Canonical repository gate | Passed | `python scripts/verify_repo.py` completed Ruff, Mypy, pytest with reports, Docker Compose config, DVC dry-run, and compile checks. Final pytest report: 220 passed, 92 warnings in 14.31s; coverage detail reported 89.92%, satisfying the configured integer 90% gate. |
 
 ## Baseline fixes made before Phase 1
 
@@ -33,6 +34,14 @@ These were necessary to make the repository baseline truthful and executable bef
 3. `scripts/run_evaluation.py`
    - In checksum-skip CLI smoke mode, if the configured tabular feature set is absent from an `input`-based dataset, the CLI uses text evaluator mode for that run.
    - Avoids breaking production tabular configuration while keeping local/e2e smoke tests meaningful.
+4. `tests/conftest.py`
+   - Added a minimal local `benchmark` fixture fallback so performance smoke tests run when optional `pytest-benchmark` is absent.
+5. `ares/models/model_champion.py`
+   - Added SQLite partial-index semantics for active champion uniqueness so SQLite test/runtime behavior matches the intended Postgres partial unique index.
+6. `ares/evaluators/classification.py`
+   - Fixed Ruff/Mypy blockers without changing evaluator behavior.
+7. `tests/integration/test_db_crud.py` and `tests/unit/test_webhook_notifier.py`
+   - Added rollback and webhook notifier coverage that validates Phase 1 operational surfaces and keeps the canonical coverage gate meaningful.
 
 ## Documentation inventory findings
 
@@ -119,9 +128,10 @@ Read-only CI/testing agent findings:
 
 - [x] Current docs inventory complete.
 - [x] Architecture and coupling risks reviewed by parallel agent.
-- [x] Test collection baseline recorded: 212 tests.
+- [x] Test collection baseline recorded: 215 tests before coverage hardening; 220 tests in the final canonical gate.
 - [x] Initial full-test baseline recorded and blocking regressions fixed.
 - [x] Risk register created.
 - [x] Phase 1 task inventory created.
 - [x] Full suite after fixes recorded.
+- [x] Canonical `python scripts/verify_repo.py` gate passed.
 - [ ] Phase 0 artifacts committed.
