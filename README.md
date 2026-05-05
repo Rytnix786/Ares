@@ -1,13 +1,4 @@
 <div align="center">
-
-```text
-     /\      |  ARES
-    /  \     |  Model Regression Detection System
-   / /\ \    |  Candidate-vs-champion gates for ML promotion decisions
-  / ____ \   |
- /_/    \_\  |
-```
-
 # ⚔️ ARES
 
 Decide whether a candidate ML model is safe to promote before it reaches production.
