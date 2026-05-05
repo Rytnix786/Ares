@@ -251,6 +251,10 @@ async def evaluate_once(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         config = load_ares_config()
         dataset_path = resolve_dataset_path(args)
         dataset = pd.read_csv(dataset_path)
+        if settings.GOLDEN_SET_SKIP_CHECKSUM and "input" in dataset.columns:
+            feature_columns = config.get("evaluator", {}).get("feature_columns", []) if isinstance(config.get("evaluator"), dict) else []
+            if feature_columns and not set(feature_columns).issubset(dataset.columns):
+                config = {**config, "evaluator": {**config.get("evaluator", {}), "mode": "text"}}
         validation_summary = validate_golden_set(dataset, dataset_path, args.split, config)
         evaluator = ClassificationEvaluator(args.model_path, config)
         evaluation_result = evaluator.evaluate(dataset, commit_sha=args.commit_sha)
