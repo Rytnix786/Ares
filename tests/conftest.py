@@ -96,8 +96,8 @@ def sample_dataset():
 @pytest_asyncio.fixture
 async def sample_run(async_session):
     run = EvaluationRun(
-        id="run-1",
-        commit_sha="abc123",
+        id=f"run-1-{uuid.uuid4().hex[:8]}",
+        commit_sha=f"abc123{uuid.uuid4().hex[:8]}",
         model_name="default-model",
         model_version="candidate",
         branch="test",
@@ -130,8 +130,8 @@ async def sample_run(async_session):
 @pytest_asyncio.fixture
 async def sample_run_2(async_session):
     run = EvaluationRun(
-        id="run-2",
-        commit_sha="def456",
+        id=f"run-2-{uuid.uuid4().hex[:8]}",
+        commit_sha=f"def456{uuid.uuid4().hex[:8]}",
         model_name="default-model",
         model_version="candidate",
         branch="test",
@@ -148,7 +148,7 @@ async def sample_run_2(async_session):
         metadata_json={},
         passed=True,
         failure_reason=None,
-        golden_set_version="v1.0.0",
+        golden_set_version="v2.0.0",
         n_samples_evaluated=4,
         duration_seconds=0.2,
         mlflow_run_id=None,
