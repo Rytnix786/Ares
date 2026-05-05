@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from fastapi import Depends, Header, HTTPException, Request, status
 
 from ares.config import settings
-from ares.db.crud_api_keys import get_active_api_key_by_hash
-from ares.db.session import get_sessionmaker
+from ares.db.crud_api_keys import get_active_api_key_by_hash, record_api_key_usage
+from ares.db.session import dispose_engine, get_sessionmaker
 
 
 @dataclass(frozen=True)
@@ -17,6 +17,7 @@ class APIKeyPrincipal:
     key: str
     key_id: str
     scopes: frozenset[str]
+    source: str = "env"
 
     def has_scope(self, scope: str) -> bool:
         return scope in self.scopes or "admin" in self.scopes
@@ -34,12 +35,19 @@ async def require_api_key(x_api_key: str | None = Header(default=None, alias="X-
     current_settings = settings
     if x_api_key:
         try:
-            async with get_sessionmaker()() as session:
+            session_factory = get_sessionmaker()
+            session_context = session_factory.begin() if hasattr(session_factory, "begin") else session_factory()
+            async with session_context as session:
                 db_key = await get_active_api_key_by_hash(session, hash_api_key(x_api_key))
                 if db_key is not None:
-                    return APIKeyPrincipal(key=x_api_key, key_id=db_key.id, scopes=frozenset(db_key.scopes or []))
+                    try:
+                        await record_api_key_usage(session, db_key.id)
+                    except Exception:
+                        pass
+                    return APIKeyPrincipal(key=x_api_key, key_id=db_key.id, scopes=frozenset(db_key.scopes or []), source="db")
         except Exception:
             # Preserve env-key compatibility if DB key infrastructure is not ready.
+            await dispose_engine()
             pass
     if not current_settings.ARES_API_KEYS:
         if current_settings.ENVIRONMENT == "development":
