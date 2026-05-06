@@ -34,3 +34,8 @@ gstack-main/
 ruflo-main/
 .gstack/
 .gstack/
+commit.bat
+.gitignore
+.kiro/hooks/trust-npm-commands.kiro.hook
+final_test.txt
+.vscode/settings.json
