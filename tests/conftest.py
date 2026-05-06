@@ -32,9 +32,18 @@ class _FallbackBenchmark:
         return result
 
 
-@pytest.fixture
-def benchmark() -> _FallbackBenchmark:
-    return _FallbackBenchmark()
+# Only provide the fallback fixture if pytest-benchmark is not installed
+pytest_plugins = []
+try:
+    import pytest_benchmark  # noqa: F401
+    _has_pytest_benchmark = True
+except ImportError:
+    _has_pytest_benchmark = False
+
+if not _has_pytest_benchmark:
+    @pytest.fixture
+    def benchmark() -> _FallbackBenchmark:
+        return _FallbackBenchmark()
 
 TEST_DB_PATH = Path("tests") / f"ares_test_{uuid.uuid4().hex}.db"
 TEST_DATABASE_URL = f"sqlite+aiosqlite:///{TEST_DB_PATH.as_posix()}"
