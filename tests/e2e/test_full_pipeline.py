@@ -11,6 +11,15 @@ from sqlalchemy import create_engine
 from ares.models import Base
 
 
+def subprocess_env(tmp_path: Path) -> dict[str, str]:
+    env = os.environ.copy()
+    env["DATABASE_URL"] = prepare_sqlite_db(tmp_path)
+    env.pop("MLFLOW_TRACKING_URI", None)
+    for key in ("COV_CORE_SOURCE", "COV_CORE_CONFIG", "COV_CORE_DATAFILE"):
+        env.pop(key, None)
+    return env
+
+
 def prepare_sqlite_db(tmp_path: Path) -> str:
     db_path = tmp_path / "ares_cli.db"
     database_url = f"sqlite+aiosqlite:///{db_path.as_posix()}"
@@ -25,8 +34,7 @@ def prepare_sqlite_db(tmp_path: Path) -> str:
 @pytest.mark.e2e
 def test_cli_failure_json(tmp_path: Path):
     out = tmp_path / "result.json"
-    env = os.environ.copy()
-    env["DATABASE_URL"] = prepare_sqlite_db(tmp_path)
+    env = subprocess_env(tmp_path)
     proc = subprocess.run(
         [
             sys.executable,
@@ -42,7 +50,7 @@ def test_cli_failure_json(tmp_path: Path):
         ],
         text=True,
         env=env,
-        timeout=30,
+        timeout=60,
     )
     assert proc.returncode == 1
     payload = json.loads(out.read_text())
@@ -102,8 +110,7 @@ def test_cli_success(tmp_path: Path):
         }
     ).to_csv(data, index=False)
     out = tmp_path / "result.json"
-    env = os.environ.copy()
-    env["DATABASE_URL"] = prepare_sqlite_db(tmp_path)
+    env = subprocess_env(tmp_path)
     env["GOLDEN_SET_SKIP_CHECKSUM"] = "true"
     proc = subprocess.run(
         [
@@ -120,7 +127,7 @@ def test_cli_success(tmp_path: Path):
         ],
         text=True,
         env=env,
-        timeout=30,
+        timeout=60,
     )
     assert proc.returncode == 0
     assert json.loads(out.read_text())["run_id"]

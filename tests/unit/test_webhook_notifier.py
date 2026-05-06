@@ -50,4 +50,11 @@ async def test_send_webhook_posts_signed_payload(monkeypatch: pytest.MonkeyPatch
     headers = captured["headers"]
     assert isinstance(headers, dict)
     assert headers["content-type"] == "application/json"
-    assert headers["x-ares-signature"] == webhook.sign_payload({"event": "drift"}, "secret")
+    assert "x-ares-timestamp" in headers
+    assert headers["x-ares-signature"].startswith("v1=")
+    assert webhook.verify_signature(
+        {"event": "drift"},
+        "secret",
+        headers["x-ares-timestamp"],
+        headers["x-ares-signature"],
+    )

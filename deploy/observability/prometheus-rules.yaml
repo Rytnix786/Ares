@@ -1,0 +1,43 @@
+groups:
+  - name: ares-api
+    rules:
+      - alert: AresApiHighErrorRate
+        expr: sum(rate(http_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(http_requests_total[5m])), 1) > 0.05
+        for: 10m
+        labels: {severity: page, service: ares}
+        annotations:
+          summary: ARES API 5xx rate is above 5%
+          runbook_url: docs/runbooks/operator-incident-response.md#api-outage-or-high-error-rate
+      - alert: AresApiNoTraffic
+        expr: absent(up{job=~".*ares.*"} == 1)
+        for: 5m
+        labels: {severity: page, service: ares}
+        annotations:
+          summary: ARES metrics target is missing
+  - name: ares-product
+    rules:
+      - alert: AresDriftAlertsFiring
+        expr: increase(ares_drift_alerts_total[15m]) > 0
+        for: 0m
+        labels: {severity: ticket, service: ares}
+        annotations:
+          summary: ARES emitted drift alerts
+          runbook_url: docs/runbooks/operator-incident-response.md#drift-alert
+      - alert: AresGateFailuresSpike
+        expr: increase(ares_gate_decisions_total{decision="fail"}[30m]) > 5
+        for: 5m
+        labels: {severity: ticket, service: ares}
+        annotations:
+          summary: Gate failures increased rapidly
+      - alert: AresAuditWriteFailures
+        expr: increase(ares_audit_write_failures_total[10m]) > 0
+        for: 0m
+        labels: {severity: page, service: ares}
+        annotations:
+          summary: Audit writes are failing
+      - alert: AresAuthFailuresSpike
+        expr: increase(ares_auth_failures_total[10m]) > 20
+        for: 5m
+        labels: {severity: ticket, service: ares}
+        annotations:
+          summary: Authentication failures spiked

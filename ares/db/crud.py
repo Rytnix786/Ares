@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ares.cache.keys import cache_key
@@ -11,7 +11,18 @@ from ares.exceptions import (
     AresException,
     PromotionError,
 )
-from ares.models import DriftReportRecord, EvaluationRun, ModelChampion
+from ares.models import (
+    AlertEvent,
+    AuditLog,
+    ChampionRollback,
+    DriftJob,
+    DriftJobRun,
+    DriftReportRecord,
+    EvaluationRun,
+    ModelChampion,
+    ProductionPredictionBatchRecord,
+    SliceMetricPoint,
+)
 from ares.observability.metrics import cache_operations_total, evaluation_runs_total
 
 
@@ -36,6 +47,7 @@ async def create_evaluation_run(db: AsyncSession, **values: Any) -> EvaluationRu
     run = EvaluationRun(**values)
     db.add(run)
     await db.flush()
+    await persist_slice_metric_points(db, run)
     await db.refresh(run)
     evaluation_runs_total.labels("passed" if run.passed else "failed").inc()
     return run
@@ -126,9 +138,25 @@ async def rollback_champion(
                 lifecycle_metadata={"target_run_id": target_run_id},
             )
             db.add(champion)
+            await db.flush()
+            rollback_record = ChampionRollback(
+                model_name=model_name,
+                from_champion_id=current.id,
+                to_champion_id=champion.id,
+                from_run_id=current.champion_run_id,
+                to_run_id=target_run_id,
+                actor=rolled_back_by,
+                reason=reason,
+                validation_status="validated",
+                status="completed",
+                completed_at=datetime.utcnow(),
+                rollback_metadata={"target_run_id": target_run_id},
+            )
+            db.add(rollback_record)
         if not dry_run:
             await db.refresh(champion)
-        return {"model_name": model_name, "from_champion": current, "to_run_id": target_run_id, "champion": champion, "dry_run": False}
+            await db.refresh(rollback_record)
+        return {"model_name": model_name, "from_champion": current, "to_run_id": target_run_id, "champion": champion, "rollback": rollback_record, "dry_run": False}
     except AresException:
         raise
     except Exception as e:
@@ -142,6 +170,32 @@ async def export_champions(db: AsyncSession) -> dict[str, Any]:
         run = await get_evaluation_run(db, champion.champion_run_id)
         champions.append({"model_name": champion.model_name, "champion_run_id": champion.champion_run_id, "promoted_at": champion.promoted_at.isoformat(), "promoted_by": champion.promoted_by, "evaluation": None if run is None else {"commit_sha": run.commit_sha, "model_version": run.model_version, "golden_set_version": run.golden_set_version, "metrics": {"overall_f1": run.overall_f1, "overall_accuracy": run.overall_accuracy}}})
     return {"version": 1, "champions": champions}
+
+
+async def list_champion_rollbacks(db: AsyncSession, model_name: str, limit: int = 100) -> list[ChampionRollback]:
+    result = await db.execute(
+        select(ChampionRollback)
+        .where(ChampionRollback.model_name == model_name)
+        .order_by(ChampionRollback.created_at.desc())
+        .limit(limit)
+    )
+    return list(result.scalars().all())
+
+
+async def create_prediction_batch(db: AsyncSession, **values: Any) -> ProductionPredictionBatchRecord:
+    batch = ProductionPredictionBatchRecord(**values)
+    db.add(batch)
+    await db.flush()
+    await db.refresh(batch)
+    return batch
+
+
+async def latest_prediction_batch(db: AsyncSession, model_name: str, source: str | None = None) -> ProductionPredictionBatchRecord | None:
+    stmt = select(ProductionPredictionBatchRecord).where(ProductionPredictionBatchRecord.model_name == model_name)
+    if source:
+        stmt = stmt.where(ProductionPredictionBatchRecord.source == source)
+    result = await db.execute(stmt.order_by(ProductionPredictionBatchRecord.created_at.desc()).limit(1))
+    return result.scalar_one_or_none()
 
 
 async def create_drift_report(db: AsyncSession, **values: Any) -> DriftReportRecord:
@@ -158,3 +212,204 @@ async def list_drift_reports(db: AsyncSession, model_name: str | None = None, li
         stmt = stmt.where(DriftReportRecord.model_name == model_name)
     result = await db.execute(stmt)
     return list(result.scalars().all())
+
+
+async def create_drift_job(db: AsyncSession, **values: Any) -> DriftJob:
+    job = DriftJob(**values)
+    db.add(job)
+    await db.flush()
+    await db.refresh(job)
+    return job
+
+
+async def get_drift_job(db: AsyncSession, job_id: str) -> DriftJob | None:
+    return await db.get(DriftJob, job_id)
+
+
+async def list_drift_jobs(db: AsyncSession, model_name: str | None = None, status: str | None = None, limit: int = 100) -> list[DriftJob]:
+    stmt = select(DriftJob).order_by(DriftJob.created_at.desc()).limit(limit)
+    if model_name:
+        stmt = stmt.where(DriftJob.model_name == model_name)
+    if status:
+        stmt = stmt.where(DriftJob.status == status)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def create_drift_job_run(db: AsyncSession, **values: Any) -> DriftJobRun:
+    run = DriftJobRun(**values)
+    db.add(run)
+    await db.flush()
+    await db.refresh(run)
+    return run
+
+
+async def persist_slice_metric_points(db: AsyncSession, run: EvaluationRun) -> list[SliceMetricPoint]:
+    points: list[SliceMetricPoint] = []
+    for slice_name, metrics in (run.slice_metrics or {}).items():
+        is_critical = bool(metrics.get("is_critical", False))
+        for metric_name, value in metrics.items():
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                continue
+            point = SliceMetricPoint(
+                run_id=run.id,
+                model_name=run.model_name,
+                slice_name=str(slice_name),
+                metric_name=str(metric_name),
+                metric_value=float(value),
+                is_critical=is_critical,
+                created_at=run.created_at,
+            )
+            db.add(point)
+            points.append(point)
+    if points:
+        await db.flush()
+    return points
+
+
+async def list_slice_metric_trends(
+    db: AsyncSession,
+    *,
+    model_name: str | None = None,
+    slice_name: str | None = None,
+    metric_name: str | None = None,
+    limit: int = 500,
+) -> list[SliceMetricPoint]:
+    stmt = select(SliceMetricPoint).order_by(SliceMetricPoint.created_at.desc()).limit(limit)
+    if model_name:
+        stmt = stmt.where(SliceMetricPoint.model_name == model_name)
+    if slice_name:
+        stmt = stmt.where(SliceMetricPoint.slice_name == slice_name)
+    if metric_name:
+        stmt = stmt.where(SliceMetricPoint.metric_name == metric_name)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def purge_slice_metric_points(db: AsyncSession, *, older_than: datetime) -> int:
+    result = await db.execute(delete(SliceMetricPoint).where(SliceMetricPoint.created_at < older_than))
+    await db.flush()
+    return int(getattr(result, "rowcount", 0) or 0)
+
+
+async def attach_model_card(db: AsyncSession, run_id: str, *, markdown_uri: str, payload: dict[str, Any]) -> EvaluationRun | None:
+    run = await db.get(EvaluationRun, run_id)
+    if run is None:
+        return None
+    run.model_card_uri = markdown_uri
+    run.model_card_json = payload
+    await db.flush()
+    await db.refresh(run)
+    return run
+
+
+async def update_drift_job_run(db: AsyncSession, run_id: str, **values: Any) -> DriftJobRun | None:
+    run = await db.get(DriftJobRun, run_id)
+    if run is None:
+        return None
+    for key, value in values.items():
+        setattr(run, key, value)
+    await db.flush()
+    await db.refresh(run)
+    return run
+
+
+async def list_drift_job_runs(db: AsyncSession, job_id: str | None = None, model_name: str | None = None, limit: int = 100) -> list[DriftJobRun]:
+    stmt = select(DriftJobRun).order_by(DriftJobRun.created_at.desc()).limit(limit)
+    if job_id:
+        stmt = stmt.where(DriftJobRun.job_id == job_id)
+    if model_name:
+        stmt = stmt.where(DriftJobRun.model_name == model_name)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def list_due_drift_jobs(db: AsyncSession, now: datetime | None = None, limit: int = 100) -> list[DriftJob]:
+    now = now or datetime.utcnow()
+    result = await db.execute(
+        select(DriftJob)
+        .where(DriftJob.status == "active", DriftJob.next_run_at <= now)
+        .order_by(DriftJob.next_run_at.asc())
+        .limit(limit)
+    )
+    return list(result.scalars().all())
+
+
+async def mark_drift_job_scheduled(db: AsyncSession, job: DriftJob, *, interval_minutes: int = 60) -> None:
+    now = datetime.utcnow()
+    job.last_run_at = now
+    job.next_run_at = now + timedelta(minutes=interval_minutes)
+    job.updated_at = now
+    await db.flush()
+
+
+async def create_alert_event(db: AsyncSession, **values: Any) -> AlertEvent:
+    dedupe_key = values.get("dedupe_key")
+    if dedupe_key:
+        existing = await db.execute(
+            select(AlertEvent).where(AlertEvent.dedupe_key == dedupe_key, AlertEvent.status.in_(["open", "acknowledged"]))
+        )
+        event = existing.scalar_one_or_none()
+        if event is not None:
+            event.payload = {**(event.payload or {}), **dict(values.get("payload") or {})}
+            event.message = values.get("message") or event.message
+            await db.flush()
+            await db.refresh(event)
+            return event
+    event = AlertEvent(**values)
+    db.add(event)
+    await db.flush()
+    await db.refresh(event)
+    return event
+
+
+async def list_alert_events(db: AsyncSession, model_name: str | None = None, status: str | None = None, limit: int = 100) -> list[AlertEvent]:
+    stmt = select(AlertEvent).order_by(AlertEvent.created_at.desc()).limit(limit)
+    if model_name:
+        stmt = stmt.where(AlertEvent.model_name == model_name)
+    if status:
+        stmt = stmt.where(AlertEvent.status == status)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def update_alert_event_status(db: AsyncSession, event_id: str, status: str, actor: str | None = None) -> AlertEvent | None:
+    event = await db.get(AlertEvent, event_id)
+    if event is None:
+        return None
+    now = datetime.utcnow()
+    event.status = status
+    if status == "acknowledged":
+        event.acknowledged_at = now
+        event.acknowledged_by = actor
+    if status == "resolved":
+        event.resolved_at = now
+        event.resolved_by = actor
+    await db.flush()
+    await db.refresh(event)
+    return event
+
+
+async def list_audit_logs(
+    db: AsyncSession,
+    *,
+    user: str | None = None,
+    action: str | None = None,
+    resource_type: str | None = None,
+    limit: int = 100,
+) -> list[AuditLog]:
+    stmt = select(AuditLog).order_by(AuditLog.timestamp.desc()).limit(limit)
+    if user:
+        stmt = stmt.where(AuditLog.user == user)
+    if action:
+        stmt = stmt.where(AuditLog.action == action)
+    if resource_type:
+        stmt = stmt.where(AuditLog.resource_type == resource_type)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
+async def purge_audit_logs(db: AsyncSession, *, older_than: datetime) -> int:
+    result = await db.execute(delete(AuditLog).where(AuditLog.timestamp < older_than))
+    await db.flush()
+    return int(getattr(result, "rowcount", 0) or 0)

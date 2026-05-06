@@ -39,6 +39,22 @@ class ChampionRollbackResponse(BaseModel):
     champion: ChampionResponse | None = None
 
 
+class ChampionRollbackRecordResponse(BaseModel):
+    id: str
+    model_name: str
+    from_champion_id: str | None
+    to_champion_id: str | None
+    from_run_id: str
+    to_run_id: str
+    actor: str
+    reason: str
+    validation_status: str
+    status: str
+    created_at: str
+    completed_at: str | None = None
+    rollback_metadata: dict[str, object] = Field(default_factory=dict)
+
+
 class ChampionEvaluationSnapshot(BaseModel):
     id: str | None = None
     commit_sha: str

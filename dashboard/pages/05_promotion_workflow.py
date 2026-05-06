@@ -13,6 +13,11 @@ if str(_PROJECT_ROOT) not in sys.path:
 
 from dashboard.api_client import api_v1_path, safe_api_call
 from dashboard.components.connection_status import ensure_api_connection
+from dashboard.components.operator_state import (
+    promotion_form_key,
+    rollback_form_key,
+    rollback_payload,
+)
 from dashboard.components.real_time_metrics import (
     auto_refresh_sidebar_controls,
     maybe_auto_refresh,
@@ -98,10 +103,10 @@ if ensure_api_connection():
                             with col_action:
                                 if not is_champion:
                                     if st.button("Promote", key=f"promote_{run_id}", type="primary"):
-                                        st.session_state[f"show_promote_form_{run_id}"] = True
+                                        st.session_state[promotion_form_key(run_id)] = True
 
                             # Show promotion form if triggered
-                            if st.session_state.get(f"show_promote_form_{run_id}", False):
+                            if st.session_state.get(promotion_form_key(run_id), False):
                                 with st.form(f"promote_form_{run_id}"):
                                     st.markdown(f"**Promote `{model_name}` run `{run_id[:8]}`**")
                                     promoted_by = st.text_input("Your name", value="", key=f"promoted_by_{run_id}")
@@ -109,7 +114,7 @@ if ensure_api_connection():
                                     submitted = st.form_submit_button("Confirm Promotion")
                                     cancelled = st.form_submit_button("Cancel")
                                     if cancelled:
-                                        st.session_state[f"show_promote_form_{run_id}"] = False
+                                        st.session_state[promotion_form_key(run_id)] = False
                                         st.rerun()
                                     if submitted:
                                         if not promoted_by.strip():
@@ -124,7 +129,7 @@ if ensure_api_connection():
                                             if err:
                                                 st.error(f"Promotion failed: {err}")
                                             else:
-                                                st.session_state[f"show_promote_form_{run_id}"] = False
+                                                st.session_state[promotion_form_key(run_id)] = False
                                                 st.success(f"Successfully promoted `{model_name}` to run `{run_id[:8]}`")
                                                 st.rerun()
 
@@ -210,10 +215,10 @@ if ensure_api_connection():
                                     with col_h2:
                                         if not is_active:
                                             if st.button("Rollback", key=f"rollback_{entry.get('id', '')}"):
-                                                st.session_state[f"show_rollback_{entry.get('id', '')}"] = True
+                                                st.session_state[rollback_form_key(entry.get('id', ''))] = True
 
                                 # Rollback confirmation
-                                if st.session_state.get(f"show_rollback_{entry.get('id', '')}", False):
+                                if st.session_state.get(rollback_form_key(entry.get('id', '')), False):
                                     with st.form(f"rollback_form_{entry.get('id', '')}"):
                                         st.warning(
                                             f"Rollback `{selected_model}` to run `{entry.get('champion_run_id', '')[:8]}`?"
@@ -223,23 +228,22 @@ if ensure_api_connection():
                                         confirm = st.form_submit_button("Confirm Rollback")
                                         cancel_rb = st.form_submit_button("Cancel")
                                         if cancel_rb:
-                                            st.session_state[f"show_rollback_{entry.get('id', '')}"] = False
+                                            st.session_state[rollback_form_key(entry.get('id', ''))] = False
                                             st.rerun()
                                         if confirm:
                                             if not rollback_by.strip():
                                                 st.error("Please enter your name.")
                                             else:
-                                                # Rollback = promote the previous champion's run_id
                                                 result_rb, err_rb = safe_api_call(
                                                     lambda client, mn=selected_model, rid=entry.get("champion_run_id", ""), pb=rollback_by, r=rollback_reason: client.post(
-                                                        api_v1_path(f"/champions/{mn}/promote"),
-                                                        json={"run_id": rid, "promoted_by": pb, "reason": f"Rollback: {r}" or "Rollback"},
+                                                        api_v1_path(f"/champions/{mn}/rollback"),
+                                                        json=rollback_payload(rid, pb, r),
                                                     )
                                                 )
                                                 if err_rb:
                                                     st.error(f"Rollback failed: {err_rb}")
                                                 else:
-                                                    st.session_state[f"show_rollback_{entry.get('id', '')}"] = False
+                                                    st.session_state[rollback_form_key(entry.get('id', ''))] = False
                                                     st.success(f"Successfully rolled back `{selected_model}` to run `{entry.get('champion_run_id', '')[:8]}`")
                                                     st.rerun()
 

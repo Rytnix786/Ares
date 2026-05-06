@@ -11,7 +11,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from dashboard.api_client import api_v1_path, safe_api_call
+from dashboard.api_client import api_v1_path, compare_evaluation_runs, get_model_card, safe_api_call
 from dashboard.components.charts import (
     comparison_bar_chart,
     delta_bar_chart,
@@ -92,6 +92,12 @@ if ensure_api_connection():
 
             with st.sidebar:
                 st.subheader("Select runs")
+                multi_indices = st.multiselect(
+                    "N-way comparison runs",
+                    options=range(len(df)),
+                    format_func=lambda i: df.iloc[i]["label"],
+                    default=list(range(min(3, len(df)))),
+                )
                 candidate_idx = st.selectbox(
                     "Candidate run",
                     options=range(len(df)),
@@ -107,6 +113,22 @@ if ensure_api_connection():
                         0,
                     ),
                 )
+
+            if len(multi_indices) >= 2:
+                selected_run_ids = [str(df.iloc[i].get("id", "")) for i in multi_indices if str(df.iloc[i].get("id", ""))]
+                multi_payload, multi_error = compare_evaluation_runs(selected_run_ids)
+                st.subheader("N-way comparison summary")
+                if multi_error:
+                    st.error(multi_error)
+                elif multi_payload:
+                    summary_cols = st.columns(3)
+                    winner = multi_payload.get("winner") or {}
+                    risk = multi_payload.get("risk_summary") or {}
+                    summary_cols[0].metric("Compared runs", len(selected_run_ids))
+                    summary_cols[1].metric("Winner", winner.get("run_id", "n/a")[:8] if winner else "n/a")
+                    summary_cols[2].metric("Risk", risk.get("level", risk.get("overall_risk", "unknown")))
+                    if multi_payload.get("rankings"):
+                        st.dataframe(pd.DataFrame(multi_payload["rankings"]), use_container_width=True, hide_index=True)
 
             candidate_row = df.iloc[candidate_idx]
             champion_row = df.iloc[champion_idx]
@@ -221,5 +243,12 @@ if ensure_api_connection():
                 st.markdown("---")
                 st.subheader("Recommendation")
                 st.markdown(_recommendation(candidate_payload, cand_metrics))
+
+                card_payload, card_error = get_model_card(candidate_id)
+                with st.expander("Candidate model card evidence", expanded=False):
+                    if card_error:
+                        st.warning(card_error)
+                    else:
+                        st.json(card_payload or {})
 
     maybe_auto_refresh()

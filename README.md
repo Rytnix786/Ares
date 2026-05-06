@@ -44,6 +44,8 @@ The repository currently includes placeholder screenshot assets under `docs/asse
 
 ## Architecture
 
+See the Phase 4 architecture explorer in [`docs/architecture/README.md`](docs/architecture/README.md) for the current module graph, Graphify artifact locations, and reading order.
+
 ```mermaid
 flowchart TD
     GH[GitHub Actions<br/>quality.yml / regression_gate.yml / drift_monitor.yml] --> CLI[scripts/run_evaluation.py]

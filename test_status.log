@@ -1,0 +1,188 @@
+........................................................................ [ 31%]
+........................................................................ [ 62%]
+........................................................................ [ 94%]
+.............                                                            [100%]
+============================== warnings summary ===============================
+.venv\Lib\site-packages\slowapi\extension.py:717: 26 warnings
+  H:\Projects\Ares\.venv\Lib\site-packages\slowapi\extension.py:717: DeprecationWarning: 'asyncio.iscoroutinefunction' is deprecated and slated for removal in Python 3.16; use inspect.iscoroutinefunction() instead
+    if asyncio.iscoroutinefunction(func):
+
+tests/integration/test_api.py: 15 warnings
+tests/integration/test_auth_backward_compat.py: 2 warnings
+tests/unit/test_api_keys.py: 7 warnings
+tests/unit/test_auth_config.py: 2 warnings
+  H:\Projects\Ares\ares\db\crud_api_keys.py:21: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/integration/test_api.py: 17 warnings
+tests/integration/test_auth_backward_compat.py: 1 warning
+tests/integration/test_db_crud.py: 12 warnings
+tests/integration/test_full_pipeline.py: 5 warnings
+tests/integration/test_phase1_operational_apis.py: 18 warnings
+tests/unit/test_api_keys.py: 7 warnings
+tests/unit/test_phase1_drift_runner.py: 6 warnings
+tests/unit/test_wave_final_coverage.py: 1 warning
+  H:\Projects\Ares\.venv\Lib\site-packages\sqlalchemy\sql\schema.py:3624: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+tests/integration/test_auth_backward_compat.py::test_db_key_takes_precedence_over_env_key
+tests/unit/test_api_keys.py::test_api_key_expiration_and_usage_tracking
+  H:\Projects\Ares\ares\db\crud_api_keys.py:37: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    key.last_used_at = used_at or datetime.utcnow()
+
+tests/integration/test_auth_backward_compat.py::test_db_key_takes_precedence_over_env_key
+tests/unit/test_api_keys.py::test_api_key_expiration_and_usage_tracking
+  H:\Projects\Ares\ares\db\crud_api_keys.py:39: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    key.updated_at = datetime.utcnow()
+
+tests/integration/test_db_crud.py::test_rollback_champion_dry_run_and_commit
+tests/integration/test_phase1_operational_apis.py::test_governed_rollback_api
+  H:\Projects\Ares\ares\db\crud.py:133: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    rollback_at=datetime.utcnow(),
+
+tests/integration/test_phase1_operational_apis.py::test_alert_event_lifecycle_api
+  H:\Projects\Ares\ares\db\crud.py:263: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/integration/test_phase1_operational_apis.py::test_admin_api_key_lifecycle_api
+  H:\Projects\Ares\ares\api\routers\api_keys.py:27: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return datetime.utcnow() + timedelta(days=ttl_days) if ttl_days else None
+
+tests/integration/test_phase1_operational_apis.py::test_admin_api_key_lifecycle_api
+tests/unit/test_api_keys.py::test_api_key_rotation_links_records_and_revokes_without_grace
+tests/unit/test_api_keys.py::test_api_key_rotation_grace_keeps_old_key_temporarily
+  H:\Projects\Ares\ares\db\crud_api_keys.py:75: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/integration/test_phase1_operational_apis.py::test_admin_api_key_lifecycle_api
+tests/unit/test_api_keys.py::test_api_key_crud_lifecycle
+  H:\Projects\Ares\ares\db\crud_api_keys.py:53: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    key.revoked_at = datetime.utcnow()
+
+tests/integration/test_phase1_operational_apis.py::test_admin_api_key_lifecycle_api
+tests/unit/test_api_keys.py::test_api_key_crud_lifecycle
+  H:\Projects\Ares\ares\db\crud_api_keys.py:56: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    key.updated_at = datetime.utcnow()
+
+tests/unit/test_api_keys.py::test_api_key_expiration_and_usage_tracking
+  H:\Projects\Ares\tests\unit\test_api_keys.py:47: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expires_at=datetime.utcnow() + timedelta(days=1),
+
+tests/unit/test_api_keys.py::test_api_key_expiration_and_usage_tracking
+  H:\Projects\Ares\tests\unit\test_api_keys.py:55: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    expires_at=datetime.utcnow() - timedelta(seconds=1),
+
+tests/unit/test_phase1_drift_runner.py::test_drift_runner_success_failure_and_due_job_helpers
+  H:\Projects\Ares\tests\unit\test_phase1_drift_runner.py:73: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    next_run_at=datetime.utcnow() - timedelta(minutes=1),
+
+tests/unit/test_phase1_drift_runner.py::test_drift_runner_success_failure_and_due_job_helpers
+  H:\Projects\Ares\ares\db\crud.py:223: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = now or datetime.utcnow()
+
+tests/unit/test_phase1_drift_runner.py::test_drift_runner_success_failure_and_due_job_helpers
+tests/unit/test_phase1_drift_runner.py::test_drift_runner_success_failure_and_due_job_helpers
+  H:\Projects\Ares\ares\drift\runner.py:87: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    started_at = datetime.utcnow()
+
+tests/unit/test_phase1_drift_runner.py::test_drift_runner_success_failure_and_due_job_helpers
+  H:\Projects\Ares\ares\drift\runner.py:138: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    completed_at=datetime.utcnow(),
+
+tests/unit/test_phase1_drift_runner.py::test_drift_runner_success_failure_and_due_job_helpers
+  H:\Projects\Ares\ares\db\crud.py:234: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.utcnow()
+
+tests/unit/test_phase1_drift_runner.py::test_drift_runner_success_failure_and_due_job_helpers
+  H:\Projects\Ares\ares\drift\runner.py:153: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    completed_at=datetime.utcnow(),
+
+tests/unit/test_phase1_drift_runner.py::test_alert_and_audit_crud_edges
+  H:\Projects\Ares\tests\unit\test_phase1_drift_runner.py:100: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    old = datetime.utcnow() - timedelta(days=10)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.14.0-final-0 _______________
+
+Name                                    Stmts   Miss  Cover   Missing
+---------------------------------------------------------------------
+ares\__init__.py                            0      0   100%
+ares\api\__init__.py                        0      0   100%
+ares\api\auth.py                           53      3    94%   45-46, 59
+ares\api\limiting.py                       12      0   100%
+ares\api\main.py                           58      6    90%   61-62, 68-77, 96-98
+ares\api\middleware\__init__.py             2      0   100%
+ares\api\middleware\audit.py               50      5    90%   87-88, 105-117
+ares\api\presenters.py                    106      9    92%   61, 63, 68, 76-78, 81, 84, 110
+ares\api\routers\__init__.py                0      0   100%
+ares\api\routers\alerts.py                 27      1    96%   66
+ares\api\routers\api_keys.py               49      2    96%   107, 124
+ares\api\routers\audit.py                  26      5    81%   67-71
+ares\api\routers\champions.py              61      6    90%   31, 80, 101-103, 126
+ares\api\routers\drift.py                  66     11    83%   63, 157-164, 176-177
+ares\api\routers\evaluations.py            54      2    96%   33, 153
+ares\api\routers\gate.py                   48      7    85%   43, 55, 62-66
+ares\api\routers\health.py                 64     25    61%   18, 30-32, 38-45, 51-62, 71, 73-75, 93-94
+ares\api\schemas\__init__.py                0      0   100%
+ares\api\schemas\alert.py                  24      0   100%
+ares\api\schemas\api_key.py                40      0   100%
+ares\api\schemas\champion.py               60      0   100%
+ares\api\schemas\drift.py                  74      0   100%
+ares\api\schemas\error.py                  14      0   100%
+ares\api\schemas\evaluation.py             67      0   100%
+ares\cache\__init__.py                      4      0   100%
+ares\cache\client.py                       50     19    62%   18-33, 46-47, 53-54, 59-60, 65, 73-75
+ares\cache\keys.py                          9      0   100%
+ares\config.py                            125     16    87%   71, 73-77, 84, 90-91, 102, 106-107, 114, 124, 130, 149
+ares\db\__init__.py                         0      0   100%
+ares\db\crud.py                           195     35    82%   32-35, 44-49, 82-85, 107, 111, 119, 142-143, 180, 186, 188, 204, 213-219, 252, 269-270, 288, 290
+ares\db\crud_api_keys.py                   56      3    95%   36, 51, 74
+ares\db\crud_webhooks.py                   17      0   100%
+ares\db\health.py                          22      5    77%   22, 34-37
+ares\db\session.py                         24      1    96%   23
+ares\drift\__init__.py                      0      0   100%
+ares\drift\contracts.py                    54      2    96%   42, 44
+ares\drift\runner.py                       63      2    97%   36, 75
+ares\drift_sources.py                      19      0   100%
+ares\evaluators\__init__.py                 0      0   100%
+ares\evaluators\base.py                    46      0   100%
+ares\evaluators\classification.py         178     38    79%   22-30, 36-42, 46-48, 66, 75, 77, 111-112, 123, 130, 133-134, 148, 159, 161-164, 183, 196-198
+ares\evaluators\detection.py                3      0   100%
+ares\evaluators\mlflow_integration.py      40     12    70%   28-36, 40, 44, 48, 52
+ares\evaluators\regression.py              14      0   100%
+ares\exceptions.py                         85      0   100%
+ares\features\__init__.py                   3      0   100%
+ares\features\flags.py                     10      0   100%
+ares\gate\__init__.py                       0      0   100%
+ares\gate\decision.py                      49      4    92%   38-41, 67
+ares\gate\rules_engine.py                  52      0   100%
+ares\golden_set.py                         76     10    87%   20, 32, 54, 62, 67, 76, 87, 100, 106-110
+ares\logging.py                            10      1    90%   15
+ares\metrics\__init__.py                    0      0   100%
+ares\metrics\drift.py                      39      0   100%
+ares\metrics\significance.py               25      0   100%
+ares\metrics\slice_analysis.py             28      2    93%   21, 23
+ares\models\__init__.py                    10      0   100%
+ares\models\alert_event.py                 27      0   100%
+ares\models\api_key.py                     28      0   100%
+ares\models\audit_log.py                   28      0   100%
+ares\models\base.py                         4      0   100%
+ares\models\drift_job.py                   40      0   100%
+ares\models\drift_report.py                21      0   100%
+ares\models\evaluation_run.py              37      0   100%
+ares\models\model_champion.py              22      0   100%
+ares\models\webhook.py                     14      0   100%
+ares\notifier\__init__.py                   0      0   100%
+ares\notifier\github_pr.py                  8      0   100%
+ares\notifier\slack.py                      8      0   100%
+ares\notifier\webhook.py                   26      3    88%   33-35
+ares\observability\__init__.py              0      0   100%
+ares\observability\metrics.py              44      7    84%   25, 28-30, 35, 38, 41, 44
+ares\observability\telemetry.py            30      9    70%   19-20, 32-38
+ares\worker\__init__.py                     0      0   100%
+ares\worker\tasks.py                        8      0   100%
+---------------------------------------------------------------------
+TOTAL                                    2606    251    90%
+Required test coverage of 90% reached. Total coverage: 90.37%
+229 passed, 144 warnings in 13.09s

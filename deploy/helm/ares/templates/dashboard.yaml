@@ -1,0 +1,51 @@
+{{- if .Values.dashboard.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ares.fullname" . }}-dashboard
+  labels:
+    {{- include "ares.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dashboard
+spec:
+  replicas: {{ .Values.dashboard.replicas }}
+  selector:
+    matchLabels: {app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: dashboard}
+  template:
+    metadata:
+      labels:
+        {{- include "ares.labels" . | nindent 8 }}
+        app.kubernetes.io/component: dashboard
+    spec:
+      serviceAccountName: {{ include "ares.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: dashboard
+          image: "{{ .Values.dashboard.image.repository }}:{{ .Values.dashboard.image.tag }}"
+          command: {{ toJson .Values.dashboard.command }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.dashboard.port }}
+          envFrom:
+            - configMapRef: {name: {{ include "ares.fullname" . }}-config}
+            - secretRef: {name: {{ include "ares.secretName" . }}}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources.dashboard | nindent 12 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "ares.fullname" . }}-dashboard
+  labels:
+    {{- include "ares.labels" . | nindent 4 }}
+    app.kubernetes.io/component: dashboard
+spec:
+  type: {{ .Values.service.type }}
+  selector: {app.kubernetes.io/instance: {{ .Release.Name }}, app.kubernetes.io/component: dashboard}
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+{{- end }}

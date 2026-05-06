@@ -50,7 +50,15 @@ def test_setup_telemetry_noop(monkeypatch: pytest.MonkeyPatch) -> None:
     setup_telemetry(SimpleNamespace())
 
 
-def test_evaluate_task_returns_payload() -> None:
-    result = evaluate_task({"run": 1})
-    assert result["status"] == "queued"
-    assert result["payload"] == {"run": 1}
+def test_evaluate_task_returns_event_workflow_result() -> None:
+    result = evaluate_task(
+        {
+            "job_id": "support-job",
+            "run_id": "support-run",
+            "candidate_metrics": {"overall_f1": 0.7, "overall_accuracy": 0.7},
+            "champion_metrics": {"overall_f1": 0.9, "overall_accuracy": 0.9},
+        }
+    )
+    assert result["status"] == "alert_triggered"
+    assert result["events"][0] == "evaluation_requested"
+    assert result["completed"] is True

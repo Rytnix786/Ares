@@ -1,0 +1,243 @@
+{
+  "response_shape": {
+    "category": "str",
+    "details": "object",
+    "error_code": "str",
+    "message": "str",
+    "remediation": "str",
+    "request_id": "str|null",
+    "retryable": "bool"
+  },
+  "errors": [
+    {
+      "error_code": "API_KEYS_NOT_CONFIGURED",
+      "category": "auth",
+      "http_status": 400,
+      "message": "API keys are not configured for environment: production",
+      "message_shape": "API keys are not configured for environment: {environment}",
+      "details_keys": ["environment"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "CHAMPION_NOT_FOUND",
+      "category": "champion",
+      "http_status": 400,
+      "message": "No active champion found for model: fraud-model",
+      "message_shape": "No active champion found for model: {model_name}",
+      "details_keys": ["model_name"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "COMPARISON_FAILED",
+      "category": "gate",
+      "http_status": 400,
+      "message": "Failed to compare candidate to champion: metric mismatch",
+      "message_shape": "Failed to compare candidate to champion: {reason}",
+      "details_keys": ["reason"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "CONCURRENT_PROMOTION",
+      "category": "champion",
+      "http_status": 400,
+      "message": "Concurrent promotion attempt for model: fraud-model",
+      "message_shape": "Concurrent promotion attempt for model: {model_name}",
+      "details_keys": ["model_name"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "CONFIGURATION_INVALID",
+      "category": "configuration",
+      "http_status": 500,
+      "message": "Invalid configuration for ARES_API_URL: malformed URL",
+      "message_shape": "Invalid configuration for {config_key}: {reason}",
+      "details_keys": ["config_key", "reason"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "CONFIGURATION_MISSING",
+      "category": "configuration",
+      "http_status": 400,
+      "message": "Required configuration missing: DATABASE_URL",
+      "message_shape": "Required configuration missing: {config_key}",
+      "details_keys": ["config_key"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "DATASET_CHECKSUM_MISMATCH",
+      "category": "dataset",
+      "http_status": 400,
+      "message": "Dataset checksum mismatch: expected abc123, got def456",
+      "message_shape": "Dataset checksum mismatch: expected {expected}, got {actual}",
+      "details_keys": ["actual_checksum", "expected_checksum"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "DATASET_NOT_FOUND",
+      "category": "dataset",
+      "http_status": 400,
+      "message": "Dataset not found: /data/missing.csv",
+      "message_shape": "Dataset not found: {dataset_path}",
+      "details_keys": ["dataset_path"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "DATASET_SCHEMA_INVALID",
+      "category": "dataset",
+      "http_status": 422,
+      "message": "Dataset schema is invalid",
+      "message_shape": "Dataset schema is invalid",
+      "details_keys": ["extra_columns", "missing_columns"],
+      "remediation": "Fix the dataset columns or production prediction payload to match the documented schema.",
+      "retryable": false
+    },
+    {
+      "error_code": "DATASET_VALIDATION_FAILED",
+      "category": "dataset",
+      "http_status": 400,
+      "message": "Dataset validation failed (row_count): too few rows",
+      "message_shape": "Dataset validation failed ({validation_type}): {reason}",
+      "details_keys": ["reason", "validation_type"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "EVALUATION_TIMEOUT",
+      "category": "evaluation",
+      "http_status": 400,
+      "message": "Evaluation exceeded time limit of 30.0s",
+      "message_shape": "Evaluation exceeded time limit of {timeout_seconds}s",
+      "details_keys": ["timeout_seconds"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": true
+    },
+    {
+      "error_code": "FEATURE_FLAG_ERROR",
+      "category": "configuration",
+      "http_status": 400,
+      "message": "Feature flag error (new_gate): invalid value",
+      "message_shape": "Feature flag error ({flag_name}): {reason}",
+      "details_keys": ["flag_name", "reason"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "GATE_CONFIG_INVALID",
+      "category": "gate",
+      "http_status": 422,
+      "message": "Invalid gate configuration for max_regression_f1: must be positive",
+      "message_shape": "Invalid gate configuration for {config_key}: {reason}",
+      "details_keys": ["config_key", "reason"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "GATE_DECISION_FAILED",
+      "category": "gate",
+      "http_status": 400,
+      "message": "Failed to make gate decision: missing champion metrics",
+      "message_shape": "Failed to make gate decision: {reason}",
+      "details_keys": ["reason"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "HTTP_404",
+      "category": "http",
+      "http_status": 404,
+      "message": "Not found",
+      "message_shape": "{detail}",
+      "details_keys": [],
+      "remediation": "Review the endpoint documentation, required scopes, and request parameters before retrying.",
+      "retryable": false
+    },
+    {
+      "error_code": "INSUFFICIENT_SCOPE",
+      "category": "auth",
+      "http_status": 403,
+      "message": "API key lacks required scope: admin",
+      "message_shape": "API key lacks required scope: {required_scope}",
+      "details_keys": ["provided_scopes", "required_scope"],
+      "remediation": "Use an API key with the required scope or ask an administrator to rotate/provision one.",
+      "retryable": false
+    },
+    {
+      "error_code": "INVALID_API_KEY",
+      "category": "auth",
+      "http_status": 400,
+      "message": "Invalid API key",
+      "message_shape": "Invalid API key",
+      "details_keys": [],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "METRIC_COMPUTATION_FAILED",
+      "category": "evaluation",
+      "http_status": 400,
+      "message": "Failed to compute metric f1_score: division by zero",
+      "message_shape": "Failed to compute metric {metric_name}: {reason}",
+      "details_keys": ["metric_name", "reason"],
+      "remediation": "Review the error details, correct the request, and retry.",
+      "retryable": false
+    },
+    {
+      "error_code": "MODEL_LOAD_FAILED",
+      "category": "evaluation",
+      "http_status": 400,
+      "message": "Failed to load model from /models/model.pkl: file not found",
+      "message_shape": "Failed to load model from {model_path}: {reason}",
+      "details_keys": ["model_path", "reason"],
+      "remediation": "Verify the model path/artifact URI, file permissions, and configured evaluator mode.",
+      "retryable": false
+    },
+    {
+      "error_code": "PREDICTION_FAILED",
+      "category": "evaluation",
+      "http_status": 400,
+      "message": "Model prediction failed: invalid input shape",
+      "message_shape": "Model prediction failed: {reason}",
+      "details_keys": ["reason"],
+      "remediation": "Validate input schema and model compatibility before retrying the evaluation.",
+      "retryable": false
+    },
+    {
+      "error_code": "PROMOTION_FAILED",
+      "category": "champion",
+      "http_status": 409,
+      "message": "Failed to promote champion for fraud-model: target run did not pass",
+      "message_shape": "Failed to promote champion for {model_name}: {reason}",
+      "details_keys": ["model_name", "reason"],
+      "remediation": "Check champion history, target run gate status, and rollback/promotion permissions.",
+      "retryable": false
+    },
+    {
+      "error_code": "RATE_LIMIT_EXCEEDED",
+      "category": "rate_limit",
+      "http_status": 429,
+      "message": "Rate limit exceeded",
+      "message_shape": "Rate limit exceeded",
+      "details_keys": [],
+      "remediation": "Wait for the current rate-limit window to reset or use a key with an appropriate policy.",
+      "retryable": true
+    },
+    {
+      "error_code": "VALIDATION_ERROR",
+      "category": "validation",
+      "http_status": 422,
+      "message": "Request validation failed",
+      "message_shape": "Request validation failed",
+      "details_keys": ["errors"],
+      "remediation": "Fix the fields identified in details and retry.",
+      "retryable": false
+    }
+  ]
+}

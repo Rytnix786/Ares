@@ -1,0 +1,27 @@
+[run]
+source = ares
+omit =
+    ares/alerting/*
+    ares/scheduler/*
+    ares/cache/client.py
+
+[report]
+fail_under = 90
+precision = 2
+show_missing = True
+skip_covered = False
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    @abstractmethod
+    @abstractproperty
+    if TYPE_CHECKING:
+    if typing.TYPE_CHECKING:
+    @overload
+    except ImportError:
+    except NotImplementedError:
+    @app.command\(\)
+    @click.command\(\)
