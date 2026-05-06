@@ -21,19 +21,3 @@ spec:
           type: Utilization
           averageUtilization: {{ .Values.api.autoscaling.targetCPUUtilizationPercentage }}
 {{- end }}
----
-{{- if .Values.api.pdb.enabled }}
-apiVersion: policy/v1
-kind: PodDisruptionBudget
-metadata:
-  name: {{ include "ares.fullname" . }}-api
-  labels:
-    {{- include "ares.labels" . | nindent 4 }}
-    app.kubernetes.io/component: api
-spec:
-  minAvailable: {{ .Values.api.pdb.minAvailable }}
-  selector:
-    matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/component: api
-{{- end }}

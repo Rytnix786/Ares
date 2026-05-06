@@ -20,6 +20,36 @@ jobs:
         run: pip install -e ".[dev,eval,dashboard]"
       - name: Run repository verification
         run: python scripts/verify_repo.py
+      - name: Run mutation tests on gate rules
+        shell: bash
+        run: |
+          set -euo pipefail
+          mutmut run
+          mutmut results --all | tee reports/mutmut-results.txt
+          python - <<'PY'
+          from pathlib import Path
+
+          results_path = Path("reports/mutmut-results.txt")
+          statuses = []
+          for raw_line in results_path.read_text(encoding="utf-8").splitlines():
+              line = raw_line.strip()
+              if ": " not in line:
+                  continue
+              _, status = line.rsplit(": ", 1)
+              statuses.append(status.strip())
+
+          if not statuses:
+              raise SystemExit("mutmut produced no mutant results to score")
+
+          survived = sum(status == "survived" for status in statuses)
+          total = len(statuses)
+          score = 1.0 - (survived / total)
+          print(f"Mutation results: survived={survived} total={total} score={score:.2%}")
+          if score < 0.80:
+              raise SystemExit(
+                  f"Mutation score {score:.2%} is below the required 80.00%"
+              )
+          PY
       - name: Upload verification artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -28,3 +58,4 @@ jobs:
           path: |
             reports/coverage.xml
             reports/test-results.xml
+            reports/mutmut-results.txt

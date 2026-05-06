@@ -80,3 +80,19 @@ check_untyped_defs = true
 ignore_missing_imports = true
 exclude = ["alembic/", "tests/"]
 disable_error_code = ["misc", "assignment", "arg-type"]
+
+[tool.mutmut]
+paths_to_mutate = ["ares/gate/rules_engine.py", "ares/evaluators"]
+tests_dir = [
+  "tests/unit/test_additional_evaluators.py",
+  "tests/unit/test_evaluator.py",
+  "tests/unit/test_evaluators_base.py",
+  "tests/unit/test_evaluators_classification.py",
+  "tests/unit/test_gate.py",
+  "tests/unit/test_gate_rules_engine.py",
+  "tests/property/test_drift_math.py",
+  "tests/property/test_gate_rules.py",
+]
+also_copy = ["ares", "dashboard", "ares.config.yaml"]
+pytest_add_cli_args = ["--no-cov"]
+mutate_only_covered_lines = true
