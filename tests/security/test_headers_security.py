@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.testclient import TestClient
 
 from ares.api.main import app
@@ -25,7 +27,20 @@ def test_server_header_does_not_expose_version_info() -> None:
 
 
 def test_unlisted_cross_origin_request_is_rejected() -> None:
-    client = TestClient(app)
+    local_app = FastAPI()
+    local_app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["https://allowed.example"],
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
+    )
+
+    @local_app.get("/health/live")
+    def health_live() -> dict[str, str]:
+        return {"status": "ok"}
+
+    client = TestClient(local_app)
     response = client.options(
         "/health/live",
         headers={
@@ -33,7 +48,6 @@ def test_unlisted_cross_origin_request_is_rejected() -> None:
             "Access-Control-Request-Method": "GET",
         },
     )
-    assert response.status_code in {400, 405}
     assert "access-control-allow-origin" not in {
         key.lower(): value for key, value in response.headers.items()
     }

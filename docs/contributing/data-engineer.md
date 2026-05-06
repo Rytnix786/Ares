@@ -8,3 +8,22 @@ Data engineers connect production prediction sources for drift monitoring.
 4. Keep raw predictions out of logs.
 5. Use slice metrics and `docs/slice-monitoring-guide.md` to expose subgroup regressions.
 6. Verify drift jobs and alerts through the dashboard and API.
+
+## Adapter examples
+
+```yaml
+drift:
+	source_type: s3
+	source_config:
+		bucket: ares-production-predictions
+		prefix: live/default-model/
+		endpoint_url: https://s3.example.com
+		region_name: us-east-1
+```
+
+```yaml
+drift:
+	source_type: http_push
+	source_config:
+		source: api_push
+```

@@ -77,6 +77,13 @@ def test_settings_sqlite_property() -> None:
     assert settings.is_sqlite is True
 
 
+def test_settings_normalizes_postgresql_url() -> None:
+    settings = AresSettings(ENVIRONMENT="development", DATABASE_URL="postgresql://ares:ares@localhost:5432/ares")
+
+    assert settings.async_database_url == "postgresql+asyncpg://ares:ares@localhost:5432/ares"
+    assert settings.is_sqlite is False
+
+
 def test_api_key_principal_supports_scope_checks() -> None:
     principal = APIKeyPrincipal(key="reader", key_id="reader", scopes=frozenset({"read"}))
 

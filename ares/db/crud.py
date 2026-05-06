@@ -24,6 +24,7 @@ from ares.models import (
     SliceMetricPoint,
 )
 from ares.observability.metrics import cache_operations_total, evaluation_runs_total
+from ares.observability.telemetry import trace_function
 
 
 async def get_evaluation_run(db: AsyncSession, run_id: str) -> EvaluationRun | None:
@@ -49,8 +50,22 @@ async def create_evaluation_run(db: AsyncSession, **values: Any) -> EvaluationRu
     await db.flush()
     await persist_slice_metric_points(db, run)
     await db.refresh(run)
+    try:
+        from opentelemetry import trace
+
+        trace.get_current_span().set_attribute("model_name", run.model_name)
+    except Exception:
+        pass
     evaluation_runs_total.labels("passed" if run.passed else "failed").inc()
     return run
+
+
+@trace_function(
+    "db.get_champion",
+    attributes={"db.operation": "get_champion", "model_name": lambda args, kwargs: kwargs.get("model_name") or (args[1] if len(args) > 1 else None)},
+)
+async def get_champion(db: AsyncSession, model_name: str) -> ModelChampion | None:
+    return await get_active_champion(db, model_name)
 
 
 async def get_active_champion(db: AsyncSession, model_name: str) -> ModelChampion | None:
@@ -212,6 +227,14 @@ async def list_drift_reports(db: AsyncSession, model_name: str | None = None, li
         stmt = stmt.where(DriftReportRecord.model_name == model_name)
     result = await db.execute(stmt)
     return list(result.scalars().all())
+
+
+@trace_function(
+    "db.get_drift_reports",
+    attributes={"db.operation": "get_drift_reports", "model_name": lambda args, kwargs: kwargs.get("model_name")},
+)
+async def get_drift_reports(db: AsyncSession, model_name: str | None = None, limit: int = 100) -> list[DriftReportRecord]:
+    return await list_drift_reports(db, model_name=model_name, limit=limit)
 
 
 async def create_drift_job(db: AsyncSession, **values: Any) -> DriftJob:
@@ -409,7 +432,46 @@ async def list_audit_logs(
     return list(result.scalars().all())
 
 
+@trace_function(
+    "db.create_audit_log",
+    attributes={"db.operation": "create_audit_log", "model_name": lambda args, kwargs: kwargs.get("model_name") or kwargs.get("resource_id") or kwargs.get("resource_type")},
+)
+async def create_audit_log(db: AsyncSession, **values: Any) -> AuditLog:
+    log_entry = AuditLog(**values)
+    db.add(log_entry)
+    await db.flush()
+    await db.refresh(log_entry)
+    try:
+        from opentelemetry import trace
+
+        trace.get_current_span().set_attribute("model_name", values.get("model_name") or values.get("resource_id") or values.get("resource_type") or "")
+    except Exception:
+        pass
+    return log_entry
+
+
 async def purge_audit_logs(db: AsyncSession, *, older_than: datetime) -> int:
     result = await db.execute(delete(AuditLog).where(AuditLog.timestamp < older_than))
     await db.flush()
     return int(getattr(result, "rowcount", 0) or 0)
+
+
+@trace_function(
+    "db.update_evaluation_run",
+    attributes={"db.operation": "update_evaluation_run", "model_name": lambda args, kwargs: kwargs.get("model_name")},
+)
+async def update_evaluation_run(db: AsyncSession, run_id: str, **values: Any) -> EvaluationRun | None:
+    run = await db.get(EvaluationRun, run_id)
+    if run is None:
+        return None
+    for key, value in values.items():
+        setattr(run, key, value)
+    try:
+        from opentelemetry import trace
+
+        trace.get_current_span().set_attribute("model_name", run.model_name)
+    except Exception:
+        pass
+    await db.flush()
+    await db.refresh(run)
+    return run

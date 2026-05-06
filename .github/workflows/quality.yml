@@ -20,35 +20,44 @@ jobs:
         run: pip install -e ".[dev,eval,dashboard]"
       - name: Run repository verification
         run: python scripts/verify_repo.py
-      - name: Run mutation tests on gate rules
+      - name: Run mutation tests
         shell: bash
         run: |
           set -euo pipefail
-          mutmut run
-          mutmut results --all | tee reports/mutmut-results.txt
+          cosmic-ray init cosmic-ray.toml session.sqlite
+          cosmic-ray baseline --report cosmic-ray.toml session.sqlite
+          cosmic-ray exec cosmic-ray.toml session.sqlite
+          cr-report session.sqlite --show-pending | tee reports/mutmut-results.txt
           python - <<'PY'
+          import re
           from pathlib import Path
 
           results_path = Path("reports/mutmut-results.txt")
-          statuses = []
-          for raw_line in results_path.read_text(encoding="utf-8").splitlines():
-              line = raw_line.strip()
-              if ": " not in line:
-                  continue
-              _, status = line.rsplit(": ", 1)
-              statuses.append(status.strip())
+          text = results_path.read_text(encoding="utf-8")
 
-          if not statuses:
-              raise SystemExit("mutmut produced no mutant results to score")
-
-          survived = sum(status == "survived" for status in statuses)
-          total = len(statuses)
-          score = 1.0 - (survived / total)
-          print(f"Mutation results: survived={survived} total={total} score={score:.2%}")
-          if score < 0.80:
-              raise SystemExit(
-                  f"Mutation score {score:.2%} is below the required 80.00%"
-              )
+          # Parse cr-report output for kill rate
+          match = re.search(r"surviving mutants:\s+(\d+)\s+\(([-+]?[0-9]*\.?[0-9]+)%\)", text)
+          if not match:
+              # Alternative: look for total jobs and complete
+              total_match = re.search(r"total jobs:\s+(\d+)", text)
+              complete_match = re.search(r"complete:\s+(\d+)", text)
+              survive_match = re.search(r"surviving mutants:\s+(\d+)", text)
+              if total_match and survive_match:
+                  total = int(total_match.group(1))
+                  survived = int(survive_match.group(1))
+                  score = 1.0 - (survived / total)
+                  print(f"Mutation results: survived={survived} total={total} score={score:.2%}")
+                  if score < 0.80:
+                      raise SystemExit(f"Mutation score {score:.2%} is below the required 80.00%")
+              else:
+                  raise SystemExit("Could not parse mutation report output")
+          else:
+              survived = int(match.group(1))
+              survival_pct = float(match.group(2))
+              score = 1.0 - (survival_pct / 100.0)
+              print(f"Mutation results: survived={survived} survival_rate={survival_pct:.2%} score={score:.2%}")
+              if score < 0.80:
+                  raise SystemExit(f"Mutation score {score:.2%} is below the required 80.00%")
           PY
       - name: Upload verification artifacts
         if: always()

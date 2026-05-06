@@ -13,10 +13,23 @@ from fastapi import Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import Response
 
-from ares.models.audit_log import AuditLog
+from ares.db import crud
 from ares.observability.metrics import audit_write_failures_total
 
 log = logging.getLogger(__name__)
+
+SENSITIVE_KEYS = {"password", "secret", "token", "api_key"}
+
+
+def _redact_payload(payload: Any) -> Any:
+    if isinstance(payload, dict):
+        return {
+            key: "[REDACTED]" if str(key).lower() in SENSITIVE_KEYS else _redact_payload(value)
+            for key, value in payload.items()
+        }
+    if isinstance(payload, list):
+        return [_redact_payload(item) for item in payload]
+    return payload
 
 
 async def log_audit_event(
@@ -43,8 +56,8 @@ async def log_audit_event(
     if payload:
         payload_str = json.dumps(payload, sort_keys=True)
         payload_hash = hashlib.sha256(payload_str.encode()).hexdigest()[:64]
-    
-    audit_log = AuditLog(
+    await crud.create_audit_log(
+        db,
         request_id=request_id,
         user=user or "anonymous",
         endpoint=endpoint,
@@ -62,7 +75,6 @@ async def log_audit_event(
         error_code=error_code,
         duration_ms=duration_ms,
     )
-    db.add(audit_log)
     await db.commit()
 
 
@@ -105,6 +117,8 @@ class AuditMiddleware:
         if request.method in {"POST", "PUT", "DELETE", "PATCH"}:
             started = time.perf_counter()
             user = request.headers.get("x-user-id")
+            authorization = request.headers.get("authorization")
+            api_key_header = request.headers.get("x-api-key")
             principal = getattr(request.state, "principal", None)
             api_key_id = getattr(principal, "key_id", None)
             actor_type = "api_key" if api_key_id else "header" if user else "anonymous"
@@ -121,6 +135,14 @@ class AuditMiddleware:
                         payload = await request.json()
                     except Exception:
                         payload = None
+                redacted_payload = _redact_payload(payload) if payload is not None else None
+                audit_metadata: dict[str, Any] = {"headers": {}}
+                if authorization is not None:
+                    audit_metadata["headers"]["Authorization"] = "[REDACTED]"
+                if api_key_header is not None:
+                    audit_metadata["headers"]["X-API-Key"] = "[REDACTED]"
+                if redacted_payload is not None:
+                    audit_metadata["payload"] = redacted_payload
                 
                 # Process request
                 response = await call_next(request)
@@ -131,9 +153,10 @@ class AuditMiddleware:
                     user=user,
                     endpoint=str(request.url.path),
                     method=request.method,
-                    payload=payload,
+                    payload=redacted_payload,
                     result="success",
                     status_code=response.status_code,
+                    audit_metadata=audit_metadata,
                     api_key_id=api_key_id,
                     actor_type=actor_type,
                     resource_type=resource_type,
@@ -151,10 +174,10 @@ class AuditMiddleware:
                     user=user,
                     endpoint=str(request.url.path),
                     method=request.method,
-                    payload=payload,
+                    payload=redacted_payload,
                     result="error",
                     status_code=None,
-                    audit_metadata={"error": str(e)},
+                    audit_metadata={**audit_metadata, "error": str(e)},
                     api_key_id=api_key_id,
                     actor_type=actor_type,
                     resource_type=resource_type,

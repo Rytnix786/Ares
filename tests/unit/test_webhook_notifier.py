@@ -58,3 +58,29 @@ async def test_send_webhook_posts_signed_payload(monkeypatch: pytest.MonkeyPatch
         headers["x-ares-timestamp"],
         headers["x-ares-signature"],
     )
+
+
+def test_verify_signature_rejects_bad_timestamp() -> None:
+    assert webhook.verify_signature({"event": "drift"}, "secret", "not-a-number", "v1=abc") is False
+
+
+@pytest.mark.asyncio
+async def test_send_webhook_retries_then_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    class FailingClient:
+        def __init__(self, *, timeout: int) -> None:
+            pass
+
+        async def __aenter__(self) -> FailingClient:
+            return self
+
+        async def __aexit__(self, *_args: object) -> None:
+            return None
+
+        async def post(self, *_args: object, **_kwargs: object) -> None:
+            raise RuntimeError("connection refused")
+
+    monkeypatch.setattr(webhook.httpx, "AsyncClient", FailingClient)
+    monkeypatch.setattr(webhook.settings, "WEBHOOK_MAX_RETRIES", 3)
+
+    result = await webhook.send_webhook("https://example.test/hook", {"event": "drift"}, secret="secret")
+    assert result is False

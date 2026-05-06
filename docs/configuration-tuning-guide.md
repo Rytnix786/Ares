@@ -1,91 +1,197 @@
 # Configuration Tuning Guide
 
-ARES gate and drift thresholds should be tuned with historical evidence, not one-off anecdotes. This guide covers the configuration surfaces that affect Phase 2 workflows: evaluation gates, slice trends, model cards, dashboard refresh, API authentication, and plugin selection.
+ARES gate thresholds are the primary control surface for model promotion. This guide covers every configurable key, how to inspect the live config, how to simulate decisions before committing changes, and how to use the threshold optimizer to find a good configuration from historical evidence.
 
-## Configuration sources
+## Configuration hierarchy
 
-ARES settings are loaded from environment variables and `.env` through `ares.config.AresSettings`. Some operational tuning also comes from `ares.config.yaml` when present.
+Gate thresholds are read from `ares.config.yaml` under the `gate:` key. If the file is missing or the key is absent, internal defaults apply (`ares/gate/rules_engine.py:24-39`).
 
-Common local stack defaults:
+### `ares.config.yaml` gate keys
 
-| Setting | Default | Why it matters |
-|---|---|---|
-| `DATABASE_URL` | `postgresql+asyncpg://ares:ares@localhost:55432/ares` | Evaluation, champion, drift, audit, and alert persistence. |
-| `ARES_API_URL` | `http://localhost:8000/api/v1` | CLI and dashboard API target. |
-| `ARES_DASHBOARD_URL` | `http://localhost:8501` | Links from API/operator output to dashboard. |
-| `ARES_API_KEYS` | empty in development | Comma-separated or JSON list of accepted env-backed API keys. |
-| `ARES_API_KEY_SCOPES` | `{}` | Optional per-key scopes, for example `{"ops-key":["read","admin"]}`. |
-| `RATE_LIMIT_EVALUATE` | `10/minute` | Protects evaluation submit endpoints. |
-| `RATE_LIMIT_CHAMPION_MUTATION` | `20/minute` | Protects promotion/rollback endpoints. |
-| `RATE_LIMIT_READ` | `120/minute` | Protects read-heavy API endpoints. |
-| `SLICE_TREND_RETENTION_DAYS` | `365` | Retention horizon for normalized slice trend queries. |
-| `GOLDEN_SET_VERSION` | `v1.0.0` | Default evidence version stamped into evaluations/model cards. |
-| `GOLDEN_SET_REQUIRE_CHECKSUM` | `false` | Enforces production data contract checks when enabled. |
-| `SLACK_WEBHOOK_URL` | empty | Enables Slack alert channel when configured. |
-| `OTEL_EXPORTER_OTLP_ENDPOINT` | empty | Enables tracing export when configured. |
+| Key | Default | Unit | What it controls |
+|---|---|---|---|
+| `max_regression_f1` | `0.02` | absolute | Maximum allowed drop in `overall_f1` vs champion. |
+| `max_regression_accuracy` | `0.015` | absolute | Maximum allowed drop in `overall_accuracy` vs champion. |
+| `critical_slice_min_f1` | `0.60` | absolute | Minimum `f1` for any slice marked `is_critical=True`. |
+| `max_latency_regression_pct` | `10.0` | percentage | Max latency increase vs champion (converted to ratio `0.10` internally). |
+| `max_size_increase_pct` | `10.0` | percentage | Max model size increase without accuracy gain (converted to ratio `0.10`). |
+| `significance_alpha` | `0.05` | probability | Alpha for statistical significance test on f1 improvement. |
 
-## Gate threshold tuning process
+All percentage keys accept either a raw ratio (`0.10`) or a human-readable percentage (`10.0`). The `_as_ratio` helper in `rules_engine.py:12-21` divides values greater than `1.0` by `100` automatically.
 
-1. Review recent evaluation history in the dashboard leaderboard.
-2. Compare candidate and champion runs through `/api/v1/evaluations/compare` or `AresClient.compare_evaluations`.
-3. Inspect critical slice trends through `/api/v1/slices/trends` and the drift monitor.
-4. Change one threshold family at a time.
-5. Re-run representative evaluations.
-6. Generate a model card for each changed threshold decision and archive it with release evidence.
+Example `ares.config.yaml`:
 
-Do not lower a critical-slice threshold just to pass a single candidate. If the same critical slice repeatedly fails, prefer model or data fixes over weaker governance.
-
-## Slice trend retention
-
-`SLICE_TREND_RETENTION_DAYS` controls how long normalized `slice_metric_points` remain queryable. Tune it by use case:
-
-| Use case | Suggested value |
-|---|---:|
-| Local demos and CI fixtures | 30 |
-| Active model operations | 180 to 365 |
-| Regulated audit trail | 365 or longer, with database storage planning |
-
-Longer retention improves trend context but increases query and storage cost. Keep high-cardinality slice names under control.
-
-## API key and scope tuning
-
-Development allows a permissive fallback key when no API keys are configured. Staging and production must configure keys.
-
-Recommended pattern:
-
-```bash
-ARES_API_KEYS='ops-read,release-admin'
-ARES_API_KEY_SCOPES='{"ops-read":["read"],"release-admin":["read","write","admin"]}'
+```yaml
+gate:
+  max_regression_f1: 0.02
+  max_regression_accuracy: 0.015
+  critical_slice_min_f1: 0.60
+  max_latency_regression_pct: 10.0
+  max_size_increase_pct: 10.0
+  significance_alpha: 0.05
 ```
 
-Use managed API keys for rotation and expiration when possible. The dashboard and API client should use keys with the minimum scope needed for the workflow.
+## Read the current gate config
 
-## Plugin tuning
+### API
 
-Evaluator plugins are trusted code. Tune plugin behavior with these controls:
+```bash
+curl -H "X-API-Key: $ARES_API_KEY" \
+  "$ARES_API_ORIGIN/api/v1/gate/config"
+```
 
-- Install only reviewed plugin packages.
-- Prefer explicit plugin allowlists in deployment/package-management policy. ARES currently discovers installed `ares.evaluators` entry points and does not implement an in-app allowlist setting.
-- Check `/api/v1/evaluators` after startup to verify the loaded evaluator name and version.
-- Treat plugin load failures as release blockers when the plugin is required for a model family.
+Returns the raw `gate` dictionary from `ares.config.yaml` (or empty dict if none exists). This endpoint requires `read` scope.
 
-## Dashboard tuning
+### Python client
 
-Dashboard behavior is controlled by API connectivity and Streamlit state:
+```python
+from ares_client import AresClient
 
-- `ARES_API_URL` should point at the API origin or `/api/v1`; the dashboard strips `/api/v1` as needed.
-- `ARES_API_KEY` or the first `ARES_API_KEYS` value supplies `X-API-Key`.
-- Use the sidebar connection settings for local operator overrides during QA.
-- Browser QA evidence is recorded in `docs/dashboard-qa-results.md` and screenshots in `docs/screenshots/`.
+with AresClient("http://localhost:8000/api/v1", api_key="dev-key-1") as client:
+    config = client.optimize_thresholds([])  # no direct config getter; use API
+```
 
-## Alert tuning
+There is no dedicated `get_gate_config` client method; call the API directly or read `ares.config.yaml` on disk.
 
-Use alert rules for operator signal, not noise:
+## Simulate a gate decision before changing thresholds
 
-- Start with conservative drift thresholds until enough production data is available.
-- Route P0/P1 alerts to Slack or another on-call channel.
-- Keep low-severity drift reports visible in the dashboard without paging humans.
-- Test alert delivery from the dashboard Alerts page after changing channel configuration.
+The simulation endpoint re-evaluates an existing run against overridden thresholds without persisting anything.
+
+### API
+
+```bash
+curl -X POST "$ARES_API_ORIGIN/api/v1/gate/simulate" \
+  -H "X-API-Key: $ARES_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"run_id": "run-abc123", "override_thresholds": {"max_regression_f1": 0.03}}'
+```
+
+Request schema (`SimulationRequest` in `ares/api/schemas/evaluation.py:47-49`):
+
+| Field | Type | Required |
+|---|---|---|
+| `run_id` | `str` | yes |
+| `override_thresholds` | `dict[str, float]` | no (default `{}`) |
+
+Response schema (`SimulationResponse` in `ares/api/schemas/evaluation.py:52-53`):
+
+| Field | Type | Meaning |
+|---|---|---|
+| `run_id` | `str` | The evaluated run |
+| `decision` | `str` | `PASS` or `FAIL` |
+| `reason` | `str` | Human-readable rationale |
+| `should_promote` | `bool` | Whether promotion is recommended |
+| `slice_regressions` | `list[dict]` | Which slices failed and by how much |
+| `config_snapshot` | `dict` | The thresholds actually used (defaults + overrides) |
+| `is_first_run` | `bool` | True when no champion exists |
+| `new_metrics` | `dict[str, float]` | Candidate metrics |
+| `champion_metrics` | `dict[str, float]` | Champion metrics used for comparison |
+
+### Simulation workflow
+
+1. Run an evaluation: `POST /api/v1/evaluate/compare`
+2. Read current config: `GET /api/v1/gate/config`
+3. Simulate with one changed key at a time: `POST /api/v1/gate/simulate`
+4. Inspect `slice_regressions` and `reason`
+5. Update `ares.config.yaml` with the validated values
+6. Re-run the evaluation and confirm `decision` matches expectation
+
+## Threshold tuning workflow
+
+A safe tuning cycle looks like this:
+
+1. **Run** — Submit a representative evaluation through `POST /api/v1/evaluate/compare` or the evaluation CLI.
+2. **Inspect** — Read `GET /api/v1/gate/config` and compare against the defaults in `rules_engine.py`.
+3. **Simulate** — Post `override_thresholds` to `/api/v1/gate/simulate` and confirm the new gate would have produced the desired `decision`.
+4. **Adjust** — Edit `ares.config.yaml`, restart the API if necessary, or push the config through your deployment pipeline.
+5. **Re-run** — Submit the same evaluation payload again and verify the live gate decision matches the simulation.
+6. **Archive** — Generate a model card for the re-run and attach it to release evidence.
+
+## Anti-patterns
+
+### Setting thresholds too tight
+
+The optimizer grid does not explore below `0.005` for f1 or accuracy tolerances. If you set `max_regression_f1: 0.001`, nearly every candidate will fail. Prefer starting with the optimizer defaults and tightening only after collecting enough historical evidence.
+
+### Ignoring slice-level failures
+
+A run can have good overall f1 while a critical slice (`is_critical=True`) falls below `critical_slice_min_f1`. The gate fails in this case. Do not raise the overall threshold and ignore the slice; fix the model or data for that subgroup.
+
+### Changing thresholds without a baseline evaluation run
+
+Never change thresholds without a recent passing run to validate against. If no baseline exists, the simulator cannot compare candidate vs champion, and you are tuning blindly.
+
+## Threshold optimizer
+
+The optimizer searches a grid of threshold combinations and returns the one with the best accuracy on labeled historical runs.
+
+### CLI
+
+```bash
+ares-optimize-thresholds history.json --output recommendation.json
+```
+
+The `ares-optimize-thresholds` command is registered in `pyproject.toml` under `[project.scripts]`. It expects a JSON file containing a list of historical run objects.
+
+Input format (`ares/cli/thresholds.py:16-23`):
+
+```json
+[
+  {
+    "candidate_metrics": {"overall_f1": 0.91, "overall_accuracy": 0.90},
+    "champion_metrics": {"overall_f1": 0.90, "overall_accuracy": 0.89},
+    "should_pass": true,
+    "slice_metrics": {"critical": {"f1": 0.85, "is_critical": true}}
+  }
+]
+```
+
+Output format (`ares/cli/thresholds.py:26-33`):
+
+```json
+{
+  "recommended_config": {"max_regression_f1": 0.01, "max_regression_accuracy": 0.015, "critical_slice_min_f1": 0.60},
+  "pass_rate": 0.75,
+  "expected_accuracy": 0.92,
+  "false_pass_rate": 0.05,
+  "false_fail_rate": 0.20,
+  "evaluated_configs": 48
+}
+```
+
+### API
+
+```bash
+curl -X POST "$ARES_API_ORIGIN/api/v1/gate/optimize" \
+  -H "X-API-Key: $ARES_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"historical_runs": [...]}'
+```
+
+Request schema (`ThresholdOptimizeRequest` in `ares/api/routers/gate.py:33-37`):
+
+| Field | Type | Default grid |
+|---|---|---|
+| `historical_runs` | `list[ThresholdHistoricalRunPayload]` | required |
+| `f1_tolerances` | `list[float] \| None` | `[0.005, 0.01, 0.02, 0.03]` |
+| `accuracy_tolerances` | `list[float] \| None` | `[0.005, 0.01, 0.015, 0.02]` |
+| `critical_slice_floors` | `list[float] \| None` | `[0.55, 0.60, 0.65]` |
+
+### Interpreting the output
+
+- `recommended_config` — the best-scoring threshold combination.
+- `pass_rate` — fraction of historical runs that would pass under the recommended config.
+- `expected_accuracy` — fraction of labeled runs where the gate decision matches `should_pass`.
+- `false_pass_rate` — labeled runs that should have failed but passed.
+- `false_fail_rate` — labeled runs that should have passed but failed.
+- `evaluated_configs` — total grid points searched.
+
+### Applying the recommendation
+
+1. Write the `recommended_config` values into `ares.config.yaml` under the `gate:` key.
+2. Re-run a representative evaluation.
+3. Simulate the new thresholds against the same run to confirm consistency.
+4. Archive a model card for the validated configuration.
 
 ## Safe rollout checklist
 

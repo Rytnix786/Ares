@@ -1,0 +1,19 @@
+[cosmic-ray]
+module-path = "ares"
+timeout = 60.0
+excluded-modules = [
+  "ares.api",
+  "ares.cache",
+  "ares.cli",
+  "ares.config",
+  "ares.db",
+  "ares.exceptions",
+  "ares.logging",
+  "ares.models",
+  "ares.observability",
+  "ares_client",
+  "dashboard",
+]
+test-command = "python -m pytest tests/unit/test_gate_rules_engine.py tests/unit/test_evaluator.py tests/unit/test_evaluators_base.py tests/unit/test_evaluators_classification.py tests/unit/test_additional_evaluators.py tests/unit/test_gate.py tests/property/test_drift_math.py tests/property/test_gate_rules.py --no-cov"
+[cosmic-ray.distributor]
+name = "local"

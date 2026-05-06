@@ -118,6 +118,19 @@ async def ingest_predictions(
     return DriftPredictionIngestResponse(model_name=batch.model_name, rows=batch.rows, columns=batch.columns, source=batch.source_type)
 
 
+@router.post("/predictions/push", response_model=DriftPredictionIngestResponse)
+@limiter.limit(settings.RATE_LIMIT_CHAMPION_MUTATION)
+async def ingest_predictions_push(
+    request: Request,
+    payload: DriftPredictionIngestRequest,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("write")),
+) -> DriftPredictionIngestResponse:
+    del request, _principal
+    batch = await ingest_prediction_payload(db, model_name=payload.model_name, records=payload.records, source="http_push")
+    return DriftPredictionIngestResponse(model_name=batch.model_name, rows=batch.rows, columns=batch.columns, source=batch.source_type)
+
+
 @router.post("/jobs", response_model=DriftJobResponse)
 @limiter.limit(settings.RATE_LIMIT_CHAMPION_MUTATION)
 async def create_job(

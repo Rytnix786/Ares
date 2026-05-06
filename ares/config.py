@@ -54,6 +54,7 @@ class AresSettings(BaseSettings):
     API_KEY_DEFAULT_TTL_DAYS: int = 90
     API_KEY_MAX_TTL_DAYS: int = 365
     SLICE_TREND_RETENTION_DAYS: int = 365
+    AUDIT_LOG_RETENTION_DAYS: int = 90
 
     GOLDEN_SET_VERSION: str = "v1.0.0"
     GOLDEN_SET_REQUIRE_CHECKSUM: bool = False

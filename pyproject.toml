@@ -32,7 +32,7 @@ dependencies = [
 [project.optional-dependencies]
 dashboard = ["streamlit>=1.33.0", "plotly>=5.21.0"]
 eval = ["mlflow>=2.12.0", "dvc[s3]>=3.49.0", "deepchecks>=0.18.0", "evidently>=0.4.0"]
-dev = ["build>=1.0.0", "pytest>=8.1.0", "pytest-asyncio>=0.23.0", "pytest-cov>=5.0.0", "pytest-xdist>=3.6.0", "pytest-benchmark>=4.0.0", "fakeredis>=2.20.0", "ruff>=0.4.0", "mypy>=1.9.0", "pre-commit>=3.7.0", "types-PyYAML>=6.0.12", "hypothesis>=6.100.0", "mutmut>=2.5.0"]
+dev = ["build>=1.0.0", "pytest>=8.1.0", "pytest-asyncio>=0.23.0", "pytest-cov>=5.0.0", "pytest-xdist>=3.6.0", "pytest-benchmark>=4.0.0", "fakeredis>=2.20.0", "ruff>=0.4.0", "mypy>=1.9.0", "pre-commit>=3.7.0", "types-PyYAML>=6.0.12", "hypothesis>=6.100.0", "cosmic-ray>=8.3", "pytest-timeout>=2.3.0"]
 otel = ["opentelemetry-api>=1.24.0", "opentelemetry-sdk>=1.24.0", "opentelemetry-exporter-otlp>=1.24.0", "opentelemetry-instrumentation-fastapi>=0.45b0"]
 
 [project.entry-points."ares.gate_plugins"]
@@ -80,19 +80,3 @@ check_untyped_defs = true
 ignore_missing_imports = true
 exclude = ["alembic/", "tests/"]
 disable_error_code = ["misc", "assignment", "arg-type"]
-
-[tool.mutmut]
-paths_to_mutate = ["ares/gate/rules_engine.py", "ares/evaluators"]
-tests_dir = [
-  "tests/unit/test_additional_evaluators.py",
-  "tests/unit/test_evaluator.py",
-  "tests/unit/test_evaluators_base.py",
-  "tests/unit/test_evaluators_classification.py",
-  "tests/unit/test_gate.py",
-  "tests/unit/test_gate_rules_engine.py",
-  "tests/property/test_drift_math.py",
-  "tests/property/test_gate_rules.py",
-]
-also_copy = ["ares", "dashboard", "ares.config.yaml"]
-pytest_add_cli_args = ["--no-cov"]
-mutate_only_covered_lines = true

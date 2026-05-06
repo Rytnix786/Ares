@@ -27,7 +27,7 @@ def main() -> int:
             "-m",
             "pytest",
             "--cov=ares",
-            "--cov-fail-under=90",
+            "--cov-fail-under=92",
             "--cov-report=term-missing",
             "--cov-report=xml:reports/coverage.xml",
             "--junitxml=reports/test-results.xml",

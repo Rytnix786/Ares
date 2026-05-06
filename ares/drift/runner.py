@@ -14,6 +14,7 @@ from ares.drift.contracts import load_prediction_batch_async
 from ares.metrics.drift import compute_drift_report
 from ares.models import DriftJob
 from ares.notifier.webhook import send_webhook
+from ares.observability.telemetry import trace_function
 
 
 @dataclass(frozen=True)
@@ -76,6 +77,14 @@ async def dispatch_drift_alerts(
     return 1
 
 
+@trace_function(
+    "drift.run_drift_job",
+    attributes={
+        "drift.job_id": lambda args, kwargs: getattr(kwargs.get("job") or (args[1] if len(args) > 1 else None), "id", None),
+        "drift.model_name": lambda args, kwargs: getattr(kwargs.get("job") or (args[1] if len(args) > 1 else None), "model_name", None),
+        "drift.source_type": lambda args, kwargs: getattr(kwargs.get("job") or (args[1] if len(args) > 1 else None), "source_type", None),
+    },
+)
 async def run_drift_job(
     db: AsyncSession,
     job: DriftJob,

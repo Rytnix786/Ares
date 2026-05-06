@@ -44,6 +44,8 @@ Resolution:
    ```
 3. Resolve the alert only after the report is no longer alerting.
 
+<a id="api-outage-or-high-error-rate"></a>
+
 ## Bad promotion
 
 Detection: performance regression, drift after promotion, incident report, or failed smoke verification.
@@ -74,6 +76,8 @@ Rules:
 - Rollback target must exist, match the model, and have passed the gate.
 - Always record an incident ID or clear reason.
 
+<a id="bad-promotion"></a>
+
 ## API key compromise
 
 Immediate actions:
@@ -103,6 +107,8 @@ Prometheus alerts: `AresApiHighErrorRate`, `AresApiNoTraffic`.
 5. After recovery, run targeted health checks and the staging canary checklist before declaring resolved.
 
 ## Security/audit incident
+
+<a id="security-audit-incident"></a>
 
 Prometheus alerts: `AresAuditWriteFailures`, `AresAuthFailuresSpike`.
 

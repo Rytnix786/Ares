@@ -50,7 +50,7 @@ def test_phase2_contract_paths_are_declared() -> None:
         "get_model_card": ("GET", "/api/v1/evaluations/{run_id}/model-card"),
         "poll_job_status": ("GET", "/api/v1/drift/jobs/{job_id}/runs"),
         "get_champion": ("GET", "/api/v1/champions/{model_name}"),
-        "trigger_rollback": ("POST", "/api/v1/champions/{model_name}/rollback"),
+        "rollback_champion": ("POST", "/api/v1/champions/{model_name}/rollback"),
         "query_drift_reports": ("GET", "/api/v1/drift/reports"),
         "list_api_keys": ("GET", "/api/v1/admin/api-keys"),
         "optimize_thresholds": ("POST", "/api/v1/gate/optimize"),

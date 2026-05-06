@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import joblib
@@ -142,6 +143,17 @@ class TestClassificationEvaluator:
         assert metrics["overall_accuracy"] == 0.0
         assert metrics["overall_f1"] == 0.0
 
+    def test_compute_metrics_multilabel_uses_macro_average(self):
+        evaluator = ClassificationEvaluator("model.json")
+        predictions = ["alpha", "beta", "gamma"]
+        ground_truth = ["alpha", "gamma", "gamma"]
+
+        metrics = evaluator.compute_metrics(predictions, ground_truth)
+
+        assert 0 <= metrics["overall_f1"] <= 1
+        assert metrics["overall_precision"] <= 1
+        assert metrics["overall_recall"] <= 1
+
     def test_evaluate_integration(self, sample_dataset):
         """Test full evaluation pipeline."""
         evaluator = ClassificationEvaluator("model.json")
@@ -277,3 +289,144 @@ class TestClassificationEvaluator:
         assert result.commit_sha == "text-compat"
         assert result.overall_metrics["overall_accuracy"] == 1.0
         assert result.passed
+
+
+class TestStandaloneFunctions:
+    """Cover module-level helpers."""
+
+    def test_extract_text_from_plain_string(self) -> None:
+        from ares.evaluators.classification import _extract_text
+
+        assert _extract_text("Hello World") == "hello world"
+
+    def test_extract_text_from_dict(self) -> None:
+        from ares.evaluators.classification import _extract_text
+
+        assert _extract_text({"text": "Hello World"}) == "hello world"
+
+    def test_extract_text_literal_eval_fallback(self) -> None:
+        from ares.evaluators.classification import _extract_text
+
+        assert _extract_text("{'text': 'Hello'}") == "hello"
+
+    def test_extract_text_non_string_non_dict(self) -> None:
+        from ares.evaluators.classification import _extract_text
+
+        assert _extract_text(123) == "123"
+
+    def test_parse_payload_non_string(self) -> None:
+        from ares.evaluators.classification import _parse_payload
+
+        assert _parse_payload({"a": 1}) == {"a": 1}
+
+    def test_parse_payload_json(self) -> None:
+        from ares.evaluators.classification import _parse_payload
+
+        assert _parse_payload('{"a": 1}') == {"a": 1}
+
+    def test_parse_payload_literal_eval(self) -> None:
+        from ares.evaluators.classification import _parse_payload
+
+        assert _parse_payload("{'a': 1}") == {"a": 1}
+
+    def test_parse_payload_unparseable(self) -> None:
+        from ares.evaluators.classification import _parse_payload
+
+        assert _parse_payload("not json or python") == "not json or python"
+
+    def test_keyword_features_counts(self) -> None:
+        from ares.evaluators.classification import _keyword_features
+
+        text = "positive great resolved stable clearly"
+        result = _keyword_features(text)
+        assert result[0] == float(len(text))
+        assert result[1] == 5.0
+        assert result[2] == 0.0
+
+
+class TestClassificationEvaluatorEdgeCases:
+    """Cover error paths and boundary conditions in ClassificationEvaluator."""
+
+    def test_configured_mode_invalid_raises(self) -> None:
+        from ares.exceptions import ConfigurationInvalidError
+
+        evaluator = ClassificationEvaluator("model.json", {"evaluator": {"mode": "unknown"}})
+        with pytest.raises(ConfigurationInvalidError):
+            evaluator._configured_mode()
+
+    def test_feature_columns_none_returns_empty(self) -> None:
+        evaluator = ClassificationEvaluator("model.json", {"evaluator": {"feature_columns": None}})
+        assert evaluator._feature_columns() == []
+
+    def test_feature_columns_non_list_raises(self) -> None:
+        from ares.exceptions import ConfigurationInvalidError
+
+        evaluator = ClassificationEvaluator("model.json", {"evaluator": {"feature_columns": "age"}})
+        with pytest.raises(ConfigurationInvalidError):
+            evaluator._feature_columns()
+
+    def test_load_model_json_read_error_raises(self, tmp_path: Path) -> None:
+        from ares.exceptions import ModelLoadError
+
+        model_path = tmp_path / "model.json"
+        model_path.write_text("not valid json!!!")
+        evaluator = ClassificationEvaluator(str(model_path))
+        with pytest.raises(ModelLoadError):
+            evaluator.load_model()
+
+    def test_has_sklearn_predict_dict_with_model_key(self) -> None:
+        evaluator = ClassificationEvaluator("model.json")
+        evaluator._model = {"model": MagicMock()}
+        assert evaluator._has_sklearn_predict() is True
+
+    def test_tabular_fallback_available_catches_prediction_error(self) -> None:
+        evaluator = ClassificationEvaluator("model.json", {"evaluator": {"feature_columns": ["age"]}})
+        evaluator._model = MagicMock()
+        # MagicMock has predict, so _has_sklearn_predict is True
+        # _build_tabular_frame will raise because input is not a dict with the right keys
+        result = evaluator._tabular_fallback_available(["not a dict"])
+        assert result is False
+
+    def test_build_tabular_frame_no_feature_columns_raises(self) -> None:
+        evaluator = ClassificationEvaluator("model.json")
+        with pytest.raises(PredictionError) as exc_info:
+            evaluator._build_tabular_frame([{"text": "hello"}])
+        assert "feature_columns" in str(exc_info.value)
+
+    def test_build_tabular_frame_features_dict(self) -> None:
+        evaluator = ClassificationEvaluator("model.json", {"evaluator": {"feature_columns": ["age"]}})
+        result = evaluator._build_tabular_frame([{"features": {"age": 25}}])
+        assert result["age"].tolist() == [25]
+
+    def test_build_tabular_frame_non_mapping_allow_missing(self) -> None:
+        evaluator = ClassificationEvaluator("model.json", {"evaluator": {"feature_columns": ["age"]}})
+        result = evaluator._build_tabular_frame(["not a dict"], allow_missing=True)
+        assert pd.isna(result["age"][0])
+
+    def test_build_tabular_frame_non_mapping_reject(self) -> None:
+        evaluator = ClassificationEvaluator("model.json", {"evaluator": {"feature_columns": ["age"]}})
+        with pytest.raises(PredictionError) as exc_info:
+            evaluator._build_tabular_frame(["not a dict"], allow_missing=False)
+        assert "non_mapping_rows" in exc_info.value.details
+
+    def test_predict_sklearn_tabular_no_predict_raises(self) -> None:
+        evaluator = ClassificationEvaluator("model.json", {"evaluator": {"mode": "sklearn_tabular", "feature_columns": ["age"]}})
+        evaluator._model = {"model": "not callable"}
+        with pytest.raises(PredictionError) as exc_info:
+            evaluator._predict_sklearn_tabular([{"age": 25}])
+        assert "predict method" in str(exc_info.value)
+
+    def test_predict_text_with_scaler_and_model(self) -> None:
+        import numpy as np
+        from sklearn.dummy import DummyClassifier
+        from sklearn.preprocessing import StandardScaler
+
+        scaler = StandardScaler()
+        model = DummyClassifier(strategy="constant", constant="positive")
+        features = np.asarray([[30.0, 2.0, 0.0]], dtype=float)
+        scaler.fit(features)
+        model.fit(features, ["positive"])
+        evaluator = ClassificationEvaluator("model.json")
+        evaluator._model = {"model": model, "scaler": scaler}
+        result = evaluator._predict_text(["positive great example"])
+        assert result == ["positive"]

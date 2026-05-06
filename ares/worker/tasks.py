@@ -3,6 +3,7 @@ from __future__ import annotations
 from celery import Celery
 
 from ares.config import settings
+from ares.observability.telemetry import trace_function
 from ares.worker.event_workflow import (
     EvaluationEventRunner,
     EvaluationEventType,
@@ -14,6 +15,13 @@ celery_app.conf.task_always_eager = False
 
 
 @celery_app.task(name="ares.evaluate")
+@trace_function(
+    "worker.evaluate_task",
+    attributes={
+        "worker.task_name": "ares.evaluate",
+        "worker.run_id": lambda args, kwargs: str((args[0] or {}).get("run_id") or (args[0] or {}).get("job_id") or ""),
+    },
+)
 def evaluate_task(payload: dict) -> dict:
     job_id = str(payload.get("job_id", "celery-job"))
     event_payload = {key: value for key, value in payload.items() if key != "job_id"}

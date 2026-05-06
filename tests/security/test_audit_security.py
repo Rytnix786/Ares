@@ -158,3 +158,40 @@ def test_audit_log_entries_do_not_contain_raw_api_key_values(
     assert audit_logs
     assert all(entry.api_key_id != raw_key for entry in audit_logs)
     assert all(raw_key not in str(entry.audit_metadata) for entry in audit_logs)
+
+
+def test_audit_log_entries_redact_sensitive_headers_and_body_fields(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    audit_logs: list[AuditLog] = []
+    _patch_auth_db(monkeypatch, FakeDbKey(id="writer-key-id", scopes=["write", "admin", "read"]))
+
+    body = {
+        "name": "security-test",
+        "password": "super-secret",
+        "secret": "top-secret",
+        "token": "abc123",
+        "api_key": "raw-api-key",
+    }
+
+    with TestClient(_audit_app(audit_logs)) as client:
+        response = client.post(
+            "/resources",
+            headers={
+                "X-API-Key": "raw-api-key",
+                "Authorization": "Bearer raw-token",
+            },
+            json=body,
+        )
+
+    assert response.status_code == 200
+    assert audit_logs
+    persisted = audit_logs[0].audit_metadata
+    assert persisted["headers"]["Authorization"] == "[REDACTED]"
+    assert persisted["headers"]["X-API-Key"] == "[REDACTED]"
+    assert persisted["payload"]["password"] == "[REDACTED]"
+    assert persisted["payload"]["secret"] == "[REDACTED]"
+    assert persisted["payload"]["token"] == "[REDACTED]"
+    assert persisted["payload"]["api_key"] == "[REDACTED]"
+    assert "raw-token" not in str(persisted)
+    assert "raw-api-key" not in str(persisted)

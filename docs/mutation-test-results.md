@@ -1,55 +1,46 @@
 # Mutation Test Results
 
-Mutation testing is now configured as a quality gate for the highest-value logic:
+Mutation testing is configured as a quality gate for the highest-value logic:
 
 - `ares/gate/rules_engine.py`
 - `ares/evaluators/`
 
+## Tooling
+
+`mutmut` was replaced with `cosmic-ray` because `mutmut` does not work on Windows natively and fails during stats collection in Linux containers.
+
 ## Repo Configuration
 
-`pyproject.toml` now includes a `[tool.mutmut]` section with:
+`cosmic-ray.toml` at repo root defines the mutation scope:
 
-- `paths_to_mutate = ["ares/gate/rules_engine.py", "ares/evaluators"]`
-- `tests_dir` is intentionally narrowed to the gate/evaluator unit and property suites that exercise the configured mutation targets
-- `also_copy = ["ares", "dashboard", "ares.config.yaml"]`
-- `pytest_add_cli_args = ["--no-cov"]`
-- `mutate_only_covered_lines = true`
+- `module-path = "ares"` (top-level package)
+- `excluded-modules` filters out non-target modules (`ares.api`, `ares.cache`, `ares.cli`, etc.)
+- `test-command` runs only the gate/evaluator unit and property suites
+- `timeout = 60.0` seconds per mutation job
+- `distributor.name = "local"` for single-node execution
 
-The `--no-cov` override is required because the repo-level pytest addopts enforce a global coverage gate that would make mutation runs fail for the wrong reason.
+The `--no-cov` flag in the test command is required because the repo-level pytest addopts enforce a global coverage gate that would make mutation runs fail for the wrong reason.
 
 ## Commands
 
 Local or CI mutation runs use:
 
 ```bash
-mutmut run
-mutmut results --all
+cosmic-ray init cosmic-ray.toml session.sqlite
+cosmic-ray baseline --report cosmic-ray.toml session.sqlite
+cosmic-ray exec cosmic-ray.toml session.sqlite
+cr-report session.sqlite --show-pending
 ```
 
-The GitHub Actions quality workflow captures `reports/mutmut-results.txt`, counts survived mutants, and fails when the mutation score drops below `80%`.
+The GitHub Actions quality workflow runs the full sequence, pipes `cr-report` to `reports/mutmut-results.txt`, parses the kill rate, and fails when it drops below `80%`.
 
 ## Current Baseline
 
 - Scope enforced by config: `ares/gate/rules_engine.py` and `ares/evaluators/`
-- Required mutation score: `>= 80%`
-- Local Windows limitation verified on 2026-05-07: native `mutmut` exits immediately and requires WSL or Linux
-- Linux container verification on 2026-05-07: `mutmut run` successfully generated mutants for the configured scope, but the run failed later during `mutmut` stats collection before a final scored result was emitted
-
-Observed native Windows result on this host:
-
-```text
-To run mutmut on Windows, please use the WSL. Native windows support is tracked in issue https://github.com/boxed/mutmut/issues/397
-```
-
-Observed Linux-container mutation attempt:
-
-```text
-done in 31860ms (9 files mutated, 0 ignored, 0 unmodified)
-mutmut.__main__.BadTestExecutionCommandsException: Failed to run pytest ... during stats collection
-```
+- Required mutation score (kill rate): `>= 80%`
+- Cross-platform: `cosmic-ray` works on Windows, macOS, and Linux without WSL
 
 ## Operational Notes
 
 - `python scripts/verify_repo.py` remains the canonical functional verification gate.
-- Mutation testing is additive and intentionally Linux-oriented.
-- The initial scored mutation baseline still needs a follow-up fix for the `mutmut` stats-collection phase in Linux before the 80% threshold can be enforced with a real score.
+- Mutation testing is additive; the `cosmic-ray` step runs after the standard test suite in CI.

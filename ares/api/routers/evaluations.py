@@ -29,6 +29,7 @@ from ares.config import settings
 from ares.db import crud
 from ares.db.session import get_db
 from ares.gate import rules_engine
+from ares.gate.plugins import evaluate_with_plugin
 from ares.model_cards import generate_model_card
 from ares.plugins import list_evaluator_plugins
 
@@ -127,7 +128,7 @@ async def compare_with_champion(
         )
     champion_run = await crud.get_evaluation_run(db, champion.champion_run_id)
     champion_metrics = extract_metrics(champion_run)
-    decision = rules_engine.evaluate(payload.new_metrics, champion_metrics, payload.slice_metrics, gate_config, payload.n_samples)
+    decision = evaluate_with_plugin("default", payload.new_metrics, champion_metrics, payload.slice_metrics, gate_config, payload.n_samples)
     comparison_payload = build_run_decision_payload(
         candidate_metrics=payload.new_metrics,
         champion_metrics=champion_metrics,

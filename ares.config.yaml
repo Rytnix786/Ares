@@ -46,6 +46,8 @@ drift:
   psi_alert_threshold: 0.2
   production_error_spike_pct: 0.1
   local_predictions_dir: data/sample_predictions
+audit:
+  retention_days: 90
 evaluator:
   mode: sklearn_tabular
   feature_columns:

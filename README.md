@@ -123,13 +123,14 @@ pre-commit install
 python scripts/verify_repo.py
 ```
 
-`verify_repo.py` runs Ruff, Mypy, Pytest with `--cov-fail-under=90`, Docker Compose config validation, `dvc repro --dry`, and `compileall` over `ares`, `dashboard`, `scripts`, and `tests`.
+`verify_repo.py` runs Ruff, Mypy, Pytest with `--cov-fail-under=92`, Docker Compose config validation, `dvc repro --dry`, and `compileall` over `ares`, `dashboard`, `scripts`, and `tests`.
 
 ## Usage
 
 ### Run the full local stack
 
 ```bash
+make demo
 docker compose up -d
 python -m alembic upgrade head
 python scripts/seed_champion.py

@@ -1,12 +1,15 @@
 PYTHON ?= python
 
-.PHONY: benchmark build build-pkg clean dashboard dev eval lint migrate migrate-down test test-all test-e2e test-integration test-unit verify
+.PHONY: benchmark build build-pkg clean dashboard demo dev eval lint migrate migrate-down test test-all test-e2e test-integration test-unit verify
 
 reports:
 	$(PYTHON) -c "from pathlib import Path; Path('reports').mkdir(exist_ok=True)"
 
 dev:
 	docker compose up -d
+
+demo:
+	$(PYTHON) scripts/start_demo.py
 
 build:
 	docker compose build api worker dashboard

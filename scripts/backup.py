@@ -18,6 +18,8 @@ from urllib.parse import SplitResult, unquote, urlsplit, urlunsplit
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
+from ares.observability.telemetry import trace_function
+
 DEFAULT_BACKUP_ROOT = Path("backups")
 DEFAULT_BUCKET = "ares-artifacts"
 MANIFEST_NAME = "manifest.json"
@@ -211,6 +213,7 @@ def ensure_bucket_exists(client: Any, bucket: str, *, create: bool) -> None:
         raise BackupError(f"Failed to create MinIO bucket '{bucket}': {exc}") from exc
 
 
+@trace_function("minio.download_bucket", attributes={"minio.operation": "download", "minio.bucket": lambda args, kwargs: args[1] if len(args) > 1 else kwargs.get("bucket")})
 def download_bucket(client: Any, bucket: str, destination: Path) -> None:
     destination.mkdir(parents=True, exist_ok=True)
     try:
@@ -222,6 +225,7 @@ def download_bucket(client: Any, bucket: str, destination: Path) -> None:
         raise BackupError(f"Failed to download artifacts from bucket '{bucket}': {exc}") from exc
 
 
+@trace_function("minio.upload_directory", attributes={"minio.operation": "upload", "minio.bucket": lambda args, kwargs: args[1] if len(args) > 1 else kwargs.get("bucket")})
 def upload_directory(client: Any, bucket: str, source_dir: Path) -> None:
     ensure_bucket_exists(client, bucket, create=True)
     if not source_dir.exists():
