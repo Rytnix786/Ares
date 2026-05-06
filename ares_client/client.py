@@ -46,6 +46,7 @@ class AresClient:
             "trigger_rollback": ("POST", "/api/v1/champions/{model_name}/rollback"),
             "query_drift_reports": ("GET", "/api/v1/drift/reports"),
             "list_api_keys": ("GET", "/api/v1/admin/api-keys"),
+            "optimize_thresholds": ("POST", "/api/v1/gate/optimize"),
         }
 
     def authenticate(self) -> dict[str, Any]:
@@ -97,3 +98,6 @@ class AresClient:
     def list_alerts(self, status: str | None = None) -> list[dict[str, Any]]:
         params = {"status": status} if status else None
         return list(self._request("GET", "/alerts/events", params=params))
+
+    def optimize_thresholds(self, historical_runs: list[dict[str, Any]]) -> dict[str, Any]:
+        return dict(self._request("POST", "/gate/optimize", json={"historical_runs": historical_runs}))

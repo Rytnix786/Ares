@@ -53,6 +53,7 @@ def test_phase2_contract_paths_are_declared() -> None:
         "trigger_rollback": ("POST", "/api/v1/champions/{model_name}/rollback"),
         "query_drift_reports": ("GET", "/api/v1/drift/reports"),
         "list_api_keys": ("GET", "/api/v1/admin/api-keys"),
+        "optimize_thresholds": ("POST", "/api/v1/gate/optimize"),
     }
 
 
@@ -100,6 +101,11 @@ def test_client_phase2_contract_methods_send_expected_requests() -> None:
 
         client.list_api_keys()
         assert_last(recorder, "GET", "/api/v1/admin/api-keys")
+
+        history = [{"candidate_metrics": {"overall_f1": 0.91}, "champion_metrics": {"overall_f1": 0.90}}]
+        client.optimize_thresholds(history)
+        request = assert_last(recorder, "POST", "/api/v1/gate/optimize")
+        assert json.loads(request.content) == {"historical_runs": history}
 
 
 def test_client_raises_structured_error() -> None:
