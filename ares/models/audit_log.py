@@ -6,7 +6,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, Float, ForeignKey, Index, String
+from sqlalchemy import JSON, DateTime, Float, ForeignKey, Index, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ares.models.base import Base
@@ -30,7 +30,7 @@ class AuditLog(Base):
     method: Mapped[str] = mapped_column(String(16), nullable=False)
     payload_hash: Mapped[str] = mapped_column(String(64), nullable=True)
     result: Mapped[str] = mapped_column(String(32), nullable=False)  # success, error
-    status_code: Mapped[int] = mapped_column(String(16), nullable=True)
+    status_code: Mapped[int | None] = mapped_column(Integer, nullable=True)
     audit_metadata: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default=dict)
     api_key_id: Mapped[str | None] = mapped_column(String, ForeignKey("api_keys.id", ondelete="SET NULL"), nullable=True, index=True)
     actor_type: Mapped[str | None] = mapped_column(String(32), nullable=True)

@@ -49,6 +49,9 @@ class AresSettings(BaseSettings):
     API_KEY_HASH_SECRET: str = "secret"
     API_KEY_DEFAULT_RATE_LIMIT: str = "120/minute"
     API_KEY_HASH_PREFIX_LENGTH: int = 64
+    API_KEY_DEFAULT_TTL_DAYS: int = 90
+    API_KEY_MAX_TTL_DAYS: int = 365
+    SLICE_TREND_RETENTION_DAYS: int = 365
 
     GOLDEN_SET_VERSION: str = "v1.0.0"
     GOLDEN_SET_REQUIRE_CHECKSUM: bool = False

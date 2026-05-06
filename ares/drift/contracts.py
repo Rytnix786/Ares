@@ -7,6 +7,7 @@ from typing import Any, Protocol
 import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from ares.db import crud
 from ares.drift_sources import LocalFileDataSource
 from ares.exceptions import DatasetSchemaError
 
@@ -86,6 +87,30 @@ def load_prediction_batch(model_name: str, source_type: str, source_config: dict
     )
 
 
+async def load_prediction_batch_async(
+    db: AsyncSession,
+    model_name: str,
+    source_type: str,
+    source_config: dict[str, Any],
+    *,
+    hours: int = 24,
+) -> DriftPredictionBatch:
+    if source_type == "api_push":
+        persisted = await crud.latest_prediction_batch(db, model_name, source=str(source_config.get("source", "api_push")))
+        if persisted is None:
+            raise FileNotFoundError(f"no pushed prediction batch found for {model_name}")
+        frame = validate_prediction_frame(pd.DataFrame(persisted.records), model_name=model_name)
+        return DriftPredictionBatch(
+            model_name=model_name,
+            rows=len(frame),
+            columns=[str(column) for column in frame.columns],
+            data=frame,
+            source_type="api_push",
+            source_config={"batch_id": persisted.id, **source_config},
+        )
+    return load_prediction_batch(model_name, source_type, source_config, hours=hours)
+
+
 async def ingest_prediction_payload(
     db: AsyncSession,
     *,
@@ -93,8 +118,15 @@ async def ingest_prediction_payload(
     records: list[dict[str, Any]],
     source: str = "api_push",
 ) -> DriftPredictionBatch:
-    del db
     frame = validate_prediction_frame(pd.DataFrame(records), model_name=model_name)
+    await crud.create_prediction_batch(
+        db,
+        model_name=model_name,
+        source=source,
+        rows=len(frame),
+        columns=[str(column) for column in frame.columns],
+        records=frame.to_dict(orient="records"),
+    )
     return DriftPredictionBatch(
         model_name=model_name,
         rows=len(frame),

@@ -132,7 +132,49 @@ def upgrade() -> None:
     op.create_index("ix_alert_events_status_created_at", "alert_events", ["status", "created_at"], unique=False)
     op.create_index("ix_alert_events_model_name_created_at", "alert_events", ["model_name", "created_at"], unique=False)
 
+    op.create_table(
+        "production_prediction_batches",
+        sa.Column("id", sa.String(), nullable=False),
+        sa.Column("model_name", sa.String(length=256), nullable=False),
+        sa.Column("source", sa.String(length=128), nullable=False),
+        sa.Column("rows", sa.Integer(), nullable=False),
+        sa.Column("columns", sa.JSON(), nullable=False),
+        sa.Column("records", sa.JSON(), nullable=False),
+        sa.Column("schema_version", sa.String(length=64), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("received_by", sa.String(length=256), nullable=True),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(op.f("ix_production_prediction_batches_model_name"), "production_prediction_batches", ["model_name"], unique=False)
+    op.create_index("ix_prediction_batches_model_created_at", "production_prediction_batches", ["model_name", "created_at"], unique=False)
+    op.create_index("ix_prediction_batches_source_created_at", "production_prediction_batches", ["source", "created_at"], unique=False)
+
+    op.create_table(
+        "champion_rollbacks",
+        sa.Column("id", sa.String(), nullable=False),
+        sa.Column("model_name", sa.String(length=256), nullable=False),
+        sa.Column("from_champion_id", sa.String(), nullable=True),
+        sa.Column("to_champion_id", sa.String(), nullable=True),
+        sa.Column("from_run_id", sa.String(), nullable=False),
+        sa.Column("to_run_id", sa.String(), nullable=False),
+        sa.Column("actor", sa.String(length=256), nullable=False),
+        sa.Column("reason", sa.String(length=1024), nullable=False),
+        sa.Column("validation_status", sa.String(length=64), nullable=False),
+        sa.Column("status", sa.String(length=64), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("completed_at", sa.DateTime(), nullable=True),
+        sa.Column("rollback_metadata", sa.JSON(), nullable=False),
+        sa.ForeignKeyConstraint(["from_champion_id"], ["model_champions.id"], ondelete="SET NULL"),
+        sa.ForeignKeyConstraint(["to_champion_id"], ["model_champions.id"], ondelete="SET NULL"),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(op.f("ix_champion_rollbacks_model_name"), "champion_rollbacks", ["model_name"], unique=False)
+    op.create_index(op.f("ix_champion_rollbacks_from_champion_id"), "champion_rollbacks", ["from_champion_id"], unique=False)
+    op.create_index(op.f("ix_champion_rollbacks_to_champion_id"), "champion_rollbacks", ["to_champion_id"], unique=False)
+    op.create_index("ix_champion_rollbacks_model_created_at", "champion_rollbacks", ["model_name", "created_at"], unique=False)
+
     with op.batch_alter_table("audit_logs") as batch_op:
+        batch_op.alter_column("status_code", existing_type=sa.String(length=16), type_=sa.Integer(), existing_nullable=True)
         batch_op.add_column(sa.Column("api_key_id", sa.String(), nullable=True))
         batch_op.add_column(sa.Column("actor_type", sa.String(length=32), nullable=True))
         batch_op.add_column(sa.Column("resource_type", sa.String(length=128), nullable=True))
@@ -163,6 +205,18 @@ def downgrade() -> None:
         batch_op.drop_constraint("fk_audit_logs_api_key_id", type_="foreignkey")
         for column in ["duration_ms", "error_code", "correlation_id", "action", "resource_id", "resource_type", "actor_type", "api_key_id"]:
             batch_op.drop_column(column)
+        batch_op.alter_column("status_code", existing_type=sa.Integer(), type_=sa.String(length=16), existing_nullable=True)
+
+    op.drop_index("ix_champion_rollbacks_model_created_at", table_name="champion_rollbacks")
+    op.drop_index(op.f("ix_champion_rollbacks_to_champion_id"), table_name="champion_rollbacks")
+    op.drop_index(op.f("ix_champion_rollbacks_from_champion_id"), table_name="champion_rollbacks")
+    op.drop_index(op.f("ix_champion_rollbacks_model_name"), table_name="champion_rollbacks")
+    op.drop_table("champion_rollbacks")
+
+    op.drop_index("ix_prediction_batches_source_created_at", table_name="production_prediction_batches")
+    op.drop_index("ix_prediction_batches_model_created_at", table_name="production_prediction_batches")
+    op.drop_index(op.f("ix_production_prediction_batches_model_name"), table_name="production_prediction_batches")
+    op.drop_table("production_prediction_batches")
 
     op.drop_index("ix_alert_events_model_name_created_at", table_name="alert_events")
     op.drop_index("ix_alert_events_status_created_at", table_name="alert_events")

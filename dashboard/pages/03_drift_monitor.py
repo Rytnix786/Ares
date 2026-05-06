@@ -11,8 +11,8 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from dashboard.api_client import api_v1_path, safe_api_call
-from dashboard.components.charts import kl_trend_line
+from dashboard.api_client import api_v1_path, get_slice_trends, safe_api_call
+from dashboard.components.charts import kl_trend_line, slice_metric_trend_line
 from dashboard.components.connection_status import ensure_api_connection
 from dashboard.components.real_time_metrics import (
     auto_refresh_sidebar_controls,
@@ -66,6 +66,23 @@ if ensure_api_connection():
                 unsafe_allow_html=True,
             )
 
-    st.plotly_chart(kl_trend_line(df), use_container_width=True)
-    st.dataframe(df.sort_values("created_at", ascending=False), use_container_width=True, hide_index=True)
+    tab_reports, tab_slice_trends = st.tabs(["Drift reports", "Slice trends"])
+    with tab_reports:
+        st.plotly_chart(kl_trend_line(df), use_container_width=True)
+        st.dataframe(df.sort_values("created_at", ascending=False), use_container_width=True, hide_index=True)
+
+    with tab_slice_trends:
+        model_options = ["All models"] + sorted(df["model_name"].dropna().unique().tolist())
+        selected_model = st.selectbox("Model filter", model_options, key="slice_trend_model")
+        trends_payload, trends_error = get_slice_trends(None if selected_model == "All models" else selected_model)
+        if trends_error:
+            st.error(trends_error)
+        else:
+            trend_df = pd.DataFrame(trends_payload or [])
+            if trend_df.empty:
+                empty_state("No slice trend points yet. Slice trend retention is active once evaluations record slice metrics.", icon="📈")
+            else:
+                trend_df["window_start"] = pd.to_datetime(trend_df["window_start"], errors="coerce")
+                st.plotly_chart(slice_metric_trend_line(trend_df), use_container_width=True)
+                st.dataframe(trend_df.sort_values("window_start", ascending=False), use_container_width=True, hide_index=True)
     maybe_auto_refresh()

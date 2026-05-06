@@ -142,6 +142,19 @@ def get_drift_reports(model_name: str | None = None) -> tuple[Any | None, str | 
     )
 
 
+def get_slice_trends(model_name: str | None = None, metric_name: str | None = None) -> tuple[Any | None, str | None]:
+    params = {k: v for k, v in {"model_name": model_name, "metric_name": metric_name}.items() if v}
+    return safe_api_call(lambda client: client.get(api_v1_path("/slices/trends"), params=params))
+
+
+def compare_evaluation_runs(run_ids: list[str]) -> tuple[Any | None, str | None]:
+    return safe_api_call(lambda client: client.post(api_v1_path("/evaluations/compare"), json={"run_ids": run_ids}))
+
+
+def get_model_card(run_id: str) -> tuple[Any | None, str | None]:
+    return safe_api_call(lambda client: client.get(api_v1_path(f"/evaluations/{run_id}/model-card")))
+
+
 def get_drift_jobs() -> tuple[Any | None, str | None]:
     return safe_api_call(lambda client: client.get(api_v1_path("/drift/jobs")))
 

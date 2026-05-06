@@ -97,6 +97,22 @@ def kl_trend_line(df: pd.DataFrame):
     return chart
 
 
+def slice_metric_trend_line(df: pd.DataFrame):
+    if df.empty:
+        return px.line(title="Slice metric trend")
+    chart = px.line(
+        df.sort_values("window_start"),
+        x="window_start",
+        y="metric_value",
+        color="slice_key",
+        line_dash="metric_name" if "metric_name" in df.columns else None,
+        markers=True,
+        title="Slice performance trend",
+    )
+    chart.update_layout(yaxis_title="Metric value", xaxis_title="Window start")
+    return chart
+
+
 def comparison_bar_chart(candidate_metrics: pd.DataFrame, champion_metrics: pd.DataFrame):
     """Side-by-side bar chart comparing candidate vs champion metrics."""
     if candidate_metrics.empty and champion_metrics.empty:

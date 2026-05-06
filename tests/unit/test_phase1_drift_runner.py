@@ -6,7 +6,12 @@ import pandas as pd
 import pytest
 
 from ares.db import crud
-from ares.drift.contracts import ObjectPrefixDataSource, ingest_prediction_payload, load_prediction_batch, validate_prediction_frame
+from ares.drift.contracts import (
+    ObjectPrefixDataSource,
+    ingest_prediction_payload,
+    load_prediction_batch,
+    validate_prediction_frame,
+)
 from ares.drift.runner import _max_severity, run_drift_job
 from ares.exceptions import DatasetSchemaError
 

@@ -2,17 +2,15 @@
 from __future__ import annotations
 
 import hashlib
-import json
 import logging
 from datetime import datetime, timedelta
-from typing import Optional
 
-from sqlalchemy import and_, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ares.models import AlertEvent
-from ares.notifier.slack import send_slack_alert
-from ares.notifier.webhook import send_webhook_alert
+from ares.notifier.slack import send_slack_message
+from ares.notifier.webhook import send_webhook
 
 logger = logging.getLogger(__name__)
 
@@ -20,20 +18,21 @@ logger = logging.getLogger(__name__)
 class AlertDispatcher:
     """Dispatches alerts through configured channels with deduplication."""
 
-    def __init__(self, slack_webhook_url: Optional[str] = None):
+    def __init__(self, slack_webhook_url: str | None = None, webhook_url: str | None = None):
         """Initialize alert dispatcher.
         
         Args:
             slack_webhook_url: Optional Slack webhook URL for notifications
         """
         self.slack_webhook_url = slack_webhook_url
+        self.webhook_url = webhook_url
         self.logger = logger
 
     async def dispatch_alert(
         self,
         db_session: AsyncSession,
         alert: AlertEvent,
-        channels: Optional[list[str]] = None,
+        channels: list[str] | None = None,
     ) -> dict:
         """Dispatch an alert through configured channels with deduplication.
         
@@ -46,12 +45,14 @@ class AlertDispatcher:
             dict with 'status', 'channels_sent', 'errors' if any
         """
         channels = channels or ["webhook"]
-        result = {
+        result: dict[str, object] = {
             "status": "pending",
             "alert_id": alert.id,
             "channels_sent": [],
             "errors": [],
         }
+        channels_sent: list[str] = []
+        errors: list[str] = []
 
         # Check for duplicate alert (deduplication)
         if await self._is_duplicate(db_session, alert):
@@ -66,22 +67,25 @@ class AlertDispatcher:
                 try:
                     if channel == "slack" and self.slack_webhook_url:
                         await self._send_slack(alert)
-                        result["channels_sent"].append("slack")
+                        channels_sent.append("slack")
                     elif channel == "webhook":
                         await self._send_webhook(alert)
-                        result["channels_sent"].append("webhook")
+                        channels_sent.append("webhook")
                 except Exception as e:
                     error_msg = f"Error sending to {channel}: {str(e)}"
                     self.logger.error(error_msg)
-                    result["errors"].append(error_msg)
+                    errors.append(error_msg)
 
-            result["status"] = "dispatched" if result["channels_sent"] else "failed"
+            result["channels_sent"] = channels_sent
+            result["errors"] = errors
+            result["status"] = "dispatched" if channels_sent else "failed"
             return result
 
         except Exception as e:
             self.logger.error(f"Error dispatching alert {alert.id}: {e}", exc_info=True)
             result["status"] = "failed"
-            result["errors"].append(str(e))
+            errors.append(str(e))
+            result["errors"] = errors
             return result
 
     async def _is_duplicate(
@@ -129,53 +133,14 @@ class AlertDispatcher:
         if not self.slack_webhook_url:
             raise ValueError("Slack webhook URL not configured")
 
-        message = {
-            "text": f"🚨 ARES Alert: {alert.event_type}",
-            "blocks": [
-                {
-                    "type": "header",
-                    "text": {
-                        "type": "plain_text",
-                        "text": f"Alert: {alert.event_type}",
-                    },
-                },
-                {
-                    "type": "section",
-                    "fields": [
-                        {
-                            "type": "mrkdwn",
-                            "text": f"*Model:*\n{alert.model_name}",
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": f"*Severity:*\n{alert.severity.upper()}",
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": f"*Type:*\n{alert.event_type}",
-                        },
-                        {
-                            "type": "mrkdwn",
-                            "text": f"*Status:*\n{alert.status.upper()}",
-                        },
-                    ],
-                },
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"*Message:*\n{alert.message}",
-                    },
-                },
-            ],
-        }
-
-        await send_slack_alert(self.slack_webhook_url, message)
+        message = f"🚨 ARES Alert: {alert.event_type} | {alert.model_name} | {alert.severity.upper()} | {alert.message}"
+        await send_slack_message(self.slack_webhook_url, message)
         logger.info(f"Alert {alert.id} sent to Slack")
 
-    @staticmethod
-    async def _send_webhook(alert: AlertEvent) -> None:
+    async def _send_webhook(self, alert: AlertEvent) -> None:
         """Send alert via webhook."""
+        if not self.webhook_url:
+            return
         payload = {
             "alert_id": alert.id,
             "event_type": alert.event_type,
@@ -188,14 +153,14 @@ class AlertDispatcher:
             "created_at": alert.created_at.isoformat() if alert.created_at else None,
         }
 
-        await send_webhook_alert(payload)
+        await send_webhook(self.webhook_url, payload)
         logger.info(f"Alert {alert.id} sent via webhook")
 
 
 class AlertRuleEngine:
     """Evaluates conditions to trigger alerts."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize alert rule engine."""
         self.logger = logger
 
@@ -206,7 +171,7 @@ class AlertRuleEngine:
         drift_metric: str,
         value: float,
         threshold: float,
-    ) -> Optional[AlertEvent]:
+    ) -> AlertEvent | None:
         """Check if drift metric exceeds threshold and create alert if needed.
         
         Args:

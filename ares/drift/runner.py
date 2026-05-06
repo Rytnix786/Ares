@@ -10,7 +10,7 @@ import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from ares.db import crud
-from ares.drift.contracts import load_prediction_batch
+from ares.drift.contracts import load_prediction_batch_async
 from ares.metrics.drift import compute_drift_report
 from ares.models import DriftJob
 from ares.notifier.webhook import send_webhook
@@ -94,7 +94,7 @@ async def run_drift_job(
         run_metadata={"job_name": job.job_name, "source_type": job.source_type},
     )
     try:
-        batch = load_prediction_batch(job.model_name, job.source_type, job.source_config, hours=hours)
+        batch = await load_prediction_batch_async(db, job.model_name, job.source_type, job.source_config, hours=hours)
         reference = _load_reference(job.reference_config)
         features = _feature_pairs(reference, batch.data, job.thresholds.get("features"))
         alert_count = 0

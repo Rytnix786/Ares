@@ -47,7 +47,7 @@ markers = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["ares*", "dashboard*"]
+include = ["ares*", "ares_client*", "dashboard*"]
 exclude = ["skills*", "data*", "docker*", "tests*", "alembic*", "reports*", "docs*"]
 
 [tool.ruff]

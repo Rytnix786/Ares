@@ -24,7 +24,10 @@ router = APIRouter(prefix="/api/v1/admin/api-keys", tags=["admin-api-keys"])
 
 
 def _expires(ttl_days: int | None) -> datetime | None:
-    return datetime.utcnow() + timedelta(days=ttl_days) if ttl_days else None
+    ttl = ttl_days if ttl_days is not None else settings.API_KEY_DEFAULT_TTL_DAYS
+    if ttl <= 0 or ttl > settings.API_KEY_MAX_TTL_DAYS:
+        raise HTTPException(status_code=422, detail={"error_code": "API_KEY_TTL_INVALID", "message": "API key TTL is outside the allowed policy", "details": {"max_ttl_days": settings.API_KEY_MAX_TTL_DAYS}})
+    return datetime.utcnow() + timedelta(days=ttl)
 
 
 def _response(key: Any) -> ApiKeyResponse:

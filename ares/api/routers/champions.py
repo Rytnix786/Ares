@@ -15,6 +15,7 @@ from ares.api.schemas.champion import (
     ChampionHistoryEntry,
     ChampionHistoryResponse,
     ChampionResponse,
+    ChampionRollbackRecordResponse,
     ChampionRollbackRequest,
     ChampionRollbackResponse,
     PromoteChampionRequest,
@@ -22,6 +23,7 @@ from ares.api.schemas.champion import (
 from ares.config import settings
 from ares.db import crud
 from ares.db.session import get_db
+from ares.model_cards import generate_model_card
 
 router = APIRouter(prefix="/api/v1/champions", tags=["champions"])
 
@@ -100,6 +102,15 @@ async def promote(
 ) -> ChampionResponse:
     del request
     champion = await crud.promote_champion(db, model_name, payload.run_id, payload.promoted_by, payload.reason)
+    run = await crud.get_evaluation_run(db, payload.run_id)
+    if run is not None and run.model_card_uri is None:
+        card = generate_model_card(
+            run,
+            champion=champion,
+            drift_reports=await crud.list_drift_reports(db, model_name=model_name, limit=20),
+            champion_history=await crud.list_champion_history(db, model_name),
+        )
+        await crud.attach_model_card(db, run.id, markdown_uri=f"ares://model-cards/{run.id}.md", payload=card.payload)
     return ChampionResponse(
         id=champion.id,
         model_name=champion.model_name,
@@ -162,6 +173,24 @@ async def history(
     )
 
 
+def _rollback_record_response(row: Any) -> ChampionRollbackRecordResponse:
+    return ChampionRollbackRecordResponse(
+        id=row.id,
+        model_name=row.model_name,
+        from_champion_id=row.from_champion_id,
+        to_champion_id=row.to_champion_id,
+        from_run_id=row.from_run_id,
+        to_run_id=row.to_run_id,
+        actor=row.actor,
+        reason=row.reason,
+        validation_status=row.validation_status,
+        status=row.status,
+        created_at=row.created_at.isoformat(),
+        completed_at=None if row.completed_at is None else row.completed_at.isoformat(),
+        rollback_metadata=row.rollback_metadata,
+    )
+
+
 @router.post("/{model_name}/rollback", response_model=ChampionRollbackResponse)
 @limiter.limit(settings.RATE_LIMIT_CHAMPION_MUTATION)
 async def rollback(
@@ -201,3 +230,16 @@ async def rollback(
             is_active=champion.is_active,
         ),
     )
+
+
+@router.get("/{model_name}/rollbacks", response_model=list[ChampionRollbackRecordResponse])
+@limiter.limit(settings.RATE_LIMIT_READ)
+async def rollbacks(
+    request: Request,
+    model_name: str,
+    limit: int = 100,
+    db: AsyncSession = Depends(get_db),
+    _principal: object = Depends(require_scope("read")),
+) -> list[ChampionRollbackRecordResponse]:
+    del request, _principal
+    return [_rollback_record_response(row) for row in await crud.list_champion_rollbacks(db, model_name, limit=limit)]

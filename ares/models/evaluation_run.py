@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, Integer, String, UniqueConstraint
+from sqlalchemy import JSON, Boolean, DateTime, Float, Index, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from ares.models.base import Base
@@ -14,6 +14,8 @@ class EvaluationRun(Base):
     __tablename__ = "evaluation_runs"
     __table_args__ = (
         UniqueConstraint("commit_sha", "golden_set_version", "model_name", name="uq_evaluation_idempotency"),
+        Index("ix_evaluation_runs_evaluator_name", "evaluator_name"),
+        Index("ix_evaluation_runs_model_card_uri", "model_card_uri"),
     )
 
     id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
@@ -42,4 +44,8 @@ class EvaluationRun(Base):
     mlflow_status: Mapped[str] = mapped_column(String(32), nullable=False, default="pending")
     mlflow_error: Mapped[str | None] = mapped_column(String(2048), nullable=True)
     mlflow_error_category: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    evaluator_name: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    evaluator_version: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    model_card_uri: Mapped[str | None] = mapped_column(String(2048), nullable=True)
+    model_card_json: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)

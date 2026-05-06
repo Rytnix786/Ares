@@ -13,7 +13,10 @@ from ares.db.session import get_sessionmaker
 
 async def _create(args: argparse.Namespace) -> None:
     raw_key = args.key or f"ares_{secrets.token_urlsafe(32)}"
-    expires_at = datetime.utcnow() + timedelta(days=args.ttl_days) if args.ttl_days else None
+    ttl_days = args.ttl_days if args.ttl_days is not None else settings.API_KEY_DEFAULT_TTL_DAYS
+    if ttl_days <= 0 or ttl_days > settings.API_KEY_MAX_TTL_DAYS:
+        raise SystemExit(f"ttl-days must be between 1 and {settings.API_KEY_MAX_TTL_DAYS}")
+    expires_at = datetime.utcnow() + timedelta(days=ttl_days)
     async with get_sessionmaker()() as db:
         key = await create_api_key(
             db,
@@ -47,7 +50,10 @@ async def _revoke(args: argparse.Namespace) -> None:
 
 async def _rotate(args: argparse.Namespace) -> None:
     raw_key = args.key or f"ares_{secrets.token_urlsafe(32)}"
-    expires_at = datetime.utcnow() + timedelta(days=args.ttl_days) if args.ttl_days else None
+    ttl_days = args.ttl_days if args.ttl_days is not None else settings.API_KEY_DEFAULT_TTL_DAYS
+    if ttl_days <= 0 or ttl_days > settings.API_KEY_MAX_TTL_DAYS:
+        raise SystemExit(f"ttl-days must be between 1 and {settings.API_KEY_MAX_TTL_DAYS}")
+    expires_at = datetime.utcnow() + timedelta(days=ttl_days)
     scopes = args.scopes.split(",") if args.scopes else None
     async with get_sessionmaker()() as db:
         key = await rotate_api_key(

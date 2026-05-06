@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import uuid
-from typing import cast
+from typing import Any, cast
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from fastapi.exceptions import RequestValidationError
 from starlette.middleware.base import RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
@@ -36,6 +37,14 @@ ERROR_REMEDIATION = {
     "INSUFFICIENT_SCOPE": "Use an API key with the required scope or ask an administrator to rotate/provision one.",
 }
 
+ERROR_STATUS = {
+    "DATASET_SCHEMA_INVALID": 422,
+    "GATE_CONFIG_INVALID": 422,
+    "INSUFFICIENT_SCOPE": 403,
+    "PROMOTION_FAILED": 409,
+    "CONFIGURATION_INVALID": 500,
+}
+
 configure_logging()
 
 app = FastAPI(title="Ares", version="1.0.0")
@@ -58,8 +67,18 @@ async def request_id_middleware(
 
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_handler(request: Request, exc: Exception) -> JSONResponse:
-    del request, exc
-    return JSONResponse({"detail": "rate limit exceeded"}, status_code=429)
+    del exc
+    return JSONResponse(
+        ErrorResponse(
+            error_code="RATE_LIMIT_EXCEEDED",
+            message="Rate limit exceeded",
+            category="rate_limit",
+            remediation="Wait for the current rate-limit window to reset or use a key with an appropriate policy.",
+            retryable=True,
+            request_id=getattr(request.state, "request_id", None),
+        ).model_dump(),
+        status_code=429,
+    )
 
 
 @app.exception_handler(AresException)
@@ -76,7 +95,45 @@ async def ares_exception_handler(request: Request, exc: AresException) -> JSONRe
     )
     return JSONResponse(
         content=error_response.model_dump(),
-        status_code=400,
+        status_code=ERROR_STATUS.get(exc.error_code, 400),
+    )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    detail = exc.detail if isinstance(exc.detail, dict) else {"message": str(exc.detail)}
+    raw_details: Any = detail.get("details", {})
+    safe_details = raw_details if isinstance(raw_details, dict) else {}
+    body = ErrorResponse(
+        error_code=str(detail.get("error_code", f"HTTP_{exc.status_code}")),
+        message=str(detail.get("message", detail.get("detail", exc.detail))),
+        category="http",
+        remediation="Review the endpoint documentation, required scopes, and request parameters before retrying.",
+        retryable=exc.status_code in {408, 409, 429, 500, 502, 503, 504},
+        request_id=getattr(request.state, "request_id", None),
+        details={k: v for k, v in safe_details.items() if isinstance(v, (str, int, float, bool, list)) or v is None},
+    ).model_dump()
+    if isinstance(exc.detail, dict):
+        body["detail"] = exc.detail
+    return JSONResponse(
+        body,
+        status_code=exc.status_code,
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    return JSONResponse(
+        ErrorResponse(
+            error_code="VALIDATION_ERROR",
+            message="Request validation failed",
+            category="validation",
+            remediation="Fix the fields identified in details and retry.",
+            retryable=False,
+            request_id=getattr(request.state, "request_id", None),
+            details={"errors": [str(error) for error in exc.errors()]},
+        ).model_dump(),
+        status_code=422,
     )
 
 
