@@ -70,6 +70,7 @@ class EvaluationRunResponse(BaseModel):
     golden_set_version: str | None = None
     mlflow_run_id: str | None = None
     artifact_uri: str | None = None
+    model_card_uri: str | None = None
     slice_metrics: dict[str, Any] = Field(default_factory=dict)
     gate_config_snapshot: dict[str, Any] = Field(default_factory=dict)
     metadata_json: dict[str, Any] = Field(default_factory=dict)
@@ -81,3 +82,52 @@ class EvaluationRunResponse(BaseModel):
     metric_table: dict[str, MetricComparisonRow] = Field(default_factory=dict)
     slice_comparison: list[SliceComparisonRow] = Field(default_factory=list)
     created_at: str
+
+
+class EvaluatorPluginResponse(BaseModel):
+    name: str
+    version: str
+    description: str = ""
+
+
+class SliceTrendPointResponse(BaseModel):
+    run_id: str
+    model_name: str
+    slice_name: str
+    metric_name: str
+    metric_value: float
+    is_critical: bool
+    created_at: str
+
+
+class SliceTrendRetentionResponse(BaseModel):
+    deleted: int
+    retention_days: int
+
+
+class MultiModelCompareRequest(BaseModel):
+    run_ids: list[str] = Field(min_length=2)
+
+
+class MultiModelCompareRow(BaseModel):
+    run_id: str
+    model_name: str
+    model_version: str
+    passed: bool
+    metrics: dict[str, float]
+    risk_summary: str
+
+
+class MultiModelCompareResponse(BaseModel):
+    candidates: list[MultiModelCompareRow]
+    winner_run_id: str | None = None
+    winner_reason: str = ""
+    winner: dict[str, Any] | None = None
+    risk_summary: dict[str, Any] = Field(default_factory=dict)
+    rankings: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class ModelCardResponse(BaseModel):
+    run_id: str
+    markdown: str
+    payload: dict[str, Any]
