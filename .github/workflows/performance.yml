@@ -1,0 +1,40 @@
+name: Ares Performance Gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Staging ARES base URL
+        required: true
+      api_key:
+        description: Staging API key secret name is ARES_LOAD_API_KEY
+        required: false
+  schedule:
+    - cron: '0 3 * * 1'
+
+jobs:
+  k6-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: grafana/setup-k6-action@v1
+      - name: Run k6 staging smoke load
+        env:
+          ARES_BASE_URL: ${{ inputs.base_url }}
+          ARES_API_KEY: ${{ secrets.ARES_LOAD_API_KEY }}
+          ARES_LOAD_VUS: 5
+          ARES_LOAD_DURATION: 1m
+        run: k6 run --summary-export reports/k6-summary.json load/k6/ares-api-smoke.js
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate SLO budgets
+        run: python scripts/validate_k6_summary.py reports/k6-summary.json
+      - name: Upload performance summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-summary
+          path: reports/k6-summary.json

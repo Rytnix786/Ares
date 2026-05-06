@@ -10,6 +10,7 @@ from fastapi import Depends, Header, HTTPException, Request, status
 from ares.config import settings
 from ares.db.crud_api_keys import get_active_api_key_by_hash, record_api_key_usage
 from ares.db.session import dispose_engine, get_sessionmaker
+from ares.observability.metrics import auth_failures_total
 
 
 @dataclass(frozen=True)
@@ -67,6 +68,7 @@ async def require_api_key(
                 scopes=frozenset({"read", "write", "admin"}),
             )
             return _bind_principal(request, principal)
+        auth_failures_total.labels("not_configured").inc()
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="API keys are not configured")
     if x_api_key:
         for allowed in current_settings.ARES_API_KEYS:
@@ -77,6 +79,7 @@ async def require_api_key(
                     scopes=current_settings.scopes_for_api_key(allowed),
                 )
                 return _bind_principal(request, principal)
+    auth_failures_total.labels("invalid_key").inc()
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key")
 
 
@@ -84,6 +87,7 @@ def require_scope(scope: str) -> Callable[[APIKeyPrincipal], APIKeyPrincipal]:
     def dependency(principal: APIKeyPrincipal = Depends(require_api_key)) -> APIKeyPrincipal:
         if principal.has_scope(scope):
             return principal
+        auth_failures_total.labels("insufficient_scope").inc()
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={

@@ -7,6 +7,14 @@ api:
   replicas: 2
   port: 8000
   command: ["uvicorn", "ares.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+    targetCPUUtilizationPercentage: 70
+  pdb:
+    enabled: true
+    minAvailable: 1
 
 dashboard:
   enabled: true
@@ -37,6 +45,7 @@ service:
 ingress:
   enabled: false
   className: ""
+  annotations: {}
   hosts:
     - host: ares.local
       paths:
@@ -79,9 +88,14 @@ podSecurityContext:
 
 containerSecurityContext:
   allowPrivilegeEscalation: false
-  readOnlyRootFilesystem: false
+  readOnlyRootFilesystem: true
   capabilities:
     drop: ["ALL"]
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
 
 serviceMonitor:
   enabled: false
@@ -89,3 +103,4 @@ serviceMonitor:
 
 networkPolicy:
   enabled: true
+  allowNamespaceIngress: true

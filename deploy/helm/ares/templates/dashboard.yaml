@@ -16,6 +16,7 @@ spec:
         {{- include "ares.labels" . | nindent 8 }}
         app.kubernetes.io/component: dashboard
     spec:
+      serviceAccountName: {{ include "ares.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

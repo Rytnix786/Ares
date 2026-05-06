@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import Response
 
 from ares.models.audit_log import AuditLog
+from ares.observability.metrics import audit_write_failures_total
 
 log = logging.getLogger(__name__)
 
@@ -76,6 +77,7 @@ class AuditMiddleware:
             async with self.db_session_factory() as db:
                 await log_audit_event(db=db, **kwargs)
         except Exception as exc:
+            audit_write_failures_total.inc()
             log.warning("audit_log_write_failed", exc_info=exc)
     
     async def __call__(

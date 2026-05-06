@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ares.models import AlertEvent
 from ares.notifier.slack import send_slack_message
 from ares.notifier.webhook import send_webhook
+from ares.observability.metrics import drift_alerts_total
 
 logger = logging.getLogger(__name__)
 
@@ -201,6 +202,7 @@ class AlertRuleEngine:
             )
             db_session.add(alert)
             await db_session.flush()
+            drift_alerts_total.labels("high").inc()
             self.logger.warning(
                 f"Drift alert created for {model_name}: {drift_metric}={value:.4f}"
             )

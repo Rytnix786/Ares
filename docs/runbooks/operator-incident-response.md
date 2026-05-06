@@ -90,10 +90,49 @@ Immediate actions:
 
 ## API outage
 
+Prometheus alerts: `AresApiHighErrorRate`, `AresApiNoTraffic`.
+
 1. Check `/health/live`, `/health/ready`, `/health/pool`.
-2. Check DB/Redis/container status in Compose or Kubernetes.
-3. If DB is unavailable, stop mutation traffic and preserve logs.
-4. After recovery, run `python scripts/verify_repo.py` or targeted health checks before declaring resolved.
+2. Check Kubernetes rollout and pods:
+   ```bash
+   kubectl -n ares rollout status deployment/ares-ares-api
+   kubectl -n ares get pods,events
+   ```
+3. Check DB/Redis/container status in Compose or Kubernetes.
+4. If DB is unavailable, stop mutation traffic and preserve logs.
+5. After recovery, run targeted health checks and the staging canary checklist before declaring resolved.
+
+## Security/audit incident
+
+Prometheus alerts: `AresAuditWriteFailures`, `AresAuthFailuresSpike`.
+
+1. Freeze promotions, rollbacks, and API key mutations if audit writes are failing.
+2. Check `/api/v1/audit/events` with an admin-scoped key.
+3. Rotate any suspected key with `scripts/manage_api_keys.py`.
+4. Verify webhook receiver signatures use `x-ares-timestamp` and `x-ares-signature`.
+5. Run the CI security gate or local commands from `docs/security-hardening-guide.md`.
+
+## Staging deploy/canary checklist
+
+Use after Helm upgrade or rollback in a staging namespace. This is the local substitute for `/land-and-deploy` and `/canary` until a real deployment target is configured.
+
+1. Render and validate manifests:
+   ```bash
+   helm template ares deploy/helm/ares > rendered-ares.yaml
+   kubeconform -strict -ignore-missing-schemas rendered-ares.yaml
+   ```
+2. Apply and verify rollout:
+   ```bash
+   helm upgrade --install ares deploy/helm/ares --namespace ares --create-namespace
+   kubectl -n ares rollout status deployment/ares-ares-api
+   ```
+3. Confirm health and metrics:
+   ```bash
+   curl -f $ARES_API_ORIGIN/health/ready
+   curl -f $ARES_API_ORIGIN/metrics
+   ```
+4. Run the smoke load scenario from `docs/performance-baseline.md`.
+5. Verify Grafana panels and Prometheus alert rule loading.
 
 ## DB outage
 

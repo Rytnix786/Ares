@@ -1,0 +1,30 @@
+name: Ares Deployment Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  helm-and-k8s:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - name: Render Helm chart
+        run: helm template ares deploy/helm/ares --set secrets.existingSecret=ares-secrets > rendered-ares.yaml
+      - name: Install kubeconform
+        run: |
+          curl -L https://github.com/yannh/kubeconform/releases/latest/download/kubeconform-linux-amd64.tar.gz | tar xz
+          sudo mv kubeconform /usr/local/bin/kubeconform
+      - name: Validate rendered manifests
+        run: kubeconform -strict -ignore-missing-schemas rendered-ares.yaml
+      - name: Upload rendered manifests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-helm-manifests
+          path: rendered-ares.yaml
