@@ -73,6 +73,23 @@ active_requests = _metric(
     "ares_active_requests",
     "Active in-flight API requests.",
 )
+drift_alerts_total = _metric(
+    Counter,
+    "ares_drift_alerts_total",
+    "Total drift alerts emitted by severity.",
+    ["severity"],
+)
+audit_write_failures_total = _metric(
+    Counter,
+    "ares_audit_write_failures_total",
+    "Total audit log write failures.",
+)
+auth_failures_total = _metric(
+    Counter,
+    "ares_auth_failures_total",
+    "Total authentication failures by reason.",
+    ["reason"],
+)
 
 
 class MetricsMiddleware:

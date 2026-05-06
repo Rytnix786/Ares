@@ -1,0 +1,12 @@
+apiVersion: v2
+name: ares
+description: Production reference Helm chart for ARES model promotion control plane
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - mlops
+  - model-governance
+  - drift-monitoring
+maintainers:
+  - name: ARES maintainers

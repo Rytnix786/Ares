@@ -37,6 +37,8 @@ class AresSettings(BaseSettings):
     RATE_LIMIT_EVALUATE: str = "10/minute"
     RATE_LIMIT_CHAMPION_MUTATION: str = "20/minute"
     RATE_LIMIT_READ: str = "120/minute"
+    ARES_ALLOWED_ORIGINS: Annotated[list[str], NoDecode] = Field(default_factory=list)
+    ARES_SECURITY_HEADERS_ENABLED: bool = True
 
     # Zone A: cache settings (Wave 1 Agent B)
     CACHE_ENABLED: bool = True
@@ -97,6 +99,15 @@ class AresSettings(BaseSettings):
         if isinstance(value, str):
             return [item.strip() for item in value.split(",") if item.strip()]
         return list(value)
+
+    @field_validator("ARES_ALLOWED_ORIGINS", mode="before")
+    @classmethod
+    def parse_allowed_origins(cls, value: Any) -> list[str]:
+        if value is None or value == "":
+            return []
+        if isinstance(value, str):
+            return [item.strip() for item in value.split(",") if item.strip()]
+        return [str(item).strip() for item in value if str(item).strip()]
 
     @field_validator("ARES_API_KEY_SCOPES", mode="before")
     @classmethod

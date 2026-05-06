@@ -1,0 +1,61 @@
+{{- range $component := list "worker" "scheduler" }}
+{{- $cfg := index $.Values $component }}
+{{- if $cfg.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ares.fullname" $ }}-{{ $component }}
+  labels:
+    {{- include "ares.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: {{ $component }}
+spec:
+  replicas: {{ $cfg.replicas }}
+  selector:
+    matchLabels: {app.kubernetes.io/instance: {{ $.Release.Name }}, app.kubernetes.io/component: {{ $component }}}
+  template:
+    metadata:
+      labels:
+        {{- include "ares.labels" $ | nindent 8 }}
+        app.kubernetes.io/component: {{ $component }}
+    spec:
+      securityContext:
+        {{- toYaml $.Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ $component }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          command: {{ toJson $cfg.command }}
+          envFrom:
+            - configMapRef: {name: {{ include "ares.fullname" $ }}-config}
+            - secretRef: {name: {{ include "ares.secretName" $ }}}
+          securityContext:
+            {{- toYaml $.Values.containerSecurityContext | nindent 12 }}
+          resources:
+            {{- toYaml (index $.Values.resources $component) | nindent 12 }}
+---
+{{- end }}
+{{- end }}
+{{- if .Values.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "ares.fullname" . }}-migrate
+  labels:
+    {{- include "ares.labels" . | nindent 4 }}
+    app.kubernetes.io/component: migration
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: {{ toJson .Values.migration.command }}
+          envFrom:
+            - configMapRef: {name: {{ include "ares.fullname" . }}-config}
+            - secretRef: {name: {{ include "ares.secretName" . }}}
+{{- end }}

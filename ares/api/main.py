@@ -5,6 +5,7 @@ from typing import Any, cast
 
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import RequestResponseEndpoint
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
@@ -24,6 +25,7 @@ except ModuleNotFoundError:  # pragma: no cover - minimal smoke-test fallback
 from ares.api.limiting import limiter
 from ares.api.routers import alerts, api_keys, audit, champions, drift, evaluations, gate, health
 from ares.api.schemas.error import ErrorResponse
+from ares.config import settings
 from ares.exceptions import AresException
 from ares.logging import configure_logging
 from ares.observability.metrics import MetricsMiddleware
@@ -48,6 +50,14 @@ ERROR_STATUS = {
 configure_logging()
 
 app = FastAPI(title="Ares", version="1.0.0")
+if settings.ARES_ALLOWED_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.ARES_ALLOWED_ORIGINS,
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
+    )
 if SlowAPIMiddleware is not None:
     app.state.limiter = limiter
     app.add_middleware(SlowAPIMiddleware)
@@ -62,6 +72,21 @@ async def request_id_middleware(
     request.state.request_id = request_id
     response = await call_next(request)
     response.headers["X-Request-ID"] = request_id
+    return response
+
+
+@app.middleware("http")
+async def security_headers_middleware(
+    request: Request,
+    call_next: RequestResponseEndpoint,
+) -> Response:
+    response = await call_next(request)
+    if settings.ARES_SECURITY_HEADERS_ENABLED:
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault("X-Frame-Options", "DENY")
+        response.headers.setdefault("Referrer-Policy", "no-referrer")
+        response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+        response.headers.setdefault("Content-Security-Policy", "default-src 'self'; frame-ancestors 'none'")
     return response
 
 
