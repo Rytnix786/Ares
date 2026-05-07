@@ -7,8 +7,9 @@ from fastapi import Depends, FastAPI, Request
 from fastapi.testclient import TestClient
 
 from ares.api.auth import require_scope
-from ares.api.middleware.audit import AuditMiddleware
+from ares.api.middleware.audit import AuditMiddleware, log_audit_event
 from ares.models.audit_log import AuditLog
+from ares.observability.metrics import audit_write_failures_total
 
 
 @dataclass(frozen=True)
@@ -25,6 +26,12 @@ class CaptureSession:
         self._sink.append(entry)
 
     async def commit(self) -> None:
+        return None
+
+    async def flush(self) -> None:
+        return None
+
+    async def refresh(self, entry: AuditLog) -> None:
         return None
 
 
@@ -45,6 +52,19 @@ class CaptureSessionFactory:
 
     def __call__(self) -> CaptureSessionContext:
         return CaptureSessionContext(self._sink)
+
+
+class FailingSessionContext:
+    async def __aenter__(self) -> CaptureSession:
+        raise RuntimeError("db unavailable")
+
+    async def __aexit__(self, exc_type, exc, tb) -> None:  # type: ignore[no-untyped-def]
+        del exc_type, exc, tb
+
+
+class FailingSessionFactory:
+    def __call__(self) -> FailingSessionContext:
+        return FailingSessionContext()
 
 
 def _patch_auth_db(monkeypatch: pytest.MonkeyPatch, db_key: FakeDbKey | None) -> None:
@@ -112,6 +132,24 @@ def _audit_app(audit_sink: list[AuditLog]) -> FastAPI:
         _principal: object = Depends(require_scope("admin")),
     ) -> dict[str, str]:
         del request, _principal
+        return {"status": "ok"}
+
+    return app
+
+
+def _simple_audit_app(audit_sink: list[AuditLog], *, raise_on_post: bool = False) -> FastAPI:
+    app = FastAPI()
+
+    @app.middleware("http")
+    async def audit_middleware(request: Request, call_next):  # type: ignore[no-untyped-def]
+        middleware = AuditMiddleware(CaptureSessionFactory(audit_sink))
+        return await middleware(request, call_next)
+
+    @app.post("/api/v1/widgets/42")
+    async def create_widget(request: Request) -> dict[str, str]:
+        del request
+        if raise_on_post:
+            raise RuntimeError("widget exploded")
         return {"status": "ok"}
 
     return app
@@ -195,3 +233,77 @@ def test_audit_log_entries_redact_sensitive_headers_and_body_fields(
     assert persisted["payload"]["api_key"] == "[REDACTED]"
     assert "raw-token" not in str(persisted)
     assert "raw-api-key" not in str(persisted)
+
+
+@pytest.mark.asyncio
+async def test_log_audit_event_hashes_list_payload_and_commits() -> None:
+    sink: list[AuditLog] = []
+    session = CaptureSession(sink)
+
+    await log_audit_event(
+        session,
+        request_id="req-1",
+        user=None,
+        endpoint="/api/v1/widgets/42",
+        method="POST",
+        payload={"items": [{"token": "secret"}]},
+        result="success",
+        status_code=201,
+    )
+
+    assert len(sink) == 1
+    assert sink[0].payload_hash is not None
+    assert sink[0].user == "anonymous"
+
+
+def test_audit_middleware_ignores_malformed_json_and_missing_principal() -> None:
+    audit_logs: list[AuditLog] = []
+
+    with TestClient(_simple_audit_app(audit_logs)) as client:
+        response = client.post(
+            "/api/v1/widgets/42",
+            headers={"Content-Type": "application/json"},
+            content=b"{not-json",
+        )
+
+    assert response.status_code == 200
+    assert len(audit_logs) == 1
+    persisted = audit_logs[0]
+    assert persisted.actor_type == "anonymous"
+    assert persisted.resource_type == "widgets"
+    assert persisted.resource_id == "42"
+    assert "payload" not in persisted.audit_metadata
+
+
+def test_audit_middleware_logs_failed_mutations_with_error_metadata() -> None:
+    audit_logs: list[AuditLog] = []
+
+    with pytest.raises(RuntimeError, match="widget exploded"):
+        with TestClient(_simple_audit_app(audit_logs, raise_on_post=True)) as client:
+            client.post("/api/v1/widgets/42", json={"name": "bad"})
+
+    assert len(audit_logs) == 1
+    persisted = audit_logs[0]
+    assert persisted.result == "error"
+    assert persisted.status_code is None
+    assert persisted.audit_metadata["error"] == "widget exploded"
+    assert persisted.action == "42"
+
+
+@pytest.mark.asyncio
+async def test_safe_log_audit_event_increments_failure_metric() -> None:
+    middleware = AuditMiddleware(FailingSessionFactory())
+    before = audit_write_failures_total._value.get()
+
+    await middleware._safe_log_audit_event(  # noqa: SLF001
+        request_id="req-2",
+        user="user",
+        endpoint="/api/v1/widgets/42",
+        method="POST",
+        payload={"name": "broken"},
+        result="success",
+        status_code=200,
+        audit_metadata={},
+    )
+
+    assert audit_write_failures_total._value.get() == before + 1

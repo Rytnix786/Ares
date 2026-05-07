@@ -67,6 +67,12 @@ flowchart TD
 
 ## Quickstart
 
+The fastest way to run ARES locally:
+
+```bash
+make demo
+```
+
 ```bash
 git clone https://github.com/Rytnix786/Ares.git
 cd Ares
@@ -130,7 +136,6 @@ python scripts/verify_repo.py
 ### Run the full local stack
 
 ```bash
-make demo
 docker compose up -d
 python -m alembic upgrade head
 python scripts/seed_champion.py

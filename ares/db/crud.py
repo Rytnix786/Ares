@@ -44,6 +44,10 @@ async def list_evaluation_runs(db: AsyncSession, limit: int = 100) -> list[Evalu
     return list(result.scalars().all())
 
 
+@trace_function(
+    "db.create_evaluation_run",
+    attributes={"db.operation": "create_evaluation_run"},
+)
 async def create_evaluation_run(db: AsyncSession, **values: Any) -> EvaluationRun:
     run = EvaluationRun(**values)
     db.add(run)

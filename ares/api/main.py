@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import uuid
 from typing import Any, cast
 
@@ -30,6 +31,7 @@ from ares.exceptions import AresException
 from ares.logging import configure_logging
 from ares.observability.metrics import MetricsMiddleware
 from ares.observability.telemetry import setup_telemetry
+from ares.scheduler.maintenance_scheduler import MaintenanceScheduler
 
 ERROR_REMEDIATION = {
     "MODEL_LOAD_FAILED": "Verify the model path/artifact URI, file permissions, and configured evaluator mode.",
@@ -196,3 +198,26 @@ for router in [health.router, evaluations.router, champions.router, gate.router,
 if Instrumentator is not None:
     Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 setup_telemetry(app)
+
+
+@app.on_event("startup")
+async def start_maintenance_scheduler() -> None:  # pragma: no cover
+    try:
+        from ares.db.session import get_sessionmaker
+
+        app.state.maintenance_scheduler = MaintenanceScheduler(get_sessionmaker())
+        app.state.maintenance_scheduler_task = asyncio.create_task(app.state.maintenance_scheduler.run_forever())
+    except Exception:
+        pass
+
+
+@app.on_event("shutdown")
+async def stop_maintenance_scheduler() -> None:  # pragma: no cover
+    task = getattr(app.state, "maintenance_scheduler_task", None)
+    if task is None:
+        return
+    task.cancel()
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
