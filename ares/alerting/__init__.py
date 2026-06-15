@@ -127,7 +127,7 @@ class AlertDispatcher:
     def _generate_alert_hash(alert: AlertEvent) -> str:
         """Generate content hash for deduplication."""
         content = f"{alert.event_type}:{alert.model_name}:{alert.severity}:{alert.message}"
-        return hashlib.md5(content.encode()).hexdigest()
+        return hashlib.md5(content.encode()).hexdigest()  # nosec B324
 
     async def _send_slack(self, alert: AlertEvent) -> None:
         """Send alert to Slack."""

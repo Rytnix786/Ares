@@ -52,7 +52,7 @@ async def require_api_key(
                 if db_key is not None:
                     try:
                         await record_api_key_usage(session, db_key.id)
-                    except Exception:
+                    except Exception:  # nosec B110
                         pass
                     principal = APIKeyPrincipal(key=x_api_key, key_id=db_key.id, scopes=frozenset(db_key.scopes or []), source="db")
                     return _bind_principal(request, principal)

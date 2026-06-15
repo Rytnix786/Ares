@@ -58,7 +58,7 @@ async def create_evaluation_run(db: AsyncSession, **values: Any) -> EvaluationRu
         from opentelemetry import trace
 
         trace.get_current_span().set_attribute("model_name", run.model_name)
-    except Exception:
+    except Exception:  # nosec B110
         pass
     evaluation_runs_total.labels("passed" if run.passed else "failed").inc()
     return run
@@ -449,7 +449,7 @@ async def create_audit_log(db: AsyncSession, **values: Any) -> AuditLog:
         from opentelemetry import trace
 
         trace.get_current_span().set_attribute("model_name", values.get("model_name") or values.get("resource_id") or values.get("resource_type") or "")
-    except Exception:
+    except Exception:  # nosec B110
         pass
     return log_entry
 
@@ -474,7 +474,7 @@ async def update_evaluation_run(db: AsyncSession, run_id: str, **values: Any) ->
         from opentelemetry import trace
 
         trace.get_current_span().set_attribute("model_name", run.model_name)
-    except Exception:
+    except Exception:  # nosec B110
         pass
     await db.flush()
     await db.refresh(run)

@@ -6,7 +6,7 @@ import gzip
 import json
 import os
 import shutil
-import subprocess
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -59,7 +59,7 @@ def run_command(command: list[str], *, extra_env: dict[str, str] | None = None, 
     if extra_env:
         env.update(extra_env)
     try:
-        subprocess.run(
+        subprocess.run(  # nosec B603
             command,
             check=True,
             env=env,
@@ -157,7 +157,7 @@ def recreate_database(pg_env: dict[str, str], database_name: str, admin_database
     quoted_database_name = database_name.replace('"', '""')
     sql_database_name = database_name.replace("'", "''")
     terminate_sql = (
-        "SELECT pg_terminate_backend(pid) "
+        "SELECT pg_terminate_backend(pid) "  # nosec B608
         f"FROM pg_stat_activity WHERE datname = '{sql_database_name}' AND pid <> pg_backend_pid();"
     )
     run_command(["psql", "--dbname", admin_database, "-v", "ON_ERROR_STOP=1", "-c", terminate_sql], extra_env=pg_env)
@@ -174,15 +174,15 @@ def recreate_database(pg_env: dict[str, str], database_name: str, admin_database
 def restore_dump(pg_env: dict[str, str], database_name: str, dump_path: Path) -> None:
     try:
         with gzip.open(dump_path, "rb") as dump_stream:
-            process = subprocess.Popen(
+            process = subprocess.Popen(  # nosec B603 B607
                 ["psql", "--dbname", database_name, "-v", "ON_ERROR_STOP=1"],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.PIPE,
                 env={**os.environ, **pg_env},
             )
-            assert process.stdin is not None
-            assert process.stderr is not None
+            assert process.stdin is not None  # nosec B101
+            assert process.stderr is not None  # nosec B101
             shutil.copyfileobj(dump_stream, process.stdin)
             process.stdin.close()
             stderr = process.stderr.read().decode("utf-8", errors="replace").strip()

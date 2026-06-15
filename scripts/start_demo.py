@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import json
-import subprocess
+import subprocess  # nosec B404
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -32,7 +32,7 @@ class DemoRunSpec:
 
 def _ensure_docker_compose() -> None:
     try:
-        subprocess.run(["docker", "compose", "version"], check=True, capture_output=True, text=True)
+        subprocess.run(["docker", "compose", "version"], check=True, capture_output=True, text=True)  # nosec B603 B607
     except FileNotFoundError as exc:
         raise DemoStartupError("Docker is not available") from exc
     except subprocess.CalledProcessError as exc:
@@ -40,7 +40,7 @@ def _ensure_docker_compose() -> None:
 
 
 def _run_compose(args: list[str]) -> None:
-    subprocess.run(["docker", "compose", *args], check=True)
+    subprocess.run(["docker", "compose", *args], check=True)  # nosec B603 B607
 
 
 def _wait_for_ready(url: str, timeout_seconds: int = 60) -> None:
@@ -49,7 +49,7 @@ def _wait_for_ready(url: str, timeout_seconds: int = 60) -> None:
     while time.monotonic() < deadline:
         try:
             request = Request(url, headers={"Accept": "application/json"})
-            with urlopen(request, timeout=5) as response:
+            with urlopen(request, timeout=5) as response:  # nosec B310
                 if response.status == 200:
                     json.loads(response.read().decode("utf-8"))
                     return

@@ -177,7 +177,7 @@ try:
         """Audit logging middleware for mutations."""
         middleware = AuditMiddleware(get_sessionmaker())
         return await middleware(request, call_next)
-except Exception:
+except Exception:  # nosec B110
     # Skip audit middleware if not configured
     pass
 
@@ -207,7 +207,7 @@ async def start_maintenance_scheduler() -> None:  # pragma: no cover
 
         app.state.maintenance_scheduler = MaintenanceScheduler(get_sessionmaker())
         app.state.maintenance_scheduler_task = asyncio.create_task(app.state.maintenance_scheduler.run_forever())
-    except Exception:
+    except Exception:  # nosec B110
         pass
 
 

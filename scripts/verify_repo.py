@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import subprocess
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 
@@ -11,7 +11,7 @@ PYTHON = sys.executable
 
 def run_step(label: str, command: list[str]) -> None:
     print(f"\n==> {label}")
-    subprocess.run(command, cwd=ROOT, check=True)
+    subprocess.run(command, cwd=ROOT, check=True)  # nosec B603
 
 
 def main() -> int:

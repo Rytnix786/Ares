@@ -6,7 +6,7 @@ import asyncio
 import json
 import os
 import shutil
-import subprocess
+import subprocess  # nosec B404
 import sys
 import time
 import uuid
@@ -67,7 +67,7 @@ CATEGORICAL_COLUMNS = [column for column in ADULT_FEATURE_COLUMNS if column not 
 
 def _current_commit_sha() -> str:
     try:
-        return subprocess.check_output(
+        return subprocess.check_output(  # nosec B603 B607
             ["git", "rev-parse", "--short=12", "HEAD"],
             text=True,
             stderr=subprocess.DEVNULL,

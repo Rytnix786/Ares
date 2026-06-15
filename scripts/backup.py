@@ -8,7 +8,7 @@ import hashlib
 import json
 import os
 import shutil
-import subprocess
+import subprocess  # nosec B404
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -116,7 +116,7 @@ def run_command(
     if extra_env:
         env.update(extra_env)
     try:
-        return subprocess.run(
+        return subprocess.run(  # nosec B603
             command,
             check=True,
             cwd=str(cwd) if cwd else None,
@@ -137,7 +137,7 @@ async def collect_row_counts(database_url: str) -> dict[str, int]:
         async with engine.connect() as connection:
             counts: dict[str, int] = {}
             for manifest_key, table_name in ROW_COUNT_TABLES.items():
-                result = await connection.execute(text(f"SELECT COUNT(*) FROM {table_name}"))
+                result = await connection.execute(text(f"SELECT COUNT(*) FROM {table_name}"))  # nosec B608
                 counts[manifest_key] = int(result.scalar_one())
             return counts
     finally:

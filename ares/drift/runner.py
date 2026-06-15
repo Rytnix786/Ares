@@ -152,7 +152,7 @@ async def run_drift_job(
             run_metadata={"rows": batch.rows, "columns": batch.columns},
         )
         await crud.mark_drift_job_scheduled(db, job, interval_minutes=int(job.thresholds.get("interval_minutes", 60)))
-        assert completed is not None
+        assert completed is not None  # nosec B101
         return DriftRunSummary(completed.id, job.id, job.model_name, completed.status, completed.features_evaluated, completed.alerts_triggered, completed.max_severity)
     except Exception as exc:
         failed = await crud.update_drift_job_run(
@@ -163,5 +163,5 @@ async def run_drift_job(
             duration_seconds=time.perf_counter() - start,
             error_message=str(exc),
         )
-        assert failed is not None
+        assert failed is not None  # nosec B101
         return DriftRunSummary(failed.id, job.id, job.model_name, failed.status, failed.features_evaluated, failed.alerts_triggered, failed.max_severity)

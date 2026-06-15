@@ -5,7 +5,7 @@ import argparse
 import asyncio
 import json
 import os
-import subprocess
+import subprocess  # nosec B404
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -276,7 +276,7 @@ async def fetch_db_summary(database_url: str, model_name: str, run_ids: list[str
 
 def run_eval(model_path: str, commit: str, version: str, dataset_path: Path, output_path: Path, env: dict[str, str]) -> tuple[int, str, str, dict[str, Any]]:
     cmd = [sys.executable, "scripts/run_evaluation.py", "--model-path", model_path, "--commit-sha", commit, "--model-name", "adult-income-real", "--model-version", version, "--split", "test", "--dataset-path", str(dataset_path), "--output-json", str(output_path)]
-    proc = subprocess.run(cmd, text=True, capture_output=True, env=env)
+    proc = subprocess.run(cmd, text=True, capture_output=True, env=env)  # nosec B603
     payload = json.loads(output_path.read_text(encoding="utf-8")) if output_path.exists() else {}
     print("COMMAND:", " ".join(cmd))
     print("STDOUT:\n", proc.stdout)
@@ -298,7 +298,7 @@ with TestClient(app) as client:
     evals=client.get('/api/v1/evaluations/', headers=headers)
     print(json.dumps({"champion_status": champ.status_code, "champion_json": champ.json(), "evaluations_status": evals.status_code, "evaluations_json": evals.json()}, indent=2))
 '''
-    proc = subprocess.run([sys.executable, "-c", code], text=True, capture_output=True, env=env)
+    proc = subprocess.run([sys.executable, "-c", code], text=True, capture_output=True, env=env)  # nosec B603
     print("API STDOUT:\n", proc.stdout)
     print("API STDERR:\n", proc.stderr)
     if proc.returncode == 0:

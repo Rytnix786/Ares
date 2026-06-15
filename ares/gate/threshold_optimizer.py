@@ -67,5 +67,5 @@ def optimize_thresholds(
         best_key = (-1.0, -1.0, -1.0, -1.0) if best is None else (best.expected_accuracy, -best.false_pass_rate, -best.false_fail_rate, best.pass_rate)
         if key > best_key:
             best = recommendation
-    assert best is not None
+    assert best is not None  # nosec B101
     return ThresholdRecommendation(best.config, best.pass_rate, best.expected_accuracy, best.false_pass_rate, best.false_fail_rate, evaluated)

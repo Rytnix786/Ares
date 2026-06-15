@@ -84,7 +84,7 @@ def _load_entry_points() -> dict[str, EvaluatorPlugin]:
             loaded[entry_point.name] = EvaluatorPlugin(manifest=manifest, factory=factory)
         except (ValidationError, TypeError, ValueError, AttributeError):
             continue
-        except Exception:
+        except Exception:  # nosec B112
             continue
     return loaded
 

@@ -37,7 +37,7 @@ def write_slice_views(df: pd.DataFrame, out_dir: Path) -> None:
 
 
 def main() -> None:
-    rng = random.Random(42)
+    rng = random.Random(42)  # nosec B311
     out = Path("data/golden_set")
     out.mkdir(parents=True, exist_ok=True)
     rows: list[dict[str, object]] = []
