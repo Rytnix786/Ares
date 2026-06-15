@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-import json
 from unittest.mock import MagicMock, patch
-
-import pytest
 
 import scripts.post_pr_comment as post_pr_comment
 
@@ -101,7 +98,7 @@ def test_post_to_github_success() -> None:
 
 
 def test_post_to_github_failure() -> None:
-    with patch("httpx.post", side_effect=Exception("network error")) as mock_post:
+    with patch("httpx.post", side_effect=Exception("network error")):
         success = post_pr_comment.post_to_github(
             comment_body="test comment",
             repository="owner/repo",
