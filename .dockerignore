@@ -15,3 +15,5 @@ mlruns
 .mlruns
 mlflow.db
 docker-compose.override.yml
+skills
+gstack-main

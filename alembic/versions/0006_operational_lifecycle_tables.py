@@ -4,7 +4,7 @@ import sqlalchemy as sa
 
 from alembic import op
 
-revision = "0006_operational_lifecycle_tables"
+revision = "0006_op_lifecycle_tables"
 down_revision = "0005_add_webhooks_table"
 branch_labels = None
 depends_on = None
@@ -174,7 +174,7 @@ def upgrade() -> None:
     op.create_index("ix_champion_rollbacks_model_created_at", "champion_rollbacks", ["model_name", "created_at"], unique=False)
 
     with op.batch_alter_table("audit_logs") as batch_op:
-        batch_op.alter_column("status_code", existing_type=sa.String(length=16), type_=sa.Integer(), existing_nullable=True)
+        batch_op.alter_column("status_code", existing_type=sa.String(length=16), type_=sa.Integer(), existing_nullable=True, postgresql_using="status_code::integer")
         batch_op.add_column(sa.Column("api_key_id", sa.String(), nullable=True))
         batch_op.add_column(sa.Column("actor_type", sa.String(length=32), nullable=True))
         batch_op.add_column(sa.Column("resource_type", sa.String(length=128), nullable=True))

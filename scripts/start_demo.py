@@ -126,7 +126,7 @@ async def _seed_database() -> tuple[list[str], str, list[str], str]:
 
 def main() -> int:
     _ensure_docker_compose()
-    _run_compose(["up", "-d"])
+    _run_compose(["up", "-d", "--build"])
     _wait_for_ready("http://localhost:8000/health/ready")
     _run_compose(["exec", "-T", "api", "python", "-m", "alembic", "upgrade", "head"])
 

@@ -3,8 +3,8 @@ from __future__ import annotations
 import sqlalchemy as sa
 from alembic import op
 
-revision = "0007_phase2_product_completeness"
-down_revision = "0006_operational_lifecycle_tables"
+revision = "0007_phase2_completeness"
+down_revision = "0006_op_lifecycle_tables"
 branch_labels = None
 depends_on = None
 
