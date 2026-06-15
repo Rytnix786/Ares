@@ -203,7 +203,7 @@ for r in app.routes:
         try:
             cls = type(r)
             if not hasattr(cls, "path"):
-                cls.path = property(lambda self: getattr(self, "prefix", ""))
+                cls.path = property(lambda self: getattr(self, "prefix", ""))  # type: ignore[attr-defined]
         except Exception:  # nosec B110
             pass
 
