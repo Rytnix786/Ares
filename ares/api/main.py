@@ -195,6 +195,19 @@ async def metrics_context_middleware(
 for router in [health.router, evaluations.router, champions.router, gate.router, drift.router, alerts.router, api_keys.router, audit.router]:
     app.include_router(router)
 
+
+# Patch internal route wrappers lacking 'path' attribute to prevent compatibility issues
+# with prometheus-fastapi-instrumentator or opentelemetry middlewares.
+for r in app.routes:
+    if not hasattr(r, "path"):
+        try:
+            cls = type(r)
+            if not hasattr(cls, "path"):
+                cls.path = property(lambda self: getattr(self, "prefix", ""))
+        except Exception:  # nosec B110
+            pass
+
+
 if Instrumentator is not None:
     Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 setup_telemetry(app)

@@ -130,7 +130,11 @@ async def test_create_evaluation_run_persists_points_and_supports_cached_lookup(
         def set_attribute(self, key: str, value: object) -> None:
             captured[key] = value
 
-    monkeypatch.setattr("opentelemetry.trace.get_current_span", lambda: _Span())
+        def get_span_context(self) -> object:
+            from opentelemetry.trace import INVALID_SPAN_CONTEXT
+            return INVALID_SPAN_CONTEXT
+
+    monkeypatch.setattr("opentelemetry.trace.get_current_span", lambda *args, **kwargs: _Span())
 
     run = await crud.create_evaluation_run(
         db_session,
@@ -362,7 +366,11 @@ async def test_get_drift_reports_and_update_evaluation_run_trace(db_session, sam
         def set_attribute(self, key: str, value: object) -> None:
             captured[key] = value
 
-    monkeypatch.setattr("opentelemetry.trace.get_current_span", lambda: _Span())
+        def get_span_context(self) -> object:
+            from opentelemetry.trace import INVALID_SPAN_CONTEXT
+            return INVALID_SPAN_CONTEXT
+
+    monkeypatch.setattr("opentelemetry.trace.get_current_span", lambda *args, **kwargs: _Span())
 
     await crud.create_drift_report(
         db_session,
