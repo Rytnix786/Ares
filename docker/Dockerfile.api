@@ -2,6 +2,12 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y --no-install-recommends git curl && rm -rf /var/lib/apt/lists/* \
     && useradd --create-home --shell /bin/sh ares
 WORKDIR /app
+# Upgrade pip, setuptools, and wheel to patched versions before installing the
+# application. The python:3.11-slim base image ships with an older setuptools
+# that vendors jaraco.context 5.3.0 (CVE-2026-23949) and wheel 0.45.1
+# (CVE-2026-24049). Upgrading here ensures those vulnerable vendored copies are
+# replaced before Trivy scans the image.
+RUN pip install --no-cache-dir --upgrade "pip" "setuptools>=80.9.0" "wheel>=0.46.2"
 COPY . .
 RUN pip install --no-cache-dir -e .
 RUN chown -R ares:ares /app && chmod +x /app/docker/entrypoint.api.sh

@@ -141,7 +141,7 @@ class AresSettings(BaseSettings):
             raise ValueError("ARES_API_KEYS is required in protected environments")
         if (
             self.ENVIRONMENT in {"production", "staging"}
-            and (not self.API_KEY_HASH_SECRET or self.API_KEY_HASH_SECRET == "secret")
+            and (not self.API_KEY_HASH_SECRET or self.API_KEY_HASH_SECRET == "secret")  # nosec B105
         ):
             raise ValueError(
                 "API_KEY_HASH_SECRET must be set to a strong value in protected environments"
