@@ -5,9 +5,14 @@
 Run these commands from `H:\Projects\Ares`:
 
 1. `copy .env.example .env`
-2. `python -m venv .venv`
-3. `.venv\Scripts\python -m pip install -e ".[dev,eval,dashboard]"`
-4. `pre-commit install`
+2. Environment Setup:
+   - **Recommended (using uv):**
+     `uv sync --extra dev --extra eval --extra dashboard`
+     `pre-commit install`
+   - **Or standard pip fallback:**
+     `python -m venv .venv`
+     `.venv\Scripts\python -m pip install -e ".[dev,eval,dashboard]"`
+     `pre-commit install`
 5. `docker compose up -d && python -m alembic upgrade head && python scripts/seed_champion.py`
 
 The repository includes `make.cmd`, so `make <target>` works on Windows without GNU Make.

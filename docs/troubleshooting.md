@@ -16,7 +16,7 @@ This guide covers the eight most common ARES failure scenarios. Each entry provi
 # Identify which gate failed by running them individually
 python -m ruff check .
 python -m mypy ares
-python -m pytest tests/ -x --cov=ares --cov-fail-under=90
+python -m pytest tests/ -x --cov=ares --cov-fail-under=92
 docker compose config -q
 python -m dvc repro --dry
 python -m compileall ares dashboard scripts tests

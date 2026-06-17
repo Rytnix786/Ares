@@ -1,19 +1,67 @@
+# Version control and metadata
 .git
 .gitignore
+.gitattributes
+
+# Secrets — never bake into images
 .env
+.env.*
+!.env.example
+
+# Python virtualenvs and caches
 .venv
+venv
 __pycache__
+*.pyc
+*.pyo
 .pytest_cache
 .mypy_cache
 .ruff_cache
-.dvc/tmp
-graphify-out
-ares.egg-info
+.coverage
+.coveragerc
 htmlcov
-reports
-mlruns
-.mlruns
+*.egg-info
+
+# Test, docs, and planning artifacts (not needed at runtime)
+tests/
+docs/
+*.md
+!README.md
+
+# Sample / generated data and reports (images use installed package, not these)
+data/
+reports/
+evidence/
+.benchmarks/
+.hypothesis/
+mlruns/
+.mlruns/
 mlflow.db
-docker-compose.override.yml
-skills
+coverage_report.txt
+test_output.txt
+test_run.log
+test_status.log
+final_test.txt
+
+# DVC internals (the .dvc files themselves may be needed; tmp/cache are not)
+.dvc/tmp
+.dvc/cache
+
+# Deployment, load testing, and scratch dirs
+deploy/
+load/
+docker-compose*.yml
+*.bak
+# NOTE: scripts/ is kept — the eval image's CMD runs scripts/run_evaluation.py
+
+# AI tool working dirs and vendored skills (not runtime dependencies)
+.claude
+.codex-logs
+.cursor
+.kiro
+.qodo
+.gstack
 gstack-main
+graphify-out
+skills
+ares.egg-info

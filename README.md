@@ -1,18 +1,35 @@
-<div align="center">
-# ⚔️ ARES
+<div align="center"><pre>
+  █████╗ ██████╗ ███████╗███████╗
+ ██╔══██╗██╔══██╗██╔════╝██╔════╝
+ ███████║██████╔╝█████╗  ███████╗
+ ██╔══██║██╔══██╗██╔══╝  ╚════██║
+ ██║  ██║██║  ██║███████╗███████║
+ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝
+Model regression detection system
+</pre></div>
 
-Decide whether a candidate ML model is safe to promote before it reaches production.
+<p align="center"><strong>regression gating · FastAPI · Celery · Streamlit · local-first · evidence-driven</strong></p>
 
-![Build](https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/quality.yml?branch=main&label=quality&style=flat-square)
-![Regression Gate](https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/regression_gate.yml?branch=main&label=regression%20gate&style=flat-square)
-![Version](https://img.shields.io/badge/version-1.0.0-blue?style=flat-square)
-![License](https://img.shields.io/github/license/Rytnix786/Ares?style=flat-square)
-![Python](https://img.shields.io/badge/python-3.11%2B-blue?style=flat-square)
-![Language](https://img.shields.io/github/languages/top/Rytnix786/Ares?style=flat-square)
+<p align="center">
+  <a href="https://github.com/Rytnix786/Ares/actions/workflows/quality.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/quality.yml?branch=main&label=quality&style=flat-square" alt="Build Status"/></a>
+  <a href="https://github.com/Rytnix786/Ares/actions/workflows/regression_gate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/regression_gate.yml?branch=main&label=regression%20gate&style=flat-square" alt="Regression Gate"/></a>
+  <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="Version"/>
+  <img src="https://img.shields.io/github/license/Rytnix786/Ares?style=flat-square" alt="License"/>
+  <img src="https://img.shields.io/badge/python-3.11%2B-blue?style=flat-square" alt="Python"/>
+</p>
 
-[Demo](#demo) · [Quickstart](#quickstart) · [Docs](#usage) · [Contributing](#contributing)
+<p align="center">
+  <a href="#overview">Overview</a> ·
+  <a href="#architecture">Architecture</a> ·
+  <a href="#demo">Demo</a> ·
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#usage">Docs</a> ·
+  <a href="#contributing">Contributing</a>
+</p>
 
-</div>
+<p align="center"><sub>
+  <b>AI agents / coding assistants:</b> read <a href="docs/agent-workflow.md"><code>docs/agent-workflow.md</code></a> for guidelines.
+</sub></p>
 
 ---
 
@@ -77,6 +94,9 @@ make demo
 git clone https://github.com/Rytnix786/Ares.git
 cd Ares
 cp .env.example .env
+# Recommended (using uv):
+uv sync --extra dev --extra eval --extra dashboard
+# Or standard pip fallback:
 python -m venv .venv && . .venv/bin/activate && python -m pip install -e ".[dev,eval,dashboard]"
 docker compose up -d && python -m alembic upgrade head && python scripts/seed_champion.py && make verify
 ```
@@ -87,6 +107,9 @@ Windows `cmd.exe` equivalent:
 git clone https://github.com/Rytnix786/Ares.git
 cd Ares
 copy .env.example .env
+# Recommended (using uv):
+uv sync --extra dev --extra eval --extra dashboard
+# Or standard pip fallback:
 python -m venv .venv && .venv\Scripts\python -m pip install -e ".[dev,eval,dashboard]"
 docker compose up -d && python -m alembic upgrade head && python scripts\seed_champion.py && make.cmd verify
 ```
@@ -116,6 +139,11 @@ Local surfaces after startup:
 ### Install
 
 ```bash
+# Recommended (using uv):
+uv sync --extra dev --extra eval --extra dashboard --extra otel
+pre-commit install
+
+# Or standard pip fallback:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install --upgrade pip
@@ -421,6 +449,11 @@ git checkout -b feat/your-change
 3. Install dependencies and hooks:
 
 ```bash
+# Recommended (using uv):
+uv sync --extra dev --extra eval --extra dashboard
+pre-commit install
+
+# Or standard pip fallback:
 python -m venv .venv
 . .venv/bin/activate
 python -m pip install -e ".[dev,eval,dashboard]"

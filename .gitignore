@@ -29,15 +29,17 @@ reports/*.db
 !.gitkeep
 docker-compose.override.yml
 .DS_Store
-ares-remaining-gaps-implementation-plan-v3-2c73ea.md
-plan.md
-plan.md
 gstack-main/
 ruflo-main/
 .gstack/
-.gstack/
 commit.bat
-.gitignore
 .kiro/hooks/trust-npm-commands.kiro.hook
-final_test.txt
 .vscode/settings.json
+
+# Scratch logs, test files, and backup configurations at root
+/*.txt
+/*.log
+*.bak
+
+# Historical planning and completion reports
+docs/history/

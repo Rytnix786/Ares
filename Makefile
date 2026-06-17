@@ -31,7 +31,7 @@ test-e2e:
 	$(PYTHON) -m pytest -m e2e
 
 test:
-	$(PYTHON) -m pytest --cov=ares --cov-fail-under=90 --cov-report=term-missing
+	$(PYTHON) -m pytest --cov=ares --cov-fail-under=92 --cov-report=term-missing
 
 test-all: reports
 	$(PYTHON) -m pytest --tb=short --cov=ares --cov-report=term-missing --cov-report=xml:reports/coverage.xml --junitxml=reports/test-results.xml

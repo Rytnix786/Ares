@@ -48,6 +48,8 @@ class AresSettings(BaseSettings):
     CACHE_SOCKET_TIMEOUT_SECONDS: float = 2.0
 
     # Zone B: DB-managed API keys (Wave 2 Agent D)
+    # NOTE: this is an insecure dev placeholder. It MUST be overridden via the
+    # API_KEY_HASH_SECRET env var; protected environments reject it (see below).
     API_KEY_HASH_SECRET: str = "secret"
     API_KEY_DEFAULT_RATE_LIMIT: str = "120/minute"
     API_KEY_HASH_PREFIX_LENGTH: int = 64
@@ -137,6 +139,13 @@ class AresSettings(BaseSettings):
         self.ARES_API_KEYS = list(dict.fromkeys(k for k in keys if k))
         if self.ENVIRONMENT in {"production", "staging"} and not self.ARES_API_KEYS:
             raise ValueError("ARES_API_KEYS is required in protected environments")
+        if (
+            self.ENVIRONMENT in {"production", "staging"}
+            and (not self.API_KEY_HASH_SECRET or self.API_KEY_HASH_SECRET == "secret")
+        ):
+            raise ValueError(
+                "API_KEY_HASH_SECRET must be set to a strong value in protected environments"
+            )
         return self
 
     @property

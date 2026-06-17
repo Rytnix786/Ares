@@ -2,11 +2,11 @@
 source = ares
 omit =
     ares/alerting/*
+    # Keep scheduler omitted as it lacks test coverage and is load-bearing
     ares/scheduler/*
-    ares/cache/client.py
 
 [report]
-fail_under = 90
+fail_under = 92
 precision = 2
 show_missing = True
 skip_covered = False

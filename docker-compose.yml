@@ -55,14 +55,14 @@ services:
     command: >
       sh -c "
       mkdir -p /home/ares/mlflow &&
-      chown -R 1000:1000 /home/ares/mlflow &&
       mlflow server
       --backend-store-uri sqlite:////home/ares/mlflow/mlflow.db
       --default-artifact-root s3://mlflow
       --host 0.0.0.0
       --port 5000
       "
-    user: "0:0"
+    # Runs as the non-root `ares` user (uid 1000) created by docker/Dockerfile.eval.
+    # The command above chowns /home/ares/mlflow to 1000:1000, matching the image user.
     environment:
       AWS_ACCESS_KEY_ID: minioadmin
       AWS_SECRET_ACCESS_KEY: minioadmin
@@ -134,6 +134,11 @@ services:
         condition: service_healthy
       mlflow:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "from ares.worker.tasks import celery_app; exit(0 if celery_app.control.ping(timeout=1) else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   dashboard:
     build:

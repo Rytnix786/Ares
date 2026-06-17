@@ -63,7 +63,7 @@ exit /b %errorlevel%
 exit /b %errorlevel%
 
 :test
-%PYTHON% -m pytest --cov=ares --cov-fail-under=90 --cov-report=term-missing
+%PYTHON% -m pytest --cov=ares --cov-fail-under=92 --cov-report=term-missing
 exit /b %errorlevel%
 
 :test_all

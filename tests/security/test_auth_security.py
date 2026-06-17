@@ -80,7 +80,11 @@ def test_expired_key_is_rejected_with_401(monkeypatch: pytest.MonkeyPatch) -> No
     _patch_auth_db(monkeypatch, None)
     monkeypatch.setattr(
         "ares.api.auth.settings",
-        AresSettings(ENVIRONMENT="production", ARES_API_KEYS=["valid-env-key"]),
+        AresSettings(
+            ENVIRONMENT="production",
+            ARES_API_KEYS=["valid-env-key"],
+            API_KEY_HASH_SECRET="strong_test_secret_for_tests",
+        ),
     )
     with TestClient(_auth_app()) as client:
         response = client.get("/protected/read", headers={"X-API-Key": "expired-key"})
@@ -91,7 +95,11 @@ def test_revoked_key_is_rejected_with_401(monkeypatch: pytest.MonkeyPatch) -> No
     _patch_auth_db(monkeypatch, None)
     monkeypatch.setattr(
         "ares.api.auth.settings",
-        AresSettings(ENVIRONMENT="production", ARES_API_KEYS=["valid-env-key"]),
+        AresSettings(
+            ENVIRONMENT="production",
+            ARES_API_KEYS=["valid-env-key"],
+            API_KEY_HASH_SECRET="strong_test_secret_for_tests",
+        ),
     )
     with TestClient(_auth_app()) as client:
         response = client.get("/protected/read", headers={"X-API-Key": "revoked-key"})
@@ -104,7 +112,11 @@ def test_key_without_required_scope_is_rejected_with_403(
     _patch_auth_db(monkeypatch, FakeDbKey(id="db-key-1", scopes=["read"]))
     monkeypatch.setattr(
         "ares.api.auth.settings",
-        AresSettings(ENVIRONMENT="production", ARES_API_KEYS=["fallback-env-key"]),
+        AresSettings(
+            ENVIRONMENT="production",
+            ARES_API_KEYS=["fallback-env-key"],
+            API_KEY_HASH_SECRET="strong_test_secret_for_tests",
+        ),
     )
     with TestClient(_auth_app()) as client:
         response = client.post("/protected/write", headers={"X-API-Key": "db-key"})
@@ -116,7 +128,11 @@ def test_correct_scope_passes_authentication(monkeypatch: pytest.MonkeyPatch) ->
     _patch_auth_db(monkeypatch, FakeDbKey(id="db-key-2", scopes=["read"]))
     monkeypatch.setattr(
         "ares.api.auth.settings",
-        AresSettings(ENVIRONMENT="production", ARES_API_KEYS=["fallback-env-key"]),
+        AresSettings(
+            ENVIRONMENT="production",
+            ARES_API_KEYS=["fallback-env-key"],
+            API_KEY_HASH_SECRET="strong_test_secret_for_tests",
+        ),
     )
     with TestClient(_auth_app()) as client:
         response = client.get("/protected/read", headers={"X-API-Key": "db-key"})
@@ -134,7 +150,11 @@ def test_env_key_comparison_uses_constant_time(monkeypatch: pytest.MonkeyPatch) 
     _patch_auth_db(monkeypatch, None)
     monkeypatch.setattr(
         "ares.api.auth.settings",
-        AresSettings(ENVIRONMENT="production", ARES_API_KEYS=["env-only-key"]),
+        AresSettings(
+            ENVIRONMENT="production",
+            ARES_API_KEYS=["env-only-key"],
+            API_KEY_HASH_SECRET="strong_test_secret_for_tests",
+        ),
     )
     monkeypatch.setattr("ares.api.auth.hmac.compare_digest", tracking_compare_digest)
     with TestClient(_auth_app()) as client:
@@ -150,7 +170,11 @@ def test_invalid_key_rate_limit_returns_429(monkeypatch: pytest.MonkeyPatch) -> 
     _patch_auth_db(monkeypatch, None)
     monkeypatch.setattr(
         "ares.api.auth.settings",
-        AresSettings(ENVIRONMENT="production", ARES_API_KEYS=["known-good-key"]),
+        AresSettings(
+            ENVIRONMENT="production",
+            ARES_API_KEYS=["known-good-key"],
+            API_KEY_HASH_SECRET="strong_test_secret_for_tests",
+        ),
     )
 
     limiter = Limiter(key_func=rate_limit_key)
