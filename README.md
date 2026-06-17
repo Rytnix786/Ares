@@ -11,11 +11,12 @@ Model regression detection system
 <p align="center"><strong>regression gating · FastAPI · Celery · Streamlit · local-first · evidence-driven</strong></p>
 
 <p align="center">
-  <a href="https://github.com/Rytnix786/Ares/actions/workflows/quality.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/quality.yml?branch=main&label=quality&style=flat-square" alt="Build Status"/></a>
-  <a href="https://github.com/Rytnix786/Ares/actions/workflows/regression_gate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/regression_gate.yml?branch=main&label=regression%20gate&style=flat-square" alt="Regression Gate"/></a>
-  <img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat-square" alt="Version"/>
-  <img src="https://img.shields.io/github/license/Rytnix786/Ares?style=flat-square" alt="License"/>
-  <img src="https://img.shields.io/badge/python-3.11%2B-blue?style=flat-square" alt="Python"/>
+  <a href="https://github.com/Rytnix786/Ares/actions/workflows/quality.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/quality.yml?branch=main&label=quality&logo=github&style=flat-square&color=37814A" alt="Quality Gate"/></a>
+  <a href="https://github.com/Rytnix786/Ares/actions/workflows/regression_gate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/regression_gate.yml?branch=main&label=regression%20gate&logo=github-actions&style=flat-square&color=0194E2" alt="Regression Gate"/></a>
+  <img src="https://img.shields.io/badge/coverage-93.77%25-37814A?style=flat-square&logo=codecov&logoColor=white" alt="Code Coverage"/>
+  <img src="https://img.shields.io/badge/version-1.0.0-0194E2?style=flat-square" alt="Version"/>
+  <img src="https://img.shields.io/badge/python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python Version"/>
+  <img src="https://img.shields.io/badge/license-MIT-59666C?style=flat-square" alt="License"/>
 </p>
 
 <p align="center">
