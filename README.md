@@ -49,7 +49,6 @@
   <img src="https://img.shields.io/badge/audit--trail-decision%20narratives-59666C?style=flat-square" alt="Audit Trail"/>
 </p>
 </div>
-```
 
 ---
 
