@@ -1,36 +1,56 @@
-<div align="center"><pre>
+```html
+<div align="center">
+<pre>
   █████╗ ██████╗ ███████╗███████╗
  ██╔══██╗██╔══██╗██╔════╝██╔════╝
  ███████║██████╔╝█████╗  ███████╗
  ██╔══██║██╔══██╗██╔══╝  ╚════██║
  ██║  ██║██║  ██║███████╗███████║
  ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚══════╝
-Model regression detection system
-</pre></div>
+</pre>
 
-<p align="center"><strong>regression gating · FastAPI · Celery · Streamlit · local-first · evidence-driven</strong></p>
+<h3>Model regression detection system for evidence-based ML promotion</h3>
 
-<p align="center">
-  <a href="https://github.com/Rytnix786/Ares/actions/workflows/quality.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/quality.yml?branch=main&label=quality&logo=github&style=flat-square&color=37814A" alt="Quality Gate"/></a>
-  <a href="https://github.com/Rytnix786/Ares/actions/workflows/regression_gate.yml"><img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/regression_gate.yml?branch=main&label=regression%20gate&logo=github-actions&style=flat-square&color=0194E2" alt="Regression Gate"/></a>
-  <img src="https://img.shields.io/badge/coverage-93.77%25-37814A?style=flat-square&logo=codecov&logoColor=white" alt="Code Coverage"/>
-  <img src="https://img.shields.io/badge/version-1.0.0-0194E2?style=flat-square" alt="Version"/>
-  <img src="https://img.shields.io/badge/python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python Version"/>
-  <img src="https://img.shields.io/badge/license-MIT-59666C?style=flat-square" alt="License"/>
+<p>
+  <strong>candidate vs champion</strong> ·
+  <strong>regression gates</strong> ·
+  <strong>golden-set validation</strong> ·
+  <strong>drift monitoring</strong> ·
+  <strong>audit-ready decisions</strong>
 </p>
 
-<p align="center">
-  <a href="#overview">Overview</a> ·
-  <a href="#architecture">Architecture</a> ·
-  <a href="#demo">Demo</a> ·
-  <a href="#quickstart">Quickstart</a> ·
-  <a href="#usage">Docs</a> ·
-  <a href="#contributing">Contributing</a>
+<p>
+  <a href="https://github.com/Rytnix786/Ares/actions/workflows/quality.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/quality.yml?branch=main&label=quality%20gate&logo=github&style=flat-square&color=37814A" alt="Quality Gate"/>
+  </a>
+  <a href="https://github.com/Rytnix786/Ares/actions/workflows/regression_gate.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/regression_gate.yml?branch=main&label=regression%20gate&logo=githubactions&style=flat-square&color=0194E2" alt="Regression Gate"/>
+  </a>
+  <a href="https://github.com/Rytnix786/Ares/actions/workflows/drift_monitor.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/Rytnix786/Ares/drift_monitor.yml?branch=main&label=drift%20monitor&logo=githubactions&style=flat-square&color=7C3AED" alt="Drift Monitor"/>
+  </a>
+  <img src="https://img.shields.io/badge/coverage-93.77%25-37814A?style=flat-square&logo=pytest&logoColor=white" alt="Coverage"/>
+  <img src="https://img.shields.io/badge/python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+"/>
+  <img src="https://img.shields.io/badge/license-MIT-59666C?style=flat-square" alt="MIT License"/>
 </p>
 
-<p align="center"><sub>
-  <b>AI agents / coding assistants:</b> read <a href="docs/agent-workflow.md"><code>docs/agent-workflow.md</code></a> for guidelines.
-</sub></p>
+<p>
+  <img src="https://img.shields.io/badge/FastAPI-API-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI"/>
+  <img src="https://img.shields.io/badge/Celery-worker-37814A?style=flat-square&logo=celery&logoColor=white" alt="Celery"/>
+  <img src="https://img.shields.io/badge/Streamlit-dashboard-FF4B4B?style=flat-square&logo=streamlit&logoColor=white" alt="Streamlit"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-storage-4169E1?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL"/>
+  <img src="https://img.shields.io/badge/Redis-cache%20%2F%20queue-DC382D?style=flat-square&logo=redis&logoColor=white" alt="Redis"/>
+  <img src="https://img.shields.io/badge/Docker-compose-2496ED?style=flat-square&logo=docker&logoColor=white" alt="Docker Compose"/>
+</p>
+
+<p>
+  <img src="https://img.shields.io/badge/local--first-evidence%20workflow-0F172A?style=flat-square" alt="Local-first evidence workflow"/>
+  <img src="https://img.shields.io/badge/champion--vs--candidate-promotion%20decision-0194E2?style=flat-square" alt="Champion vs Candidate"/>
+  <img src="https://img.shields.io/badge/golden--set-validation-37814A?style=flat-square" alt="Golden-set Validation"/>
+  <img src="https://img.shields.io/badge/audit--trail-decision%20narratives-59666C?style=flat-square" alt="Audit Trail"/>
+</p>
+</div>
+```
 
 ---
 
